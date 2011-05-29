@@ -1,0 +1,1268 @@
+2011-05-12 14:13:45,165 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:13:45,171 DEBUG main br.biofoco.p2p.kad.OpenKad - starting peer instance...
+2011-05-12 14:15:25,253 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:15:25,262 DEBUG main br.biofoco.p2p.kad.OpenKad - starting peer instance...
+2011-05-12 14:15:25,270 DEBUG main br.biofoco.p2p.transport.HttpTransportServer - Starting http transport...
+2011-05-12 14:15:25,302 INFO main org.mortbay.log - Logging to org.slf4j.impl.Log4jLoggerAdapter(org.mortbay.log) via org.mortbay.log.Slf4jLog
+2011-05-12 14:15:25,303 DEBUG main org.mortbay.log - Container Server@67006d75 + SocketConnector@0.0.0.0:9090 as connector
+2011-05-12 14:15:25,326 DEBUG main org.mortbay.log - Container Server@67006d75 + org.mortbay.jetty.servlet.Context@2c091cee{null,null} as handler
+2011-05-12 14:15:25,327 DEBUG main org.mortbay.log - Container SessionHandler@a4a63d8 + ServletHandler@19e0ff2f as handler
+2011-05-12 14:15:25,328 DEBUG main org.mortbay.log - Container SessionHandler@a4a63d8 + org.mortbay.jetty.servlet.HashSessionManager@29173ef as sessionManager
+2011-05-12 14:15:25,328 DEBUG main org.mortbay.log - Container org.mortbay.jetty.servlet.Context@2c091cee{null,null} + SessionHandler@a4a63d8 as handler
+2011-05-12 14:15:25,330 DEBUG main org.mortbay.log - Container ServletHandler@19e0ff2f + com.sun.jersey.spi.container.servlet.ServletContainer-764062238 as servlet
+2011-05-12 14:15:25,331 DEBUG main org.mortbay.log - Container ServletHandler@19e0ff2f + (S=com.sun.jersey.spi.container.servlet.ServletContainer-764062238,[/*]) as servletMapping
+2011-05-12 14:15:25,335 DEBUG main org.mortbay.log - filterNameMap=null
+2011-05-12 14:15:25,336 DEBUG main org.mortbay.log - pathFilters=null
+2011-05-12 14:15:25,337 DEBUG main org.mortbay.log - servletFilterMap=null
+2011-05-12 14:15:25,338 DEBUG main org.mortbay.log - servletPathMap={/*=com.sun.jersey.spi.container.servlet.ServletContainer-764062238}
+2011-05-12 14:15:25,339 DEBUG main org.mortbay.log - servletNameMap={com.sun.jersey.spi.container.servlet.ServletContainer-764062238=com.sun.jersey.spi.container.servlet.ServletContainer-764062238}
+2011-05-12 14:15:25,339 INFO main org.mortbay.log - jetty-6.1.9
+2011-05-12 14:15:25,355 DEBUG main org.mortbay.log - Container Server@67006d75 + org.mortbay.thread.BoundedThreadPool@3d84ec44 as threadpool
+2011-05-12 14:15:25,358 DEBUG main org.mortbay.log - started org.mortbay.thread.BoundedThreadPool@3d84ec44
+2011-05-12 14:15:25,374 DEBUG main org.mortbay.log - Container org.mortbay.jetty.servlet.Context@2c091cee{/,null} + ErrorHandler@69198891 as errorHandler
+2011-05-12 14:15:25,377 DEBUG main org.mortbay.log - Container Server@67006d75 + org.mortbay.jetty.servlet.HashSessionIdManager@a761fe as sessionIdManager
+2011-05-12 14:15:25,393 DEBUG main org.mortbay.log - started org.mortbay.jetty.servlet.HashSessionIdManager@a761fe
+2011-05-12 14:15:25,395 DEBUG main org.mortbay.log - started org.mortbay.jetty.servlet.HashSessionManager@29173ef
+2011-05-12 14:15:25,395 DEBUG main org.mortbay.log - filterNameMap=null
+2011-05-12 14:15:25,396 DEBUG main org.mortbay.log - pathFilters=null
+2011-05-12 14:15:25,396 DEBUG main org.mortbay.log - servletFilterMap=null
+2011-05-12 14:15:25,396 DEBUG main org.mortbay.log - servletPathMap={/*=com.sun.jersey.spi.container.servlet.ServletContainer-764062238}
+2011-05-12 14:15:25,397 DEBUG main org.mortbay.log - servletNameMap={com.sun.jersey.spi.container.servlet.ServletContainer-764062238=com.sun.jersey.spi.container.servlet.ServletContainer-764062238}
+2011-05-12 14:15:25,397 DEBUG main org.mortbay.log - starting ServletHandler@19e0ff2f
+2011-05-12 14:15:25,398 DEBUG main org.mortbay.log - started ServletHandler@19e0ff2f
+2011-05-12 14:15:25,398 DEBUG main org.mortbay.log - starting SessionHandler@a4a63d8
+2011-05-12 14:15:25,399 DEBUG main org.mortbay.log - started SessionHandler@a4a63d8
+2011-05-12 14:15:25,399 DEBUG main org.mortbay.log - starting org.mortbay.jetty.servlet.Context@2c091cee{/,null}
+2011-05-12 14:15:25,399 DEBUG main org.mortbay.log - starting ErrorHandler@69198891
+2011-05-12 14:15:25,400 DEBUG main org.mortbay.log - started ErrorHandler@69198891
+2011-05-12 14:15:25,401 DEBUG main org.mortbay.log - started com.sun.jersey.spi.container.servlet.ServletContainer-764062238
+2011-05-12 14:15:25,405 DEBUG main org.mortbay.log - started org.mortbay.jetty.servlet.Context@2c091cee{/,null}
+2011-05-12 14:15:25,406 DEBUG main org.mortbay.log - starting Server@67006d75
+2011-05-12 14:15:25,408 INFO main org.mortbay.log - Started SocketConnector@0.0.0.0:9090
+2011-05-12 14:15:25,409 DEBUG main org.mortbay.log - started SocketConnector@0.0.0.0:9090
+2011-05-12 14:15:25,410 DEBUG main org.mortbay.log - started Server@67006d75
+2011-05-12 14:19:19,492 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:19:19,505 DEBUG main br.biofoco.p2p.kad.OpenKad - starting peer instance...
+2011-05-12 14:19:19,513 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport...
+2011-05-12 14:19:19,542 INFO pool-1-thread-1 org.mortbay.log - Logging to org.slf4j.impl.Log4jLoggerAdapter(org.mortbay.log) via org.mortbay.log.Slf4jLog
+2011-05-12 14:19:19,544 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + SocketConnector@0.0.0.0:9090 as connector
+2011-05-12 14:19:19,569 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + org.mortbay.jetty.servlet.Context@5a5e5a50{null,null} as handler
+2011-05-12 14:19:19,569 DEBUG pool-1-thread-1 org.mortbay.log - Container SessionHandler@687b6889 + ServletHandler@7e0c2ff5 as handler
+2011-05-12 14:19:19,570 DEBUG pool-1-thread-1 org.mortbay.log - Container SessionHandler@687b6889 + org.mortbay.jetty.servlet.HashSessionManager@5220be79 as sessionManager
+2011-05-12 14:19:19,570 DEBUG pool-1-thread-1 org.mortbay.log - Container org.mortbay.jetty.servlet.Context@5a5e5a50{null,null} + SessionHandler@687b6889 as handler
+2011-05-12 14:19:19,572 DEBUG pool-1-thread-1 org.mortbay.log - Container ServletHandler@7e0c2ff5 + com.sun.jersey.spi.container.servlet.ServletContainer-1838022392 as servlet
+2011-05-12 14:19:19,573 DEBUG pool-1-thread-1 org.mortbay.log - Container ServletHandler@7e0c2ff5 + (S=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392,[/*]) as servletMapping
+2011-05-12 14:19:19,578 DEBUG pool-1-thread-1 org.mortbay.log - filterNameMap=null
+2011-05-12 14:19:19,579 DEBUG pool-1-thread-1 org.mortbay.log - pathFilters=null
+2011-05-12 14:19:19,579 DEBUG pool-1-thread-1 org.mortbay.log - servletFilterMap=null
+2011-05-12 14:19:19,580 DEBUG pool-1-thread-1 org.mortbay.log - servletPathMap={/*=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:19:19,580 DEBUG pool-1-thread-1 org.mortbay.log - servletNameMap={com.sun.jersey.spi.container.servlet.ServletContainer-1838022392=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:19:19,581 INFO pool-1-thread-1 org.mortbay.log - jetty-6.1.9
+2011-05-12 14:19:19,592 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + org.mortbay.thread.BoundedThreadPool@35ab28fe as threadpool
+2011-05-12 14:19:19,593 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.thread.BoundedThreadPool@35ab28fe
+2011-05-12 14:19:19,608 DEBUG pool-1-thread-1 org.mortbay.log - Container org.mortbay.jetty.servlet.Context@5a5e5a50{/,null} + ErrorHandler@73a34b as errorHandler
+2011-05-12 14:19:19,614 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + org.mortbay.jetty.servlet.HashSessionIdManager@5b40c281 as sessionIdManager
+2011-05-12 14:19:19,635 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.jetty.servlet.HashSessionIdManager@5b40c281
+2011-05-12 14:19:19,636 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.jetty.servlet.HashSessionManager@5220be79
+2011-05-12 14:19:19,636 DEBUG pool-1-thread-1 org.mortbay.log - filterNameMap=null
+2011-05-12 14:19:19,637 DEBUG pool-1-thread-1 org.mortbay.log - pathFilters=null
+2011-05-12 14:19:19,637 DEBUG pool-1-thread-1 org.mortbay.log - servletFilterMap=null
+2011-05-12 14:19:19,637 DEBUG pool-1-thread-1 org.mortbay.log - servletPathMap={/*=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:19:19,638 DEBUG pool-1-thread-1 org.mortbay.log - servletNameMap={com.sun.jersey.spi.container.servlet.ServletContainer-1838022392=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:19:19,638 DEBUG pool-1-thread-1 org.mortbay.log - starting ServletHandler@7e0c2ff5
+2011-05-12 14:19:19,639 DEBUG pool-1-thread-1 org.mortbay.log - started ServletHandler@7e0c2ff5
+2011-05-12 14:19:19,639 DEBUG pool-1-thread-1 org.mortbay.log - starting SessionHandler@687b6889
+2011-05-12 14:19:19,640 DEBUG pool-1-thread-1 org.mortbay.log - started SessionHandler@687b6889
+2011-05-12 14:19:19,640 DEBUG pool-1-thread-1 org.mortbay.log - starting org.mortbay.jetty.servlet.Context@5a5e5a50{/,null}
+2011-05-12 14:19:19,640 DEBUG pool-1-thread-1 org.mortbay.log - starting ErrorHandler@73a34b
+2011-05-12 14:19:19,641 DEBUG pool-1-thread-1 org.mortbay.log - started ErrorHandler@73a34b
+2011-05-12 14:19:19,642 DEBUG pool-1-thread-1 org.mortbay.log - started com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:19,643 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.jetty.servlet.Context@5a5e5a50{/,null}
+2011-05-12 14:19:19,643 DEBUG pool-1-thread-1 org.mortbay.log - starting Server@211d0a4f
+2011-05-12 14:19:19,651 INFO pool-1-thread-1 org.mortbay.log - Started SocketConnector@0.0.0.0:9090
+2011-05-12 14:19:19,652 DEBUG pool-1-thread-1 org.mortbay.log - started SocketConnector@0.0.0.0:9090
+2011-05-12 14:19:19,652 DEBUG pool-1-thread-1 org.mortbay.log - started Server@211d0a4f
+2011-05-12 14:19:31,018 DEBUG btpool0-1 - / org.mortbay.log - REQUEST / on org.mortbay.jetty.HttpConnection@7a03411a
+2011-05-12 14:19:31,019 DEBUG btpool0-1 - / org.mortbay.log - sessionManager=org.mortbay.jetty.servlet.HashSessionManager@5220be79
+2011-05-12 14:19:31,019 DEBUG btpool0-1 - / org.mortbay.log - session=null
+2011-05-12 14:19:31,021 DEBUG btpool0-1 - / org.mortbay.log - servlet=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:31,021 DEBUG btpool0-1 - / org.mortbay.log - chain=null
+2011-05-12 14:19:31,022 DEBUG btpool0-1 - / org.mortbay.log - servlet holder=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:31,876 DEBUG btpool0-1 - / org.mortbay.log - RESPONSE /  200
+2011-05-12 14:19:31,912 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - REQUEST /favicon.ico on org.mortbay.jetty.HttpConnection@7a03411a
+2011-05-12 14:19:31,912 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - sessionManager=org.mortbay.jetty.servlet.HashSessionManager@5220be79
+2011-05-12 14:19:31,912 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - session=null
+2011-05-12 14:19:31,913 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - servlet=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:31,913 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - chain=null
+2011-05-12 14:19:31,914 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - servlet holder=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:31,922 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - RESPONSE /favicon.ico  404
+2011-05-12 14:19:31,948 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - REQUEST /favicon.ico on org.mortbay.jetty.HttpConnection@7a03411a
+2011-05-12 14:19:31,949 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - sessionManager=org.mortbay.jetty.servlet.HashSessionManager@5220be79
+2011-05-12 14:19:31,949 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - session=null
+2011-05-12 14:19:31,950 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - servlet=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:31,950 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - chain=null
+2011-05-12 14:19:31,950 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - servlet holder=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:31,952 DEBUG btpool0-1 - /favicon.ico org.mortbay.log - RESPONSE /favicon.ico  404
+2011-05-12 14:19:41,237 DEBUG btpool0-1 - /peers org.mortbay.log - REQUEST /peers on org.mortbay.jetty.HttpConnection@7a03411a
+2011-05-12 14:19:41,238 DEBUG btpool0-1 - /peers org.mortbay.log - sessionManager=org.mortbay.jetty.servlet.HashSessionManager@5220be79
+2011-05-12 14:19:41,238 DEBUG btpool0-1 - /peers org.mortbay.log - session=null
+2011-05-12 14:19:41,238 DEBUG btpool0-1 - /peers org.mortbay.log - servlet=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:41,239 DEBUG btpool0-1 - /peers org.mortbay.log - chain=null
+2011-05-12 14:19:41,239 DEBUG btpool0-1 - /peers org.mortbay.log - servlet holder=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:19:41,247 DEBUG btpool0-1 - /peers org.mortbay.log - RESPONSE /peers  200
+2011-05-12 14:20:31,920 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:20:31,932 DEBUG main br.biofoco.p2p.kad.OpenKad - starting peer instance...
+2011-05-12 14:20:31,940 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport...
+2011-05-12 14:20:31,970 INFO pool-1-thread-1 org.mortbay.log - Logging to org.slf4j.impl.Log4jLoggerAdapter(org.mortbay.log) via org.mortbay.log.Slf4jLog
+2011-05-12 14:20:31,971 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + SocketConnector@0.0.0.0:9090 as connector
+2011-05-12 14:20:31,992 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + org.mortbay.jetty.servlet.Context@5a5e5a50{null,null} as handler
+2011-05-12 14:20:31,993 DEBUG pool-1-thread-1 org.mortbay.log - Container SessionHandler@687b6889 + ServletHandler@7e0c2ff5 as handler
+2011-05-12 14:20:31,994 DEBUG pool-1-thread-1 org.mortbay.log - Container SessionHandler@687b6889 + org.mortbay.jetty.servlet.HashSessionManager@5220be79 as sessionManager
+2011-05-12 14:20:31,994 DEBUG pool-1-thread-1 org.mortbay.log - Container org.mortbay.jetty.servlet.Context@5a5e5a50{null,null} + SessionHandler@687b6889 as handler
+2011-05-12 14:20:31,996 DEBUG pool-1-thread-1 org.mortbay.log - Container ServletHandler@7e0c2ff5 + com.sun.jersey.spi.container.servlet.ServletContainer-1838022392 as servlet
+2011-05-12 14:20:31,997 DEBUG pool-1-thread-1 org.mortbay.log - Container ServletHandler@7e0c2ff5 + (S=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392,[/*]) as servletMapping
+2011-05-12 14:20:32,002 DEBUG pool-1-thread-1 org.mortbay.log - filterNameMap=null
+2011-05-12 14:20:32,003 DEBUG pool-1-thread-1 org.mortbay.log - pathFilters=null
+2011-05-12 14:20:32,003 DEBUG pool-1-thread-1 org.mortbay.log - servletFilterMap=null
+2011-05-12 14:20:32,004 DEBUG pool-1-thread-1 org.mortbay.log - servletPathMap={/*=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:20:32,004 DEBUG pool-1-thread-1 org.mortbay.log - servletNameMap={com.sun.jersey.spi.container.servlet.ServletContainer-1838022392=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:20:32,005 INFO pool-1-thread-1 org.mortbay.log - jetty-6.1.9
+2011-05-12 14:20:32,017 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + org.mortbay.thread.BoundedThreadPool@35ab28fe as threadpool
+2011-05-12 14:20:32,020 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.thread.BoundedThreadPool@35ab28fe
+2011-05-12 14:20:32,035 DEBUG pool-1-thread-1 org.mortbay.log - Container org.mortbay.jetty.servlet.Context@5a5e5a50{/,null} + ErrorHandler@73a34b as errorHandler
+2011-05-12 14:20:32,038 DEBUG pool-1-thread-1 org.mortbay.log - Container Server@211d0a4f + org.mortbay.jetty.servlet.HashSessionIdManager@5b40c281 as sessionIdManager
+2011-05-12 14:20:32,055 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.jetty.servlet.HashSessionIdManager@5b40c281
+2011-05-12 14:20:32,056 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.jetty.servlet.HashSessionManager@5220be79
+2011-05-12 14:20:32,057 DEBUG pool-1-thread-1 org.mortbay.log - filterNameMap=null
+2011-05-12 14:20:32,058 DEBUG pool-1-thread-1 org.mortbay.log - pathFilters=null
+2011-05-12 14:20:32,058 DEBUG pool-1-thread-1 org.mortbay.log - servletFilterMap=null
+2011-05-12 14:20:32,059 DEBUG pool-1-thread-1 org.mortbay.log - servletPathMap={/*=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:20:32,059 DEBUG pool-1-thread-1 org.mortbay.log - servletNameMap={com.sun.jersey.spi.container.servlet.ServletContainer-1838022392=com.sun.jersey.spi.container.servlet.ServletContainer-1838022392}
+2011-05-12 14:20:32,060 DEBUG pool-1-thread-1 org.mortbay.log - starting ServletHandler@7e0c2ff5
+2011-05-12 14:20:32,060 DEBUG pool-1-thread-1 org.mortbay.log - started ServletHandler@7e0c2ff5
+2011-05-12 14:20:32,061 DEBUG pool-1-thread-1 org.mortbay.log - starting SessionHandler@687b6889
+2011-05-12 14:20:32,062 DEBUG pool-1-thread-1 org.mortbay.log - started SessionHandler@687b6889
+2011-05-12 14:20:32,062 DEBUG pool-1-thread-1 org.mortbay.log - starting org.mortbay.jetty.servlet.Context@5a5e5a50{/,null}
+2011-05-12 14:20:32,062 DEBUG pool-1-thread-1 org.mortbay.log - starting ErrorHandler@73a34b
+2011-05-12 14:20:32,063 DEBUG pool-1-thread-1 org.mortbay.log - started ErrorHandler@73a34b
+2011-05-12 14:20:32,064 DEBUG pool-1-thread-1 org.mortbay.log - started com.sun.jersey.spi.container.servlet.ServletContainer-1838022392
+2011-05-12 14:20:32,065 DEBUG pool-1-thread-1 org.mortbay.log - started org.mortbay.jetty.servlet.Context@5a5e5a50{/,null}
+2011-05-12 14:20:32,065 DEBUG pool-1-thread-1 org.mortbay.log - starting Server@211d0a4f
+2011-05-12 14:20:32,067 INFO pool-1-thread-1 org.mortbay.log - Started SocketConnector@0.0.0.0:9090
+2011-05-12 14:20:32,068 DEBUG pool-1-thread-1 org.mortbay.log - started SocketConnector@0.0.0.0:9090
+2011-05-12 14:20:32,068 DEBUG pool-1-thread-1 org.mortbay.log - started Server@211d0a4f
+2011-05-12 14:21:23,082 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:21:23,095 DEBUG main br.biofoco.p2p.kad.OpenKad - starting peer instance...
+2011-05-12 14:21:23,104 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport...
+2011-05-12 14:21:47,983 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:21:47,994 DEBUG main br.biofoco.p2p.kad.OpenKad - starting peer instance...
+2011-05-12 14:21:47,995 DEBUG main br.biofoco.p2p.kad.OpenKad - instance started!
+2011-05-12 14:21:48,002 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport...
+2011-05-12 14:25:59,783 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:25:59,797 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:25:59,798 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:25:59,807 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport...
+2011-05-12 14:27:10,730 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:27:10,750 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:27:10,752 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:27:10,752 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport...
+2011-05-12 14:27:28,549 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:27:28,563 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:27:28,564 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:27:28,565 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:28:12,500 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:28:12,520 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:28:12,522 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:28:12,522 DEBUG main br.biofoco.p2p.core.Bootstrapper - -----> (*) <----
+2011-05-12 14:28:12,523 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:28:24,415 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:28:24,426 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:28:24,429 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:28:24,430 DEBUG main br.biofoco.p2p.core.Bootstrapper - -----> (*) <----
+2011-05-12 14:28:24,430 DEBUG main br.biofoco.p2p.core.OpenKad - instance stopped
+2011-05-12 14:28:24,431 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:28:38,504 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:28:38,516 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:28:38,518 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:28:38,518 DEBUG main br.biofoco.p2p.core.Bootstrapper - -----> (*) <----
+2011-05-12 14:28:38,521 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:28:44,146 DEBUG main br.biofoco.p2p.transport.HttpTransportServer - Stopping http transport...
+2011-05-12 14:28:50,561 DEBUG main br.biofoco.p2p.core.OpenKad - instance stopped
+2011-05-12 14:29:54,887 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:30:21,951 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:30:21,952 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:30:21,953 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:31:26,475 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:31:52,094 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:33:14,716 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:33:35,746 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:33:56,426 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:33:56,470 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:33:56,471 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:33:56,472 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:34:04,766 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:34:12,543 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:34:12,546 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:34:12,547 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:34:31,943 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:34:47,491 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:34:47,537 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:34:47,539 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:34:47,540 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:34:51,675 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:36:36,889 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:36:36,927 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:36:36,929 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:36:36,929 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9090
+2011-05-12 14:37:50,115 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:37:50,159 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:37:50,161 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:37:50,161 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9191
+2011-05-12 14:38:08,179 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:38:08,235 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:38:08,240 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:38:08,241 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:44:09,004 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:44:09,059 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:44:09,060 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:44:09,061 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:44:49,679 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:44:49,742 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:44:49,744 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:44:49,745 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:44:59,265 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:44:59,324 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance...
+2011-05-12 14:44:59,330 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:44:59,330 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:45:23,681 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:45:23,733 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 76d62f7d67a6fd2ed173bafe8749dbd54b756264
+2011-05-12 14:45:23,738 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:45:23,739 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:46:31,039 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:46:31,095 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 7a5a4db6df2166eaf8f5e5fa64f983242db0f9e2
+2011-05-12 14:46:31,096 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:46:31,097 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:50:00,397 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:50:00,470 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 405a6fc264eceacc20e3b4ef8143ac6956b43a8c
+2011-05-12 14:50:00,474 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:50:00,475 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:52:47,600 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:52:47,859 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 64f97033561f9509a26bc822bbdb525054b69a52
+2011-05-12 14:52:47,860 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:52:47,860 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:53:35,309 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:54:56,661 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:54:56,720 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 33f74a759a8d713eb74d89adb886db40b676d19d
+2011-05-12 14:54:56,722 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:54:56,722 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:56:08,397 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:56:08,457 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 1c058d35d4588afd1f8424dca06c88fdf8874761
+2011-05-12 14:56:08,459 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:56:08,459 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:57:16,334 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:57:16,393 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 6adcd82aecbe9c4b097235751a4352ca9ce6f911
+2011-05-12 14:57:16,394 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:57:16,394 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:58:42,565 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:58:42,620 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 4833caf602f1ceb9d1bd5fdc4255585d2f4017cc
+2011-05-12 14:58:42,623 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:58:42,624 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 14:59:14,796 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 14:59:14,866 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 73508d3e58d77bf46316218e702b6a83c3a37c92
+2011-05-12 14:59:14,867 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 14:59:14,868 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:02:02,466 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:02:02,525 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 6e3a04e14f318ce5c259c3e53ad91b880ab6d050
+2011-05-12 15:02:02,526 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:02:02,527 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:03:05,318 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:03:05,381 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 7488a66cbb131034bcecd4be674ec5a212cdd3c5
+2011-05-12 15:03:05,382 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:03:05,383 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:19:28,462 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:19:28,523 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 503dbc5eaf8c5ba30c9c3645b9f58952cf89ba17
+2011-05-12 15:19:28,524 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:19:28,525 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:20:59,908 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:20:59,966 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 7fcceef8eec6798b552453447eba6b23e846398c
+2011-05-12 15:20:59,967 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:20:59,968 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:27:54,928 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:27:54,984 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 6d913f4e71b2d0ef9683e978cf7c671e5d47aa42
+2011-05-12 15:27:54,987 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:27:54,990 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:30:15,143 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:30:15,203 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 20f738c2f20e6eb87273d6730ef89ccbe60a937
+2011-05-12 15:30:15,205 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:30:15,213 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:36:59,427 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:36:59,483 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 5de2be1afcf290a79bb18b045216130814e35441
+2011-05-12 15:36:59,488 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:36:59,489 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:36:59,495 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds
+2011-05-12 15:37:13,517 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds
+2011-05-12 15:37:44,343 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:37:44,417 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 3930b625739d1de8447dd14bc5d9db601cbda2a6
+2011-05-12 15:37:44,423 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:37:44,428 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:37:44,430 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292,localhost:9393]
+2011-05-12 15:39:54,204 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:39:54,261 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 7901364c53cdc73db1fa6692e8b57f086cd2dc9d
+2011-05-12 15:39:54,264 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:39:54,266 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:39:54,272 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292,localhost:9393]
+2011-05-12 15:39:54,618 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - contacting localhost:9292,localhost:9393
+2011-05-12 15:40:38,896 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:40:38,969 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance e49ba54824935e3365645bc201282e70436a8a5
+2011-05-12 15:40:38,972 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:40:38,974 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:40:38,977 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292,localhost:9393]
+2011-05-12 15:40:39,366 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - contacting localhost:9292,localhost:9393
+2011-05-12 15:40:49,367 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292,localhost:9393]
+2011-05-12 15:40:49,527 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - contacting localhost:9292,localhost:9393
+2011-05-12 15:40:59,534 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292,localhost:9393]
+2011-05-12 15:40:59,613 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - contacting localhost:9292,localhost:9393
+2011-05-12 15:41:11,399 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:41:11,455 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 590cc01f49f4d72ec51a7ae44af5a14d7833db5c
+2011-05-12 15:41:11,458 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:41:11,465 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:41:11,466 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292,localhost:9393]
+2011-05-12 15:41:11,870 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292,localhost:9393
+2011-05-12 15:42:01,796 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:42:01,853 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 11981bcbad8f5fdf2c7879875bd0e8fa98e1626d
+2011-05-12 15:42:01,855 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:42:01,859 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:42:01,860 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:42:02,293 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:42:02,456 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:42:16,754 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:42:16,810 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 6812d73410b07405ee5ec5b647e5e873fc9f9ce3
+2011-05-12 15:42:16,813 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:42:16,814 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:42:16,813 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:42:17,216 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:43:22,358 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:43:22,431 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 1e2010f3a42e8fd0208b664e91df883cc1ed2051
+2011-05-12 15:43:22,432 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:43:22,433 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:43:22,433 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:43:22,435 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:45:01,327 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:45:01,383 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 20303c76e017dc62ecfa399856b0c2dc81508d0c
+2011-05-12 15:45:01,386 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:45:01,387 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:45:01,391 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:45:01,410 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:45:25,634 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:45:25,691 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 1777bc3150dccb11759dd5594fc9396a0072e71a
+2011-05-12 15:45:25,693 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:45:25,694 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:45:25,694 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:45:25,712 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:49:27,849 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:49:27,915 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 3017e45bee8bff3caa6c1f61d7671c7584f1a57e
+2011-05-12 15:49:27,918 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:49:27,924 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:49:27,925 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:49:27,925 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:49:27,952 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:49:37,955 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:49:37,956 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:49:37,956 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:49:47,957 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:49:47,958 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:49:47,958 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:49:57,959 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:49:57,960 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:49:57,960 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:50:07,960 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:50:07,961 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:50:07,961 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:50:27,409 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:50:27,503 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 7d9d4743abb11defb1c9ed7ebe9ed6c9b8be75c7
+2011-05-12 15:50:27,511 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:50:27,513 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:50:27,514 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:50:27,514 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:50:27,583 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:50:37,663 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:50:37,664 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:50:37,696 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:50:46,822 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:50:46,876 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 551a0ab86c4b79d06e4b3ca4f8c18bf4b600e2db
+2011-05-12 15:50:46,878 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:50:46,890 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:50:46,891 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:50:46,893 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:50:46,970 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:50:59,886 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:50:59,887 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:50:59,935 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:51:12,905 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:51:12,906 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:51:12,965 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:51:21,468 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:51:21,538 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 5cb635398c2000c7cb4b2017b0a2adf8a7eaf388
+2011-05-12 15:51:21,541 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:51:21,545 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:51:21,545 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:51:21,547 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:51:22,445 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:51:32,706 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:51:32,707 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:51:33,423 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:51:48,500 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:51:48,579 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 39ee7139b8a19aa55acf1a39e277e1f0a5579d1b
+2011-05-12 15:51:48,587 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:51:48,594 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:51:48,595 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:51:48,606 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:51:48,608 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:51:58,610 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:51:58,610 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:51:58,613 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:52:07,569 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:52:07,632 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 618ad422cc3bdb2a7380919c7f5ed0eb1b19c356
+2011-05-12 15:52:07,635 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:52:07,640 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:52:07,640 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:52:07,648 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:52:07,665 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:52:17,668 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:52:17,669 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:52:17,672 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:52:27,678 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:52:27,678 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:52:27,681 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:52:37,686 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:52:37,687 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:52:37,689 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:52:47,692 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:52:47,692 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:52:47,694 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:52:57,697 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:52:57,697 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:52:57,700 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:53:34,050 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:53:34,142 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 63ec9f8ba15f14282f66e4393e7ac1c6fb122238
+2011-05-12 15:53:34,144 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:53:34,149 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:53:34,156 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:53:34,162 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:53:34,179 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:53:44,180 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:53:44,181 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:53:44,182 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:53:54,184 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:53:54,185 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:53:54,186 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:54:04,196 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:54:04,197 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:54:04,199 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:54:14,200 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:54:14,200 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:54:14,201 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:54:24,203 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393]
+2011-05-12 15:54:24,203 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:54:24,204 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:55:47,676 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:55:47,732 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 391c2be6df06af756bed6b6eaa70ce4ee609359f
+2011-05-12 15:55:47,734 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 15:55:47,739 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:55:47,740 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:55:47,751 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:55:47,765 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:55:47,766 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:55:57,768 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:55:57,769 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:55:57,770 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:55:57,771 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:56:08,555 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:56:08,556 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:56:08,557 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:56:08,557 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:56:18,563 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:56:18,564 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:56:18,565 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:56:18,566 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:56:28,571 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:56:28,572 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:56:28,573 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:56:28,574 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:56:38,577 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:56:38,577 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:56:38,578 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:56:38,579 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:56:48,582 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:56:48,583 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:56:48,584 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:56:48,585 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:56:58,588 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:56:58,588 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:56:58,589 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:56:58,589 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:08,592 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:57:08,592 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:08,593 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:57:08,594 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:18,597 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:57:18,598 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:18,599 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:57:18,599 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:18,823 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:57:18,886 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 33263d3e65e01c48ca9eea00a51a86075fa1d314
+2011-05-12 15:57:18,888 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9393
+2011-05-12 15:57:18,899 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:57:18,899 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:57:18,902 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:18,919 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:28,603 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:57:28,603 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:28,604 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:57:28,937 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:57:28,937 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:28,938 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:29,358 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:38,947 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:57:38,948 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:38,949 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:39,361 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:57:39,361 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:39,362 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:57:39,365 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:48,953 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:57:48,953 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:48,954 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:49,368 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:57:49,369 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:49,370 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:57:49,373 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:58,957 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:57:58,958 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:58,959 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:57:59,376 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:57:59,377 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:57:59,378 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:57:59,381 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:08,962 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:58:08,963 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:08,964 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:09,384 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:58:09,384 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:09,385 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:58:09,388 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:18,967 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:58:18,968 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:18,969 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:19,391 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:58:19,391 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:19,392 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:58:19,395 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:28,972 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:58:28,973 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:28,974 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:29,398 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:58:29,398 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:29,399 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:58:29,402 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:38,977 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:58:38,986 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:38,987 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:39,406 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:58:39,406 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:39,407 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:58:39,410 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:48,992 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:58:48,993 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:48,994 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:58:49,414 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 15:58:49,415 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:58:49,416 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 15:58:49,419 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 15:59:53,648 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 15:59:53,710 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 74b2babbd75ce97487283c5be61953574bbe0f34
+2011-05-12 15:59:53,713 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9393
+2011-05-12 15:59:53,720 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 15:59:53,721 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 15:59:53,727 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 15:59:53,744 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:01:33,423 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:01:33,476 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 3ec4e317de8b8361a10d690c31e9ab4febf012e9
+2011-05-12 16:01:33,478 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9393
+2011-05-12 16:01:33,490 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:01:33,491 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:01:33,493 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:01:33,508 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:01:36,295 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:01:36,357 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 15fb51ef85ca078777d94aa15591fa395a15bfca
+2011-05-12 16:01:36,361 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 16:01:36,364 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:01:36,364 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:01:36,365 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:01:36,400 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:01:37,188 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:01:43,509 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:01:43,510 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:01:43,511 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:01:48,034 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:01:48,034 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:01:48,035 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:01:48,038 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:01:53,517 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:01:53,518 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:01:53,519 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:01:58,042 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:01:58,042 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:01:58,043 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:01:58,046 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:03,523 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:02:03,523 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:03,524 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:08,050 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:02:08,050 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:08,051 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:02:08,054 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:13,527 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:02:13,527 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:13,528 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:18,058 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:02:18,058 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:18,059 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:02:18,062 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:23,532 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:02:23,532 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:23,533 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:28,074 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:02:28,074 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:28,075 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:02:28,078 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:33,540 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:02:33,541 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:33,542 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:38,081 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:02:38,082 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:38,083 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:02:38,087 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:43,545 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:02:43,546 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:43,547 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:48,091 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:02:48,092 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:48,092 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:02:48,097 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:53,550 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:02:53,551 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:53,552 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:02:58,100 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:02:58,101 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:02:58,102 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:02:58,105 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:03,555 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:03:03,556 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:03,557 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:08,108 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:03:08,108 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:08,109 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:03:08,112 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:13,570 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:03:13,572 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:13,572 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:18,115 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:03:18,116 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:18,116 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:03:18,119 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:23,575 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:03:23,576 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:23,577 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:28,128 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:03:28,128 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:28,129 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:03:28,133 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:33,581 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:03:33,582 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:33,583 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:38,142 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:03:38,142 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:38,143 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:03:38,145 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:43,594 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:03:43,595 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:43,596 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:48,147 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:03:48,147 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:48,148 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:03:48,151 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:53,599 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:03:53,600 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:53,601 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:03:58,155 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:03:58,156 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:03:58,157 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:03:58,160 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:03,604 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:04:03,605 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:03,606 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:08,167 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:04:08,167 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:08,168 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:04:08,172 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:13,609 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:04:13,611 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:13,611 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:18,175 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:04:18,176 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:18,177 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:04:18,180 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:23,615 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:04:23,615 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:23,616 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:28,183 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:04:28,184 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:28,184 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:04:28,187 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:33,619 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:04:33,620 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:33,621 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:38,190 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:04:38,191 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:38,192 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:04:38,194 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:43,624 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:04:43,625 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:43,626 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:48,197 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:04:48,198 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:48,198 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:04:48,201 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:53,630 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:04:53,631 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:53,632 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:04:58,211 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:04:58,211 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:04:58,212 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:04:58,215 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:03,636 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:05:03,636 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:03,637 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:08,218 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:05:08,218 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:08,219 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:05:08,224 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:13,640 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:05:13,641 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:13,643 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:18,231 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:05:18,232 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:18,233 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:05:18,236 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:23,647 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:05:23,647 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:23,648 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:28,239 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:05:28,239 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:28,240 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:05:28,244 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:33,651 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:05:33,652 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:33,653 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:05:38,248 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:05:38,248 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:05:38,249 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:05:38,254 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:15,767 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:06:15,822 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 6bd39bc222f18660b90f560fc3c68667d1fa580c
+2011-05-12 16:06:15,824 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 16:06:15,830 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:06:15,831 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:06:15,832 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:15,888 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:06:15,889 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:17,368 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:06:17,429 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 7c0b30605e116788bdc0288e6b1187f00629e97e
+2011-05-12 16:06:17,434 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9393
+2011-05-12 16:06:17,440 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:06:17,441 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:06:17,447 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:17,464 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:25,891 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:06:25,891 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:25,892 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:06:26,735 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:28,336 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:06:28,336 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:28,337 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:36,737 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:06:36,738 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:36,739 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:06:36,742 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:38,341 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:06:38,345 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:38,346 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:46,745 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:06:46,745 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:46,746 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:06:46,750 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:48,353 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:06:48,354 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:48,355 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:56,753 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:06:56,754 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:56,754 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:06:56,758 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:06:58,359 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:06:58,359 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:06:58,360 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:06,761 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:07:06,761 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:06,763 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:07:06,767 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:08,364 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:07:08,364 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:08,365 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:16,770 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:07:16,771 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:16,772 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:07:16,775 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:18,369 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:07:18,369 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:18,370 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:26,778 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:07:26,778 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:26,779 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:07:26,782 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:28,374 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:07:28,375 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:28,376 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:36,786 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:07:36,786 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:36,787 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:07:36,789 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:07:38,379 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:07:38,379 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:07:38,380 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:01,039 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:09:01,097 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 37dc3e34c4714910f5d2fc3efdcb8e0eefca3b1
+2011-05-12 16:09:01,099 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 16:09:01,109 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:09:01,110 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:09:01,114 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:01,133 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:09:01,134 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:02,559 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:09:02,620 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 77dacc4bcdc61bfbfd90155f22a75d66a81aba9d
+2011-05-12 16:09:02,622 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:09:02,622 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:09:02,622 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9393
+2011-05-12 16:09:02,623 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:02,649 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:11,136 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:09:11,136 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:11,137 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:09:12,024 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:13,511 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:09:13,512 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:13,513 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:22,026 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:09:22,027 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:22,028 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:09:22,031 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:23,517 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:09:23,518 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:23,519 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:32,034 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:09:32,034 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:32,035 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:09:32,038 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:33,523 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:09:33,523 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:33,525 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:42,042 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:09:42,042 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:42,043 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:09:42,046 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:43,528 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:09:43,529 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:43,530 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:52,050 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:09:52,051 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:52,051 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:09:52,054 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:09:53,539 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:09:53,540 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:09:53,541 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:02,061 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:10:02,061 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:02,062 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:10:02,070 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:03,545 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:10:03,546 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:03,547 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:12,074 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:10:12,074 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:12,075 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:10:12,078 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:13,550 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:10:13,550 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:13,552 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:22,081 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:10:22,082 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:22,083 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:10:22,087 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:23,556 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:10:23,556 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:23,562 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:32,091 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:10:32,091 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:32,092 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:10:32,095 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:33,567 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:10:33,567 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:33,568 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:42,104 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:10:42,104 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:42,105 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:10:42,108 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:43,571 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:10:43,572 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:43,573 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:52,111 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:10:52,112 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:52,113 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:10:52,116 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:10:53,576 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:10:53,577 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:10:53,578 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:02,121 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:11:02,122 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:02,123 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:11:02,141 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:03,580 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:11:03,580 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:03,582 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:12,149 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:11:12,150 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:12,151 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:11:12,154 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:13,585 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:11:13,586 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:13,587 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:22,157 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:11:22,157 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:22,158 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:11:22,161 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:23,592 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:11:23,593 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:23,594 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:32,168 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:11:32,168 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:32,169 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:11:32,172 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:33,605 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:11:33,606 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:33,607 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:42,175 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:11:42,175 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:42,176 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:11:42,180 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:43,610 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:11:43,611 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:43,612 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:52,187 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:11:52,188 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:52,189 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:11:52,192 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:11:53,615 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:11:53,616 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:11:53,617 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:12:02,203 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:12:02,204 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:12:02,204 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:12:02,207 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:12:03,622 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:12:03,622 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:12:03,624 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:12:12,209 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:12:12,209 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:12:12,210 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:12:12,213 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:12:13,627 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:12:13,628 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:12:13,629 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:22:08,779 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:22:14,296 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:22:52,547 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:22:52,641 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 622bd3fa2e75fc113d3c3cb216e38a6ffe89ad55
+2011-05-12 16:22:52,645 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:22:52,645 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:22:52,646 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 16:22:52,647 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:22:52,738 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:22:52,740 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:02,743 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:23:02,744 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:02,746 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:23:02,749 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:14,485 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:23:14,486 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:14,488 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:23:14,493 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:17,888 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 16:23:17,981 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 6f926464e43dac83744b5baa175a65248c5b4c7d
+2011-05-12 16:23:17,985 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9393
+2011-05-12 16:23:17,990 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 16:23:17,990 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:23:18,008 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:18,052 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:24,503 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:23:24,504 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:24,505 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:23:24,521 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:28,062 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:23:28,064 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:28,066 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:34,525 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:23:34,527 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:34,528 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:23:34,530 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:38,073 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:23:38,075 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:38,077 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:44,535 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:23:44,537 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:44,538 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:23:46,056 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:48,092 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:23:48,093 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:48,095 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:56,060 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 16:23:56,061 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:56,063 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 16:23:56,068 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 16:23:58,115 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 16:23:58,115 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 16:23:58,117 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:15,815 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 17:58:16,025 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 6c792adef7100184f8e769122e14eaf0fe8386bb
+2011-05-12 17:58:16,040 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9797
+2011-05-12 17:58:16,052 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 17:58:16,053 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:58:16,056 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:16,117 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:58:16,119 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:19,887 DEBUG main br.biofoco.p2p.core.Bootstrapper - Starting peer...
+2011-05-12 17:58:19,981 DEBUG main br.biofoco.p2p.core.OpenKad - starting peer instance 69002825a09c6d994a9ea26e6727ce055ed0d98
+2011-05-12 17:58:19,985 DEBUG main br.biofoco.p2p.core.OpenKad - instance started!
+2011-05-12 17:58:19,985 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:58:19,986 DEBUG pool-1-thread-1 br.biofoco.p2p.transport.HttpTransportServer - Starting http transport on port 9393
+2011-05-12 17:58:19,987 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:20,050 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:26,121 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:58:26,122 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:26,124 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:58:26,125 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:31,959 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:58:31,961 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:31,963 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:36,136 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:58:36,137 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:36,138 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:58:37,768 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:41,969 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:58:41,970 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:41,972 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:47,795 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:58:47,796 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:47,798 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:58:47,804 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:51,986 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:58:51,986 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:51,988 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:58:57,810 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:58:57,810 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:58:57,812 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:58:57,817 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:02,002 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:59:02,002 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:02,003 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:07,823 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:59:07,823 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:07,825 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:59:07,830 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:12,007 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:59:12,008 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:12,009 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:17,842 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:59:17,843 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:17,844 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:59:17,850 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:22,014 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:59:22,016 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:22,018 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:27,855 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:59:27,856 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:27,857 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:59:27,862 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:32,025 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:59:32,026 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:32,027 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:37,870 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:59:37,871 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:37,872 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:59:37,875 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:42,033 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:59:42,034 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:42,038 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:47,882 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:59:47,883 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:47,885 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:59:47,890 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:52,047 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 17:59:52,049 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:52,051 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 17:59:57,900 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 17:59:57,901 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 17:59:57,903 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 17:59:57,908 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:02,056 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:00:02,058 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:02,060 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:07,913 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:00:07,914 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:07,915 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:00:07,920 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:12,065 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:00:12,067 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:12,068 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:17,926 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:00:17,927 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:17,929 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:00:17,934 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:22,073 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:00:22,076 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:22,077 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:27,939 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:00:27,940 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:27,941 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:00:27,950 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:32,083 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:00:32,084 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:32,086 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:37,956 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:00:37,957 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:37,958 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:00:37,963 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:42,091 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:00:42,092 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:42,094 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:47,969 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:00:47,970 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:47,973 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:00:47,978 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:52,099 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:00:52,101 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:52,103 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:00:57,988 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:00:57,989 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:00:57,990 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:00:58,007 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:02,108 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:01:02,109 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:02,110 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:08,012 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:01:08,013 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:08,014 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:01:08,020 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:12,115 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:01:12,117 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:12,119 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:18,025 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:01:18,025 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:18,027 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:01:18,033 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:22,124 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:01:22,126 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:22,127 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:28,039 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:01:28,039 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:28,041 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:01:28,046 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:32,133 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:01:32,134 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:32,136 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:38,054 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:01:38,054 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:38,056 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:01:38,061 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:42,141 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:01:42,143 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:42,144 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:48,071 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:01:48,071 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:48,073 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:01:48,078 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:52,149 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:01:52,150 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:52,152 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:01:58,083 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:01:58,084 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:01:58,085 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:01:58,092 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:02,157 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:02:02,158 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:02,161 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:08,096 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:02:08,097 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:08,098 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:02:08,104 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:12,167 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:02:12,168 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:12,169 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:18,108 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:02:18,109 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:18,111 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:02:18,116 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:22,174 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:02:22,176 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:22,178 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:28,126 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:02:28,127 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:28,128 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:02:28,133 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:32,183 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:02:32,184 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:32,186 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:38,138 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:02:38,139 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:38,140 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:02:38,146 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:42,200 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:02:42,201 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:42,202 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:48,152 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:02:48,153 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:48,155 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:02:48,160 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:52,207 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:02:52,208 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:52,211 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:02:58,165 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:02:58,166 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:02:58,167 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:02:58,173 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:03:02,217 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:03:02,217 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:03:02,219 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:03:08,177 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:03:08,178 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:03:08,179 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:03:08,184 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:03:12,224 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:03:12,226 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:03:12,228 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:03:18,191 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9393, localhost:9797]
+2011-05-12 18:03:18,192 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:03:18,193 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9393
+2011-05-12 18:03:18,198 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
+2011-05-12 18:03:22,233 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - checking seeds [localhost:9292, localhost:9797]
+2011-05-12 18:03:22,234 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9292
+2011-05-12 18:03:22,236 DEBUG pool-2-thread-1 br.biofoco.p2p.core.OpenKad - localhost:9797
