@@ -3,14 +3,26 @@ package br.biofoco.p2p.broker;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 public class JettyStarter {
 	
-	public static void main(String[] args) throws Exception {
+	private static final int DEFAULT_PORT = 7171;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(JettyStarter.class);
+	
+	public static void main(String[] args) throws Exception {		
+		startServer();
+	}
+
+	private static void startServer() throws Exception {
 		
-		Server server = new Server(7171);
+		LOGGER.debug("starting web server on port " + DEFAULT_PORT);
+		
+		Server server = new Server(DEFAULT_PORT);
 
 		ServletHolder sh = new ServletHolder(ServletContainer.class);
         sh.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
@@ -21,5 +33,6 @@ public class JettyStarter {
 				
 		server.start();
 		server.join();
+		
 	}
 }
