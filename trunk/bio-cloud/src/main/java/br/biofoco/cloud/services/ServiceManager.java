@@ -48,7 +48,7 @@ public class ServiceManager {
 	}
 	
 	public void start() {
-		executor.scheduleWithFixedDelay(new ServiceInspector(), 0, 1, TimeUnit.MINUTES);
+		executor.scheduleWithFixedDelay(new ServiceInspector(), 0, 30, TimeUnit.SECONDS);
 	}
 	
 	public void stop() {

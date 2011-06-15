@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import br.biofoco.cloud.config.HostConfig;
 
-import com.beust.jcommander.JCommander;
-
 public class Bootstrapper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Bootstrapper.class);
@@ -16,12 +14,7 @@ public class Bootstrapper {
 		LOGGER.debug("Starting peer node...");
 		
 		HostConfig config = new HostConfig();		
-		new JCommander(config, args);
-
-		new JettyStarter().start(config.getHttpPort());
-		
-		LOGGER.debug("server started!");
-		
-		
+		JettyRunner jetty = new JettyRunner();		
+		jetty.start(config.getHttpPort());
 	}
 }

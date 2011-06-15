@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import br.biofoco.cloud.services.ServiceManager;
 import br.biofoco.cloud.utils.JsonUtil;
 
-@Path("/services")
+@Path("/")
 public class ServiceResource {
 	
 	private final ServiceManager manager = ServiceManager.getInstance();
