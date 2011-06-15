@@ -16,34 +16,23 @@
 
 package br.biofoco.cloud.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.beust.jcommander.Parameter;
 
 public class HostConfig {
 	
-	public static final int DEFAULT_PORT = 9191;
+	public static final int DEFAULT_HTTP_PORT = 9999;
 	
-	@Parameter(names="-port")
-	private int port = DEFAULT_PORT;
-	
-	@Parameter(names="-seeds")
-	private final List<String> seeds = new ArrayList<String>();
-		
+	@Parameter(names="-httpPort", required=false)
+	private int httpPort = DEFAULT_HTTP_PORT;
+			
 	@Parameter(names="-debug")
 	private boolean debug = false;
 
-	public List<String> getSeeds() {
-		return seeds;
-	}
-
-	public int getPort() {
-		return port;
+	public int getHttpPort() {
+		return httpPort;
 	}
 	
 	public boolean isDebugEnabled() {
 		return debug;
 	}
-
 }
