@@ -25,14 +25,13 @@ public class HostConfig {
 	@Parameter(names="-httpPort", required=false)
 	private int httpPort = DEFAULT_HTTP_PORT;
 			
-	@Parameter(names="-debug")
-	private boolean debug = false;
-
 	public int getHttpPort() {
 		return httpPort;
 	}
-	
-	public boolean isDebugEnabled() {
-		return debug;
+		
+	@Override
+	public String toString() {
+		return "httpPort=" + httpPort;
 	}
+	
 }
