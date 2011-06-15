@@ -1,5 +1,0 @@
-
-log4j.properties 
-http transport
-multicast transport
-netty transport
