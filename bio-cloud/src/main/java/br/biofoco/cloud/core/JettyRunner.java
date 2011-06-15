@@ -6,7 +6,7 @@ import org.mortbay.jetty.servlet.ServletHolder;
 
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
-public final class JettyStarter {
+public final class JettyRunner {
 	
 	private Server server;
 
@@ -27,8 +27,4 @@ public final class JettyStarter {
 	public void stop() throws Exception {
         server.stop();
 	}
-	
-//    Client c = Client.create();
-//    WebResource r = c.resource("http://localhost:9999/");
-//    System.out.println(r.get(String.class));
 }
