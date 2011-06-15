@@ -7,8 +7,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import br.biofoco.cloud.jetty.JsonUtil;
 import br.biofoco.cloud.services.ServiceManager;
+import br.biofoco.cloud.utils.JsonUtil;
 
 @Path("/services")
 public class ServiceResource {

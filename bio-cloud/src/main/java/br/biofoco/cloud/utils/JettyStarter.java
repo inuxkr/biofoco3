@@ -1,4 +1,4 @@
-package br.biofoco.cloud.jetty;
+package br.biofoco.cloud.utils;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
