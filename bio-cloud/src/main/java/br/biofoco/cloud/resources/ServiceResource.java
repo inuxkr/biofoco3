@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -28,19 +29,34 @@ import br.biofoco.cloud.utils.JsonUtil;
 @Path("/")
 public class ServiceResource {
 	
-	private final ServiceManager manager = ServiceManager.getInstance();
+	private final ServiceManager serviceManager = ServiceManager.getInstance();
 	
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String greetings(){
-		return "Web service interface";
+		return this.toString();
 	}
 
 	@GET
 	@Path("/services")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String listServices() throws IOException {
-		return JsonUtil.toString(manager.listServices());
+		return JsonUtil.toString(serviceManager.listServices());
+	}
+	
+	@GET
+	@Path("/service/{id}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String invokeService(@PathParam("id") String serviceID) {
+		return serviceManager.invokeService(serviceID);		
+	}
+	
+	@GET
+	@Path("/service/result/{task}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getStatus(@PathParam("task") String taskID) {
+		
+		return serviceManager.getTaskResult(taskID);
 	}
 	
 }

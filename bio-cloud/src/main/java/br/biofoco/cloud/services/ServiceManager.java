@@ -17,6 +17,10 @@ package br.biofoco.cloud.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -25,20 +29,28 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 
 public class ServiceManager {
 	
+	private static final Random random = new Random(System.nanoTime());
+	
 	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 	private final ConcurrentMap<Long, ServiceInfo> serviceMap = new ConcurrentHashMap<Long, ServiceInfo>(100);
+
+	private Map<String, String> resultMap = new HashMap<String, String>();
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceManager.class);
 	
 	private static final String serviceDir = "services";
 	
 	private static ServiceManager INSTANCE = null;
 	
 	private ServiceManager() {
-		start();
+		init();
 	}
 	
 	//TODO: refactor to use Guice singleton
@@ -60,10 +72,19 @@ public class ServiceManager {
 				serviceMap.put(service.getId(), service);
 			}
 		}
+		
+		
 	}
 	
-	public void start() {
-		executor.scheduleWithFixedDelay(new ServiceInspector(), 0, 30, TimeUnit.SECONDS);
+	public void init() {
+		LOGGER.debug("Initializing service map");
+		try {
+			loadServices();
+			LOGGER.debug(serviceMap.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		executor.scheduleWithFixedDelay(new ServiceInspector(), 30, 30, TimeUnit.SECONDS);
 	}
 	
 	public void stop() {
@@ -84,5 +105,54 @@ public class ServiceManager {
 				ie.printStackTrace();
 			}	
 		}
+	}
+
+	/**
+	 * 
+	 * @param id the service
+	 * @return the task id
+	 */
+	public String invokeService(String id) {
+		LOGGER.debug("Invoking service " + id);
+		
+		ServiceInfo service = serviceMap.get(Long.parseLong(id));
+		
+		if (service != null) {			
+			try {
+				
+				Process p = Runtime.getRuntime().exec(service.getName());				
+				InputStream is = p.getInputStream();
+				
+				int c;
+				StringBuilder sb = new StringBuilder();
+				while ((c = is.read()) != -1) {
+					sb.append((char) c);
+				}
+				
+				String taskID = Long.toString(Math.abs(random.nextInt()));
+				
+				String result = sb.toString();
+				
+				System.out.println(result);
+				
+				resultMap.put(taskID, result);
+				
+				return taskID;
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return "-1";
+	}
+
+	public String getTaskResult(String taskID) {
+		
+		String result = resultMap.get(taskID);
+		if (result == null)
+			result = "result unavailable!";
+		return result;
 	}
 }

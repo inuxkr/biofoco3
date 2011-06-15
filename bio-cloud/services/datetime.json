@@ -1,1 +1,0 @@
-{"id": 102329699, "name": "blast", "arguments":[], "input":["fasta.file"], "output":["out.file"], "info": "runs blast command"}  
