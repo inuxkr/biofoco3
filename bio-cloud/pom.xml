@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.biofoco.cloud</groupId>
 	<artifactId>bio-cloud</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>bio-cloud Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -105,45 +105,42 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			
-			<!-- 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>br.biofoco.cloud.core.Bootstrapper</mainClass>
-                        </manifest>
-                    </archive>
-                    <packagingExcludes>WEB-INF/lib/jetty-*.jar,WEB-INF/lib/*embedded-jetty*.jar</packagingExcludes>
-                </configuration>
-            </plugin> -->
-			
 
-			<!-- mvn assembly:single -->
-			<!-- 
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+						<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
 				<configuration>
 					<archive>
 						<manifest>
 							<mainClass>br.biofoco.cloud.core.Bootstrapper</mainClass>
+							<packageName>br.biofoco.cloud.core</packageName>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<addExtensions />
 						</manifest>
+						<manifestEntries>
+							<mode>development</mode>
+							<url>${pom.url}</url>
+						</manifestEntries>
+						<!-- <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
 					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
 				</configuration>
-			</plugin> -->
-
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
-				<version>1.4</version> <executions> <execution> <phase>package</phase> <goals> 
-				<goal>shade</goal> </goals> <configuration> <createDependencyReducedPom>true</createDependencyReducedPom> 
-				<transformers> <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
-				<mainClass>br.biofoco.cloud.core.Bootstrapper</mainClass> </transformer> 
-				</transformers> </configuration> </execution> </executions> </plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 </project>
