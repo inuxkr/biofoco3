@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
@@ -35,8 +35,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableSet;
 
 public class ServiceManager {
-	
-	private static final Random random = new Random(System.nanoTime());
 	
 	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 	private final ConcurrentMap<Long, ServiceInfo> serviceMap = new ConcurrentHashMap<Long, ServiceInfo>(100);
@@ -129,7 +127,7 @@ public class ServiceManager {
 					sb.append((char) c);
 				}
 				
-				String taskID = Long.toString(Math.abs(random.nextInt()));
+				String taskID = UUID.randomUUID().toString();
 				
 				String result = sb.toString();
 				
