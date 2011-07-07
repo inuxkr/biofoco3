@@ -2,12 +2,28 @@ package br.unb.cic.bionimbus.plugin.hadoop;
 
 import br.unb.cic.bionimbus.plugin.Plugin;
 
-public class HadoopPlugin implements Plugin {
+public class HadoopPlugin extends Thread implements Plugin {
+	
+	public HadoopPlugin() {
+		super("HadoopPlugin");
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			System.out.println("running Plugin loop...");
+			try {
+				sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-
+		System.out.println("starting Hadoop plugin...");
+		super.start();
 	}
 
 	@Override
