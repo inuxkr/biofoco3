@@ -4,5 +4,7 @@ public interface Plugin {
 
 	public void start();
 	
+	public void shutdown();
+	
 	public void setP2P();
 }
