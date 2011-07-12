@@ -4,6 +4,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
 
@@ -11,7 +13,9 @@ public class DiscoveryService implements Service, Callable<Boolean> {
 
 	private volatile boolean running = false;
 
-	private ExecutorService executorService = Executors.newCachedThreadPool();
+	private ExecutorService executorService = Executors
+			.newCachedThreadPool(new BasicThreadFactory.Builder()
+					.namingPattern("discoveryservice-%d").build());
 
 	public DiscoveryService(ServiceManager manager) {
 		System.out.println("registering DiscoveryService...");
