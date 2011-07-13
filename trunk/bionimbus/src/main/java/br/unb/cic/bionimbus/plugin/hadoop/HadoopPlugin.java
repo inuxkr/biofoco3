@@ -40,36 +40,26 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	public Boolean call() throws Exception {
 
 		running = true;
-		
-		p2p.addListener(this);
-
-		// detectar se hadoop esta' rodando, logar erro se for o caso e sair.
 
 		while (running) {
 			System.out.println("running Plugin loop...");
 
-			// aguardar nova requisicao com timeout			
+			checkFinishedGetInfo();
 
-			// verifica tipo de mensagem
+			checkTasksStatus();
 
-
-			int i = 1;
-
-			if (i == 0) {
-				checkFinishedGetInfo();
-			} else if (i == 1) {
-				checkTasksStatus();
-			}
-			
 			Thread.sleep(5000);
 		}
 
 		return true;
 	}
 
-	private void checkTasksStatus() throws InterruptedException, ExecutionException {
+	private void checkTasksStatus() throws InterruptedException,
+			ExecutionException {
+
 		Future<PluginTask> fTask;
 		PluginTask task;
+
 		for (Entry<Future<PluginTask>, PluginTask> e : taskMap.entrySet()) {
 			fTask = e.getKey();
 			if (fTask.isDone()) {
@@ -91,7 +81,6 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 				default:
 					System.out.println("algo de errado2");
 				}
-
 			}
 		}
 	}
@@ -99,7 +88,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	private void checkFinishedGetInfo() {
 
 		for (Future<PluginInfo> fInfo : reqList) {
-			
+
 			if (fInfo.isDone()) {
 				reqList.remove(fInfo);
 				try {
@@ -109,7 +98,6 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 					System.out.println("NumCores: " + info.getNumCores());
 					System.out.println("NumNodes: " + info.getNumNodes());
 				} catch (Exception e) {
-					// Logar erro
 					System.out.println("info: 0");
 				}
 			} else if (fInfo.isCancelled()) {
@@ -132,24 +120,34 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 	@Override
 	public void setP2P(BioNimbusP2P p2p) {
-		this.p2p = p2p;		
+		if (this.p2p != null)
+			this.p2p.remove(this);
+
+		this.p2p = p2p;
+
+		if (this.p2p != null)
+			this.p2p.addListener(this);
 	}
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		Message msg;
-		
-		switch (msg.getID()) {
+		Message msg = event.getMessage();
+
+		if (msg == null)
+			return;
+
+		switch (msg.getType()) {
 		case GETINFO:
-			Future<PluginInfo> fInfo = executorService.submit(new HadoopGetInfo());
+			Future<PluginInfo> fInfo = executorService
+					.submit(new HadoopGetInfo());
 			reqList.add(fInfo);
 			break;
 		case STARTTASK:
 			PluginTask task = new PluginTask();
-			Future<PluginTask> fTask = executorService.submit(new HadoopTask(task));				
+			Future<PluginTask> fTask = executorService.submit(new HadoopTask(
+					task));
 			taskMap.put(fTask, task);
 			break;
 		}
-		
 	}
 }
