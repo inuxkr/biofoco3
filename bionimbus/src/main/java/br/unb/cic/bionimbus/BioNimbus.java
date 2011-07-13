@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
 import br.unb.cic.bionimbus.plugin.Plugin;
 import br.unb.cic.bionimbus.plugin.PluginFactory;
 
@@ -16,11 +17,11 @@ public class BioNimbus {
 			plugin.start();
 		}
 
-		BioNimbusP2P p2p = new BioNimbusP2P();
-		p2p.start(config.isClient());
+		BioNimbusP2P p2p = new BioNimbusP2P(config);
+		p2p.start();
 
 		if (!config.isClient())
-			plugin.setP2P(/*p2p*/);
+			plugin.setP2P(p2p);
 
 		if (p2p.isMaster()) {
 			ServiceManager manager = new ServiceManager();

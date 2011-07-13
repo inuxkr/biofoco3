@@ -23,7 +23,7 @@ public class DiscoveryService implements Service, Callable<Boolean> {
 	}
 
 	@Override
-	public Boolean call() {
+	public Boolean call() throws Exception {
 
 		running = true;
 
@@ -41,11 +41,7 @@ public class DiscoveryService implements Service, Callable<Boolean> {
 			// se for getCloudInfo()
 			// retornar dados de todos os plugins consolidados
 
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			Thread.sleep(5000);
 		}
 
 		return true;
