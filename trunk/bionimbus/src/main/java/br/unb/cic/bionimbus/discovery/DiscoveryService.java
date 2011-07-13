@@ -8,6 +8,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
+import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
 
 public class DiscoveryService implements Service, Callable<Boolean> {
 
@@ -48,7 +49,7 @@ public class DiscoveryService implements Service, Callable<Boolean> {
 	}
 
 	@Override
-	public void start() {
+	public void start(BioNimbusP2P p2p) {
 		System.out.println("starting DiscoveryService...");
 		executorService.submit(this);
 	}

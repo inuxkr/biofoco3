@@ -1,11 +1,12 @@
 package br.unb.cic.bionimbus.sched;
 
 import br.unb.cic.bionimbus.Service;
+import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
 
 public class SchedService implements Service {
 
 	@Override
-	public void start() {
+	public void start(BioNimbusP2P p2p) {
 		// TODO Auto-generated method stub
 
 	}
