@@ -2,8 +2,10 @@ package br.unb.cic.bionimbus.storage;
 
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
+import br.unb.cic.bionimbus.p2p.P2PEvent;
+import br.unb.cic.bionimbus.p2p.P2PListener;
 
-public class StorageService implements Service {
+public class StorageService implements Service, P2PListener {
 
 	@Override
 	public void start(BioNimbusP2P p2p) {
@@ -21,6 +23,12 @@ public class StorageService implements Service {
 	public void getStatus() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onEvent(P2PEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
