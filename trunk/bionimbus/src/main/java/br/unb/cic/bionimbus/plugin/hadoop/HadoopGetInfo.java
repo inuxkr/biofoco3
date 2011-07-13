@@ -18,13 +18,13 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 	private static final String nodes = "<a href=\"machines.jsp?type=active\">";
 
 	private void getNameNodeInfo(PluginInfo info) throws Exception {
+		
 		URL url = new URL(nameNode);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		conn.connect();
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				conn.getInputStream()));
+		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String s = "";
 
 		while ((s = br.readLine()) != null) {
