@@ -116,6 +116,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	public void shutdown() {
 		running = false;
 		executorService.shutdownNow();
+		p2p.remove(this);
 	}
 
 	@Override
