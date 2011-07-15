@@ -3,6 +3,7 @@ package br.unb.cic.bionimbus.p2p;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.p2p.messages.Message;
 
 public class BioNimbusP2P {
 
