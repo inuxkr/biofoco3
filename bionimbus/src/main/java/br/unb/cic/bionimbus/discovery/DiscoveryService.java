@@ -16,7 +16,7 @@ public class DiscoveryService implements Service, P2PListener, Callable<Boolean>
 
 	private volatile boolean running = false;
 
-	private ExecutorService executorService = Executors
+	private final ExecutorService executorService = Executors
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
 					.namingPattern("discoveryservice-%d").build());
 	
@@ -31,20 +31,14 @@ public class DiscoveryService implements Service, P2PListener, Callable<Boolean>
 	public Boolean call() throws Exception {
 
 		running = true;
+		
+		if (p2p != null)
+			p2p.addListener(this);
 
 		while (running) {
 			System.out.println("running DiscoveryService...");
 
-			// java.util.concurrent 1.5/1.6
-
-			// executors.submit(new Worker());
-
-			// aguardar nova requisicao com timeout
-
-			// pegar dados de todos os plugins via broadcast no P2P.
-
-			// se for getCloudInfo()
-			// retornar dados de todos os plugins consolidados
+			// consultar de tempos em tempos situacao dos plugins
 
 			Thread.sleep(5000);
 		}
@@ -54,9 +48,9 @@ public class DiscoveryService implements Service, P2PListener, Callable<Boolean>
 
 	@Override
 	public void start(BioNimbusP2P p2p) {
+		this.p2p = p2p;
 		System.out.println("starting DiscoveryService...");
 		executorService.submit(this);
-		p2p.addListener(this);
 	}
 
 	@Override
@@ -74,8 +68,8 @@ public class DiscoveryService implements Service, P2PListener, Callable<Boolean>
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		// TODO Auto-generated method stub
-		
+		// tratar recebimento da mensagem de getCloudInfo()
+		// ou tratar recebimento de resposta dos plugins
 	}
 
 }

@@ -1,4 +1,4 @@
-package br.unb.cic.bionimbus.p2p;
+package br.unb.cic.bionimbus.p2p.messages;
 
 public interface Message {
 	
