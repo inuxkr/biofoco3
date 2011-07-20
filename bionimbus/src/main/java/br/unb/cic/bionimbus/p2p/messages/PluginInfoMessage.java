@@ -9,6 +9,10 @@ public class PluginInfoMessage implements Message {
 	public PluginInfoMessage(PluginInfo info) {
 		this.info = info;
 	}
+	
+	public PluginInfo getInfo() {
+		return info;
+	}
 
 	@Override
 	public MessageType getType() {
