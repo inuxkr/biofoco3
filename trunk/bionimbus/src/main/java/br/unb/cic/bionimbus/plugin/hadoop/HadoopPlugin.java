@@ -1,12 +1,11 @@
 package br.unb.cic.bionimbus.plugin.hadoop;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,9 +35,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
 					.namingPattern("hadoopplugin-%d").build());
 
-	private final List<Future<PluginInfo>> reqList = new LinkedList<Future<PluginInfo>>();
+	private final List<Future<PluginInfo>> reqList = new CopyOnWriteArrayList<Future<PluginInfo>>();
 
-	private final Map<String, BioNimbusPair<PluginTask, Future<PluginTask>>> taskMap = new HashMap<String, BioNimbusPair<PluginTask, Future<PluginTask>>>();
+	private final Map<String, BioNimbusPair<PluginTask, Future<PluginTask>>> taskMap = new ConcurrentHashMap<String, BioNimbusPair<PluginTask, Future<PluginTask>>>();
 
 	private BioNimbusP2P p2p;
 
@@ -50,7 +49,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 			System.out.println("running Plugin loop...");
 			checkFinishedGetInfo();
 			checkFinishedTasks();
-			Thread.sleep(5000);
+			Thread.sleep(10000);
 		}
 
 		return true;
