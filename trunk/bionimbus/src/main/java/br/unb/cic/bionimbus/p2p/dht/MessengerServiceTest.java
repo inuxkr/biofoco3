@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 import br.unb.cic.bionimbus.p2p.dht.MessengerService;
 import br.unb.cic.bionimbus.p2p.dht.PeerConfig;
 import br.unb.cic.bionimbus.p2p.transport.WireFormatException;
-import br.unb.cic.bionimbus.p2p.transport.WireMessage;
 
 public class MessengerServiceTest extends TestCase {
 	
