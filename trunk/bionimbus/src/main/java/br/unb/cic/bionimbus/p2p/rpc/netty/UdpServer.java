@@ -10,17 +10,31 @@ import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory;
 import org.jboss.netty.handler.codec.string.StringDecoder;
 import org.jboss.netty.handler.codec.string.StringEncoder;
 
-public class UdpServer {
+public class UdpServer implements Server {
+	
+	private int port = 8080;
+	private DatagramChannelFactory factory;
+	private ConnectionlessBootstrap bootstrapServer;
+	
+	public UdpServer() {
+		factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool());
+		bootstrapServer = new ConnectionlessBootstrap(factory);
+	}
 
 	public static void main(String[] args) {
-		DatagramChannelFactory f = new NioDatagramChannelFactory(Executors.newCachedThreadPool());
-		ConnectionlessBootstrap b = new ConnectionlessBootstrap(f);
+		new UdpServer().start();
+	}
+	
+	public void start() {
 
-		ChannelPipeline p = b.getPipeline();
+		ChannelPipeline p = bootstrapServer.getPipeline();
 		p.addLast("encoder", new StringEncoder());
 		p.addLast("decoder", new StringDecoder());
 //		p.addLast("logic",   this);
 
-		b.bind(new InetSocketAddress(8080));
+		bootstrapServer.bind(new InetSocketAddress(port));
+	}
+	
+	public void stop() {
 	}
 }
