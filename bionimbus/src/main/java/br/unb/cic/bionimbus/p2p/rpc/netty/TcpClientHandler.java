@@ -7,15 +7,19 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TcpClientHandler extends SimpleChannelHandler {
+	
+		private static final Logger LOGGER = LoggerFactory.getLogger(TcpClientHandler.class);
 
 	    @Override
 	    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
 	    	
 			SocketAddress remoteAddress = ctx.getChannel().getRemoteAddress();
 			
-			System.out.println("connection received from " + remoteAddress.toString());
+			LOGGER.debug("connection received from " + remoteAddress.toString());
 	    	
 	        ChannelBuffer buf = (ChannelBuffer) e.getMessage();
 	        	        
@@ -23,7 +27,7 @@ public class TcpClientHandler extends SimpleChannelHandler {
 	    }
 	    @Override
 	    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-	        e.getCause().printStackTrace();
+	    	LOGGER.error(e.getCause().getMessage());	    
 	        e.getChannel().close();
 	    }
 }
