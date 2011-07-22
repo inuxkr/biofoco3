@@ -9,12 +9,17 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ServerHandler extends SimpleChannelHandler {
+public class TcpServerHandler extends SimpleChannelHandler {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TcpServerHandler.class);
 
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		System.out.println("connection received!");
+		SocketAddress remoteAddress = ctx.getChannel().getRemoteAddress();
+		LOGGER.debug("connection received from " + remoteAddress.toString());
 	}
 
 	@Override
@@ -26,22 +31,13 @@ public class ServerHandler extends SimpleChannelHandler {
 
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-//		ChannelBuffer buf = (ChannelBuffer) e.getMessage();
-//		while (buf.readable()) {
-//			System.out.println((char) buf.readByte());
-//			System.out.flush();
-//		}
-		
-		SocketAddress remoteAddress = ctx.getChannel().getRemoteAddress();
-		
-		System.out.println("connection received from " + remoteAddress.toString());
 		
 	    Channel ch = e.getChannel();
 	    ch.write(e.getMessage());
 	    
 	    String message = NettyUtils.readString((ChannelBuffer) e.getMessage());
 	    
-	    System.out.println(message);
+	    LOGGER.debug(message);
 	    
 	    if ("quit".equalsIgnoreCase(message.trim())){
 	    	ch.close();

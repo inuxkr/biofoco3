@@ -9,11 +9,15 @@ import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TcpServer implements Server {
 	
 	private ServerBootstrap bootstrap;
 	private int port = 8080;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TcpServer.class);
 	
 	public TcpServer() {
 		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
@@ -26,10 +30,12 @@ public class TcpServer implements Server {
 	
 	public void start() {
 		
+		LOGGER.debug("Starting tcp server...");
+		
 		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {			
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
-				return Channels.pipeline(new ServerHandler());
+				return Channels.pipeline(new TcpServerHandler());
 			}
 		});		
 
