@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.GetInfoMessage;
 import br.unb.cic.bionimbus.p2p.messages.Message;
 import br.unb.cic.bionimbus.p2p.messages.PluginInfoMessage;
@@ -90,7 +91,12 @@ public class BioNimbusP2P implements Callable<Boolean> {
 		case PLUGININFO:
 			PluginInfoMessage infoMsg = (PluginInfoMessage) message;
 			System.out.println("numCores = " + infoMsg.getInfo().getNumCores());
-			
+			System.out.println("numServices = " + infoMsg.getInfo().getServices().size());
+			break;
+		case ERROR:
+			ErrorMessage errMsg = (ErrorMessage) message;
+			System.out.println(errMsg.toString());
+			break;
 		}
 	}
 
