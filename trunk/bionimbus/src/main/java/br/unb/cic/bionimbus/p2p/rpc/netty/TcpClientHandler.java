@@ -1,7 +1,5 @@
 package br.unb.cic.bionimbus.p2p.rpc.netty;
 
-import java.util.Date;
-
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
