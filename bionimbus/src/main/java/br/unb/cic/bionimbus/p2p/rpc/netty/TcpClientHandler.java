@@ -1,4 +1,4 @@
-package br.biofoco.p2p.protocol.netty;
+package br.unb.cic.bionimbus.p2p.rpc.netty;
 
 import java.util.Date;
 
