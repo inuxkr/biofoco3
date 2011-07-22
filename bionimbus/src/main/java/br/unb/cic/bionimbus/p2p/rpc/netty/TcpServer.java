@@ -10,24 +10,37 @@ import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
-public class TcpServer {
+public class TcpServer implements Server {
+	
+	private ServerBootstrap bootstrap;
+	private int port = 8080;
+	
+	public TcpServer() {
+		ChannelFactory factory = new NioServerSocketChannelFactory( Executors.newCachedThreadPool(), Executors.newCachedThreadPool() );
+		bootstrap = new ServerBootstrap(factory);
+	}
 	
 	public static void main(String[] args) {
-		ChannelFactory factory = new NioServerSocketChannelFactory( Executors.newCachedThreadPool(), Executors.newCachedThreadPool() );
-		
-		ServerBootstrap bootstrap = new ServerBootstrap(factory);
-		
+	 
+
+	}
+	
+	public void start() {
 		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {			
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
-				return Channels.pipeline(new TcpServerHandler());
+				return Channels.pipeline(new ServerHandler());
 			}
 		});		
 
 		bootstrap.setOption("reuseAddress", true);
         bootstrap.setOption("child.tcpNoDelay", true);
         bootstrap.setOption("child.keepAlive", true);
-        bootstrap.bind(new InetSocketAddress(8080));
+        bootstrap.bind(new InetSocketAddress(port));
+	}
+	
+	public void stop() {
+		
 	}
 
 }

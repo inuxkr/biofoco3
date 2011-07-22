@@ -8,7 +8,7 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-public class TcpServerHandler extends SimpleChannelHandler {
+public class ServerHandler extends SimpleChannelHandler {
 
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {

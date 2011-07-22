@@ -13,7 +13,12 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 public class TcpClient {
 
 	public static void main(String[] args) {
+		
+		new TcpClient().connect();
 
+	}
+	
+	public void connect() {
         ChannelFactory factory = new NioClientSocketChannelFactory (Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
         ClientBootstrap bootstrap = new ClientBootstrap (factory);
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
@@ -24,6 +29,7 @@ public class TcpClient {
         
         bootstrap.setOption("tcpNoDelay" , true);
         bootstrap.setOption("keepAlive", true);
+        bootstrap.setOption("connectTimeoutMillis", 5000);
         bootstrap.connect (new InetSocketAddress("localhost", 8080));
 	}
 }
