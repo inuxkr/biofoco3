@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.p2p.rpc.netty;
 
+import java.net.SocketAddress;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -29,6 +31,10 @@ public class ServerHandler extends SimpleChannelHandler {
 //			System.out.println((char) buf.readByte());
 //			System.out.flush();
 //		}
+		
+		SocketAddress remoteAddress = ctx.getChannel().getRemoteAddress();
+		
+		System.out.println("connection received from " + remoteAddress.toString());
 		
 	    Channel ch = e.getChannel();
 	    ch.write(e.getMessage());

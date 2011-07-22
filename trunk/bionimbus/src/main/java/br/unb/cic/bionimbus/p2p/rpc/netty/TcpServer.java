@@ -16,16 +16,16 @@ public class TcpServer implements Server {
 	private int port = 8080;
 	
 	public TcpServer() {
-		ChannelFactory factory = new NioServerSocketChannelFactory( Executors.newCachedThreadPool(), Executors.newCachedThreadPool() );
+		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 		bootstrap = new ServerBootstrap(factory);
 	}
 	
 	public static void main(String[] args) {
-	 
-
+		new TcpServer().start();
 	}
 	
 	public void start() {
+		
 		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {			
 			@Override
 			public ChannelPipeline getPipeline() throws Exception {
@@ -40,7 +40,7 @@ public class TcpServer implements Server {
 	}
 	
 	public void stop() {
-		
+		bootstrap.releaseExternalResources();
 	}
 
 }
