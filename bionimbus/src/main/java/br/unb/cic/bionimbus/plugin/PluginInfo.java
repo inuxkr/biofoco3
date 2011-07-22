@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.plugin;
 
+import java.util.List;
+
 public class PluginInfo {
 	
 	private Integer numCores;
@@ -9,6 +11,8 @@ public class PluginInfo {
 	private Float fsSize;
 	
 	private Float fsFreeSize;
+	
+	private List<PluginService> services;
 
 	public Float getFsFreeSize() {
 		return fsFreeSize;
@@ -42,4 +46,11 @@ public class PluginInfo {
 		this.fsSize = fsSize;
 	}
 
+	public List<PluginService> getServices() {
+		return services;
+	}
+
+	public void setServices(List<PluginService> services) {
+		this.services = services;
+	}
 }

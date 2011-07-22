@@ -1,21 +1,26 @@
 package br.unb.cic.bionimbus.plugin.hadoop;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginService;
 
 public class HadoopGetInfo implements Callable<PluginInfo> {
 
 	private static final String nameNode = "http://localhost:50070/dfshealth.jsp";
-
 	private static final String jobTracker = "http://localhost:50030/jobtracker.jsp";
-
 	private static final String nodes = "<a href=\"machines.jsp?type=active\">";
+	private static final String serviceDir = "services";
 
 	private void getNameNodeInfo(PluginInfo info) throws Exception {
 		
@@ -56,8 +61,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		conn.setRequestMethod("GET");
 		conn.connect();
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				conn.getInputStream()));
+		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String s = "";
 
 		while ((s = br.readLine()) != null) {
@@ -67,13 +71,29 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 				index += nodes.length();
 				String[] tokens = s.substring(index).split("<");
 				info.setNumNodes(Integer.parseInt(tokens[0]));
-				info.setNumCores(Integer.parseInt(tokens[11]
-						.substring(tokens[11].indexOf('>') + 1)));
+				info.setNumCores(Integer.parseInt(tokens[11].substring(tokens[11].indexOf('>') + 1)));
 			}
 		}
 
 		br.close();
 		conn.disconnect();
+	}
+	
+	private void loadServices(PluginInfo info) throws Exception {
+		List<PluginService> list = new CopyOnWriteArrayList<PluginService>();
+		System.out.println("serviceDir = " + serviceDir);
+		File dir = new File(serviceDir);
+		
+		if (dir.isDirectory()) {
+			for (File file : dir.listFiles()) {
+				if (file.isFile() && file.canRead() && file.getName().endsWith(".json")) {
+					ObjectMapper mapper = new ObjectMapper();
+					PluginService service = mapper.readValue(file, PluginService.class);
+					list.add(service);
+				}
+			}
+		}
+		info.setServices(list);
 	}
 
 	@Override
@@ -81,7 +101,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		PluginInfo info = new PluginInfo();
 		getNameNodeInfo(info);
 		getJobTrackerInfo(info);
-		//TODO pegar informacoes das aplicacoes disponiveis
+		loadServices(info);
 		return info;
 	}
 
