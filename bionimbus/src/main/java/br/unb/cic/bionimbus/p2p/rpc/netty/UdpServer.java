@@ -14,11 +14,11 @@ public class UdpServer implements Server {
 	
 	private int port = 8080;
 	private DatagramChannelFactory factory;
-	private ConnectionlessBootstrap bootstrapServer;
+	private ConnectionlessBootstrap bootstrap;
 	
 	public UdpServer() {
 		factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool());
-		bootstrapServer = new ConnectionlessBootstrap(factory);
+		bootstrap = new ConnectionlessBootstrap(factory);
 	}
 
 	public static void main(String[] args) {
@@ -27,14 +27,15 @@ public class UdpServer implements Server {
 	
 	public void start() {
 
-		ChannelPipeline p = bootstrapServer.getPipeline();
+		ChannelPipeline p = bootstrap.getPipeline();
 		p.addLast("encoder", new StringEncoder());
 		p.addLast("decoder", new StringDecoder());
 //		p.addLast("logic",   this);
 
-		bootstrapServer.bind(new InetSocketAddress(port));
+		bootstrap.bind(new InetSocketAddress(port));
 	}
 	
 	public void stop() {
+		bootstrap.releaseExternalResources();
 	}
 }
