@@ -4,6 +4,8 @@ import java.util.List;
 
 public class PluginInfo {
 	
+	private String id;
+	
 	private Integer numCores;
 	
 	private Integer numNodes;
@@ -13,6 +15,14 @@ public class PluginInfo {
 	private Float fsFreeSize;
 	
 	private List<PluginService> services;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public Float getFsFreeSize() {
 		return fsFreeSize;

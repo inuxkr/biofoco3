@@ -9,4 +9,5 @@ public enum MessageType {
 	FINISHEDTASK,
 	STOREFILE,
 	GETFILE,
+	CLOUDINFO,
 }
