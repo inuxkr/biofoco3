@@ -3,6 +3,7 @@ package br.unb.cic.bionimbus.plugin.hadoop;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,6 +31,8 @@ import br.unb.cic.bionimbus.utils.BioNimbusPair;
 public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 	private volatile boolean running = false;
+	
+	private final String id = UUID.randomUUID().toString();
 
 	private final ExecutorService executorService = Executors
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
@@ -96,6 +99,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 		try {
 			PluginInfo info = f.get();
+			info.setId(id);
 			msg = new PluginInfoMessage(info);
 		} catch (Exception e) {
 			msg = new ErrorMessage(e.getMessage());
