@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus;
 
+import java.io.IOException;
+
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
 import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
@@ -15,25 +17,30 @@ public class BioNimbus implements P2PListener {
 
 	public BioNimbus() {
 		config = new BioNimbusConfig();
-		plugin = null;
+		//plugin = null;
 
-		if (!config.isClient()) {
-			plugin = PluginFactory.getPlugin(config.getInfra());
-			plugin.start();
+		//if (!config.isClient()) {
+			//plugin = PluginFactory.getPlugin(config.getInfra());
+			//plugin.start();
+		//}
+
+		try {
+			p2p = new BioNimbusP2P(config);
+			p2p.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		p2p = new BioNimbusP2P(config);
-		p2p.start();
+		//if (!config.isClient())
+			//plugin.setP2P(p2p);
 
-		if (!config.isClient())
-			plugin.setP2P(p2p);
+		//if (p2p.isMaster()) {
+		//	ServiceManager manager = new ServiceManager();
+			//manager.startAll(p2p);
+		//}
 
-		if (p2p.isMaster()) {
-			ServiceManager manager = new ServiceManager();
-			manager.startAll(p2p);
-		}
-
-		p2p.addListener(this);
+		//p2p.addListener(this);
 	}
 
 	@Override
