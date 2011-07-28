@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.p2p;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
@@ -8,6 +9,9 @@ import java.util.concurrent.Executors;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.p2p.dht.IDFactory;
+import br.unb.cic.bionimbus.p2p.dht.PeerConfig;
+import br.unb.cic.bionimbus.p2p.dht.PeerServer;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.GetInfoMessage;
 import br.unb.cic.bionimbus.p2p.messages.Message;
@@ -26,8 +30,8 @@ public class BioNimbusP2P implements Callable<Boolean> {
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
 					.namingPattern("p2p-%d").build());
 
-	private PeerNode thisNode;
-	private PeerNode masterNode;
+	/*private PeerNode thisNode;
+	private PeerNode masterNode;*/
 
 	public BioNimbusP2P(BioNimbusConfig config) {
 		this.config = config;
@@ -53,22 +57,29 @@ public class BioNimbusP2P implements Callable<Boolean> {
 		return true;
 	}
 
-	public void start() {
+	public void start() throws IOException {
 
 		System.out.println("Starting p2p instance on port " + port);
+		
+		PeerConfig config = new PeerConfig();
+		config.setPeerID(IDFactory.newRandomID());
+		config.setPort(port);
+		
+		PeerServer p1 = PeerServer.newPeerServer(config);
+		p1.startServices();
 
-		thisNode = new PeerNodeImpl();
+		/* thisNode = new PeerNodeImpl();
 
 		masterNode = getMaster();
 
 		if (masterNode == null) {
 			masterNode = runElectionAlgorithm();
-		}
+		}*/
 
 		executorService.submit(this);
 	}
 
-	private PeerNode runElectionAlgorithm() {
+	/*private PeerNode runElectionAlgorithm() {
 		return thisNode;
 	}
 
@@ -78,7 +89,7 @@ public class BioNimbusP2P implements Callable<Boolean> {
 
 	public boolean isMaster() {
 		return thisNode.equals(masterNode);
-	}
+	}*/
 
 	public void stop() {
 		System.out.println("Stopping p2p instance ...");
