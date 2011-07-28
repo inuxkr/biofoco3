@@ -8,7 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+import br.unb.cic.bionimbus.p2p.rpc.multicast.MulticastTransport;
 import br.unb.cic.bionimbus.p2p.transport.Command;
 import br.unb.cic.bionimbus.p2p.transport.PeerCredentials;
 import br.unb.cic.bionimbus.p2p.transport.TcpTransport;
@@ -27,7 +27,8 @@ public class MessengerService implements TransportHandler {
 	
 	private volatile boolean running = false;
 		
-	private TcpTransport transport;
+	private TcpTransport tcpTransport;
+	private MulticastTransport mcastTransport;
 
 	private final PeerConfig config;
 	
@@ -41,15 +42,20 @@ public class MessengerService implements TransportHandler {
 
 	public void start() throws IOException {
 		LOG.debug("Starting MessengerService ...");
-		transport = new TcpTransport(config.getPort());
-		transport.addHandler(this);
-		transport.start();
+		tcpTransport = new TcpTransport(config.getPort());
+		tcpTransport.addHandler(this);
+		tcpTransport.start();
+		
+//		mcastTransport = new MulticastTransport("233.1.2.8", 32334);		
+//		mcastTransport.addListener(this);
+//		mcastTransport.start();
+		
 		running = true;
 	}
 	
 	public void stop() throws IOException {
 		LOG.debug("Stopping MessengerService ...");
-		transport.stop();
+		tcpTransport.stop();
 		
 		running = false;
 	}
@@ -74,7 +80,7 @@ public class MessengerService implements TransportHandler {
 	}
 	
 	public String sendMessage(String message) throws IOException, WireFormatException {
-		WireMessage response = transport.sendMessage("localhost", TcpTransport.DEFAULT_PORT, new WireMessage(10L, message));
+		WireMessage response = tcpTransport.sendMessage("localhost", TcpTransport.DEFAULT_PORT, new WireMessage(10L, message));
 		return response.getBody();
 	}
 
@@ -84,7 +90,7 @@ public class MessengerService implements TransportHandler {
 
 	public PeerNode ping(Endpoint host) throws IOException, WireFormatException {
 		
-		WireMessage response = transport.sendMessage(host.getAddress()
+		WireMessage response = tcpTransport.sendMessage(host.getAddress()
 				                                    ,host.getPort()
 				                                    ,new WireMessage(Math.abs(random.nextLong()), "PING"));
 		

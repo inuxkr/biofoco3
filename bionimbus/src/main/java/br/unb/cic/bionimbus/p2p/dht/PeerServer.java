@@ -50,8 +50,4 @@ public final class PeerServer {
 		return dhtService.getPeerView();
 	}
 
-	public void sendMessage(String command) {
-		
-	}
-
 }
