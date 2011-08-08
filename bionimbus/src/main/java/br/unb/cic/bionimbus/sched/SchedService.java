@@ -8,7 +8,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
-import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
+import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PListener;
 
@@ -20,7 +20,7 @@ public class SchedService implements Service, P2PListener, Callable<Boolean> {
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
 					.namingPattern("schedservice-%d").build());
 
-	private BioNimbusP2P p2p = null;
+	private P2PService p2p = null;
 
 	public SchedService(ServiceManager manager) {
 		manager.register(this);
@@ -47,7 +47,7 @@ public class SchedService implements Service, P2PListener, Callable<Boolean> {
 	}
 
 	@Override
-	public void start(BioNimbusP2P p2p) {
+	public void start(P2PService p2p) {
 		this.p2p = p2p;
 		System.out.println("starting SchedService...");
 		executorService.submit(this);

@@ -10,14 +10,14 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
-import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
+import br.unb.cic.bionimbus.messaging.Message;
+import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
-import br.unb.cic.bionimbus.p2p.P2PException;
 import br.unb.cic.bionimbus.p2p.P2PListener;
-import br.unb.cic.bionimbus.p2p.messages.CloudInfoMessage;
-import br.unb.cic.bionimbus.p2p.messages.GetInfoMessage;
-import br.unb.cic.bionimbus.p2p.messages.Message;
-import br.unb.cic.bionimbus.p2p.messages.PluginInfoMessage;
+import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 
 public class DiscoveryService implements Service, P2PListener,
@@ -31,7 +31,7 @@ public class DiscoveryService implements Service, P2PListener,
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
 					.namingPattern("discoveryservice-%d").build());
 
-	private BioNimbusP2P p2p;
+	private P2PService p2p;
 
 	public DiscoveryService(ServiceManager manager) {
 		System.out.println("registering DiscoveryService...");
@@ -49,7 +49,7 @@ public class DiscoveryService implements Service, P2PListener,
 		while (running) {
 			System.out.println("running DiscoveryService...");
 
-			Message msg = new GetInfoMessage();
+			Message msg = new InfoReqMessage();
 			p2p.sendMessage(msg);
 
 			Thread.sleep(30000);
@@ -59,7 +59,7 @@ public class DiscoveryService implements Service, P2PListener,
 	}
 
 	@Override
-	public void start(BioNimbusP2P p2p) {
+	public void start(P2PService p2p) {
 		this.p2p = p2p;
 		System.out.println("starting DiscoveryService...");
 		executorService.submit(this);
@@ -84,19 +84,14 @@ public class DiscoveryService implements Service, P2PListener,
 		if (msg == null)
 			return;
 
-		switch (msg.getType()) {
-		case PLUGININFO:
-			PluginInfoMessage pluginInfoMsg = (PluginInfoMessage) msg;
-			infoMap.put(pluginInfoMsg.getInfo().getId(), pluginInfoMsg.getInfo());
+		switch (P2PMessageType.values()[msg.getType()]) {
+		case INFORESP:
+			InfoRespMessage infoMsg = (InfoRespMessage) msg;
+			infoMap.put(infoMsg.getPluginInfo().getId(), infoMsg.getPluginInfo());
 			break;
-		case CLOUDINFO:
-			CloudInfoMessage cloudInfoMsg = new CloudInfoMessage(infoMap.values());
-			try {
-				p2p.sendMessage(cloudInfoMsg);
-			} catch (P2PException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		case CLOUDREQ:
+			CloudReqMessage cloudInfoMsg = new CloudReqMessage(infoMap.values());
+			p2p.sendMessage(cloudInfoMsg);
 			break;
 		}
 	}

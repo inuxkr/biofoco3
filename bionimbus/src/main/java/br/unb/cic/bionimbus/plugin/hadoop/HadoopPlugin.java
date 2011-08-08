@@ -13,20 +13,19 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
-import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
+import br.unb.cic.bionimbus.messaging.Message;
+import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
-import br.unb.cic.bionimbus.p2p.P2PException;
 import br.unb.cic.bionimbus.p2p.P2PListener;
-import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
-import br.unb.cic.bionimbus.p2p.messages.FinishedTaskMessage;
-import br.unb.cic.bionimbus.p2p.messages.Message;
-import br.unb.cic.bionimbus.p2p.messages.PluginInfoMessage;
-import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
-import br.unb.cic.bionimbus.p2p.messages.TaskStatusMessage;
+import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.messages.EndMessage;
+import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.plugin.Plugin;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
-import br.unb.cic.bionimbus.utils.BioNimbusPair;
+import br.unb.cic.bionimbus.utils.Pair;
 
 public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
@@ -40,9 +39,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 	private final List<Future<PluginInfo>> reqList = new CopyOnWriteArrayList<Future<PluginInfo>>();
 
-	private final Map<String, BioNimbusPair<PluginTask, Future<PluginTask>>> taskMap = new ConcurrentHashMap<String, BioNimbusPair<PluginTask, Future<PluginTask>>>();
+	private final Map<String, Pair<PluginTask, Future<PluginTask>>> taskMap = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
 
-	private BioNimbusP2P p2p;
+	private P2PService p2p;
 
 	@Override
 	public Boolean call() throws Exception {
@@ -67,19 +66,19 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 			// pegar arquivos de saida e mandar para o storage service (sincrono ou assincrono?)
 			// salvar ID na task
 
-			msg = new FinishedTaskMessage(task);
+			msg = new EndMessage(task);
 		} catch (Exception e) {
-			msg = new TaskErrorMessage(t.getID(), e.getMessage());
+			msg = new TaskErrorMessage(id, t.getID(), e.getMessage());
 		}
 
 		return msg;
 	}
 
-	private void checkFinishedTasks() throws P2PException {
-		BioNimbusPair<PluginTask, Future<PluginTask>> pair;
+	private void checkFinishedTasks() {
+		Pair<PluginTask, Future<PluginTask>> pair;
 		Future<PluginTask> fTask;
 		PluginTask task;
-		Iterator<BioNimbusPair<PluginTask, Future<PluginTask>>> it = taskMap.values().iterator();
+		Iterator<Pair<PluginTask, Future<PluginTask>>> it = taskMap.values().iterator();
 
 		while (it.hasNext()) {
 			pair = it.next();
@@ -100,15 +99,15 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 		try {
 			PluginInfo info = f.get();
 			info.setId(id);
-			msg = new PluginInfoMessage(info);
+			msg = new InfoRespMessage(info);
 		} catch (Exception e) {
-			msg = new ErrorMessage(e.getMessage());
+			msg = new InfoErrorMessage(id, e.getMessage());
 		}
 
 		return msg;
 	}
 
-	private void checkFinishedGetInfo() throws P2PException {
+	private void checkFinishedGetInfo() {
 		for (Future<PluginInfo> fInfo : reqList) {
 			if (fInfo.isDone()) {
 				Message message = buildFinishedGetInfoMsg(fInfo);
@@ -119,14 +118,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	}
 
 	private void checkTaskStatus(String taskId) {
-		BioNimbusPair<PluginTask, Future<PluginTask>> pair = taskMap.get(taskId);
-		TaskStatusMessage msg = new TaskStatusMessage(pair.first);
-		try {
-			p2p.sendMessage(msg);
-		} catch (P2PException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Pair<PluginTask, Future<PluginTask>> pair = taskMap.get(taskId);
+		StatusRespMessage msg = new StatusRespMessage(pair.first);
+		p2p.sendMessage(msg);
 	}
 
 	private void storeFile() {
@@ -155,7 +149,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	}
 
 	@Override
-	public void setP2P(BioNimbusP2P p2p) {
+	public void setP2P(P2PService p2p) {
 		if (this.p2p != null)
 			this.p2p.remove(this);
 
@@ -172,26 +166,26 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 		if (msg == null)
 			return;
 
-		switch (msg.getType()) {
-		case GETINFO:
+		switch (P2PMessageType.values()[msg.getType()]) {
+		case INFOREQ:
 			Future<PluginInfo> fInfo = executorService.submit(new HadoopGetInfo());
 			reqList.add(fInfo);
 			break;
-		case STARTTASK:
+		case STARTREQ:
 			PluginTask task = new PluginTask();
 			Future<PluginTask> fTask = executorService.submit(new HadoopTask(task));
-			BioNimbusPair<PluginTask, Future<PluginTask>> pair = BioNimbusPair.of(task, fTask);
+			Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
 			taskMap.put(task.getID(), pair);
 			// TODO enviar mensagem de taskId como resposta.
 			break;
-		case TASKSTATUS:
-			TaskStatusMessage tsMsg = (TaskStatusMessage) msg;
-			checkTaskStatus(tsMsg.getTask().getID());
+		case STATUSREQ:
+			StatusReqMessage reqMsg = (StatusReqMessage) msg;
+			checkTaskStatus(reqMsg.getTaskId());
 			break;
-		case STOREFILE:
+		case STOREREQ:
 			storeFile();
 			break;
-		case GETFILE:
+		case GETREQ:
 			getFile();
 			break;
 		}
