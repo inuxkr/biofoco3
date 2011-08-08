@@ -1,27 +1,29 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-public class ErrorMessage implements Message {
+import br.unb.cic.bionimbus.messaging.Message;
+import br.unb.cic.bionimbus.p2p.P2PErrorType;
+import br.unb.cic.bionimbus.p2p.P2PMessageType;
+
+public abstract class ErrorMessage implements Message {
 	
-	private String description;
+	private String error;
 	
-	public ErrorMessage(String description) {
-		this.description = description;
+	public ErrorMessage(String error) {
+		this.error = error;
 	}
+	
+	public String getError() {
+		return error;
+	}
+	
+	public abstract P2PErrorType getErrorType();
 
 	@Override
-	public MessageType getType() {
-		return MessageType.ERROR;
-	}
+	public abstract byte[] serialize();
 
 	@Override
-	public String toJSON() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public String toString() {
-		return description;
+	public int getType() {
+		return P2PMessageType.ERROR.ordinal();
 	}
 
 }

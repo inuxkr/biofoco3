@@ -1,17 +1,9 @@
 package br.unb.cic.bionimbus.p2p;
 
-import br.unb.cic.bionimbus.p2p.messages.Message;
+import br.unb.cic.bionimbus.messaging.Message;
 
-public class P2PEvent {
-	
-	private Message msg;
-	
-	public void setMessage(Message msg) {
-		this.msg = msg;
-	}
+public interface P2PEvent {
 
-	public Message getMessage() {
-		return msg;
-	}
+	Message getMessage();
 
 }

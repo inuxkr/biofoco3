@@ -6,7 +6,7 @@ import java.util.List;
 
 import br.unb.cic.bionimbus.discovery.DiscoveryService;
 import br.unb.cic.bionimbus.monitor.MonitorService;
-import br.unb.cic.bionimbus.p2p.BioNimbusP2P;
+import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.sched.SchedService;
 import br.unb.cic.bionimbus.storage.StorageService;
 
@@ -26,7 +26,7 @@ public class ServiceManager {
 		services.add(service);
 	}
 
-	public void startAll(BioNimbusP2P p2p) {
+	public void startAll(P2PService p2p) {
 		Iterator<Service> it = services.iterator();
 
 		while (it.hasNext())
