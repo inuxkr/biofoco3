@@ -12,7 +12,7 @@ public class MessageService {
 
 	private final MessageServiceClient client = new MessageServiceClient();
 
-	private final Multimap<Integer,MessageListener> listenersMap = HashMultimap.create();
+	private final Multimap<Integer, MessageListener> listenersMap = HashMultimap.create();
 
 	public void start(MessageFactory messageFactory) {
 		server.start(this, messageFactory);
