@@ -1,7 +1,6 @@
-package br.unb.cic.bionimbus.plugin.hadoop;
+package br.unb.cic.bionimbus.p2p.messages;
 
 import br.unb.cic.bionimbus.p2p.P2PErrorType;
-import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 
 public class TaskErrorMessage extends ErrorMessage {
 	

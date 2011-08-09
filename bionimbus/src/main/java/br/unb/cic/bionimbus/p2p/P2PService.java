@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.p2p;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -33,6 +34,7 @@ public class P2PService implements MessageListener {
 	}
 
 	public void sendMessage(Message message) {
+		msgService.sendMessage(new InetSocketAddress("localhost", 8080), message);
 	}
 
 	public void addListener(P2PListener listener) {
@@ -46,8 +48,8 @@ public class P2PService implements MessageListener {
 	@Override
 	public void onEvent(Message message) {
 		for (P2PListener listener : listeners) {
-			P2PEvent event = new P2PMessageEvent(message);
-			listener.onEvent(event);
+			//P2PEvent event = new P2PMessageEvent(message);
+			//listener.onEvent(event);
 		}
 	}
 }
