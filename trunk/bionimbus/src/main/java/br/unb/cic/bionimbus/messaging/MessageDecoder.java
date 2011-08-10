@@ -24,14 +24,16 @@ public class MessageDecoder extends FrameDecoder {
 
 		int length = buffer.readInt();
 		int type = buffer.readInt();
+		byte[] decoded = null;
 
-		if (buffer.readableBytes() < length) {
-			buffer.resetReaderIndex();
-			return null;
+		if (length > 0) {
+			if (buffer.readableBytes() < length) {
+				buffer.resetReaderIndex();
+				return null;
+			}
+			decoded = new byte[length];
+			buffer.readBytes(decoded);
 		}
-
-		byte[] decoded = new byte[length];
-		buffer.readBytes(decoded);
 
 		return factory.getMessage(type, decoded);
 	}

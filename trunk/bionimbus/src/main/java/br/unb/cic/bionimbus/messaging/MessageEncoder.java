@@ -13,13 +13,19 @@ public class MessageEncoder extends SimpleChannelHandler {
 	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e)
 			throws Exception {
 		Message message = (Message) e.getMessage();
+
 		byte[] encoded = message.serialize();
-		
-		ChannelBuffer buffer = ChannelBuffers.buffer(8 + encoded.length);
-		buffer.writeInt(encoded.length);
+		int length = 0;
+		if (encoded != null)
+			length = encoded.length;
+
+		ChannelBuffer buffer = ChannelBuffers.buffer(8 + length);
+		buffer.writeInt(length);
 		buffer.writeInt(message.getType());
-		buffer.writeBytes(encoded);
-		
+
+		if (length > 0)
+			buffer.writeBytes(encoded);
+
 		Channels.write(ctx, e.getFuture(), buffer);
 	}
 
