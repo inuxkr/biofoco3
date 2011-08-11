@@ -1,0 +1,33 @@
+package br.unb.cic.bionimbus.p2p.rpc;
+
+
+public final class WireMessage {
+
+	private int id;
+
+	private String data;
+
+	public int getId() {
+
+		return id;
+	}
+
+	public void setId(int id) {
+
+		this.id = id;
+	}
+
+	public String getData() {
+
+		return data;
+	}
+
+	public void setData(String data) {
+
+		this.data = data;
+	}
+
+	public String toString() {
+		return id + ":" + data;
+	}
+}
