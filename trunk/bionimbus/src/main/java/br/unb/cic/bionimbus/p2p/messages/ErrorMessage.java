@@ -17,9 +17,12 @@ public abstract class ErrorMessage implements Message {
 	}
 	
 	public abstract P2PErrorType getErrorType();
+	
+	@Override
+	public abstract void deserialize(byte[] buffer) throws Exception;
 
 	@Override
-	public abstract byte[] serialize();
+	public abstract byte[] serialize() throws Exception;
 
 	@Override
 	public int getType() {

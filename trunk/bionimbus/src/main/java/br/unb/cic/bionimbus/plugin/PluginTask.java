@@ -6,7 +6,7 @@ public class PluginTask {
 	
 	private PluginTaskState state = PluginTaskState.WAITING;
 	
-	private UUID id = UUID.randomUUID();
+	private String id = UUID.randomUUID().toString();
 
 	public PluginTaskState getState() {
 		return state;
@@ -16,8 +16,12 @@ public class PluginTask {
 		this.state = state;
 	}
 	
-	public String getID() {
-		return id.toString();
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	@Override

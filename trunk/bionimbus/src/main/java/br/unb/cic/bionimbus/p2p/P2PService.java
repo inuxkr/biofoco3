@@ -17,10 +17,10 @@ public class P2PService implements MessageListener {
 
 	public void start() {
 		List<Integer> types = new ArrayList<Integer>();
-		
+
 		for (P2PMessageType enumType : P2PMessageType.values())
 			types.add(enumType.ordinal());
-		
+
 		msgService.addListener(this, types);
 		msgService.start(new P2PMessageFactory());
 	}
@@ -34,7 +34,8 @@ public class P2PService implements MessageListener {
 	}
 
 	public void sendMessage(Message message) {
-		msgService.sendMessage(new InetSocketAddress("localhost", 8080), message);
+		msgService.sendMessage(new InetSocketAddress("localhost", 8080),
+				message);
 	}
 
 	public void addListener(P2PListener listener) {
@@ -47,9 +48,10 @@ public class P2PService implements MessageListener {
 
 	@Override
 	public void onEvent(Message message) {
-		for (P2PListener listener : listeners) {
-			//P2PEvent event = new P2PMessageEvent(message);
-			//listener.onEvent(event);
-		}
+		// for (P2PListener listener : listeners) {
+		// P2PEvent event = new P2PMessageEvent(message);
+		// listener.onEvent(event);
+		// }
+		System.out.println("chegou mensagem: type = " + message.getType());
 	}
 }
