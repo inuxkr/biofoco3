@@ -23,6 +23,12 @@ public class TaskErrorMessage extends ErrorMessage {
 	}
 
 	@Override
+	public void deserialize(byte[] buffer) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public byte[] serialize() {
 		// TODO Auto-generated method stub
 		return null;

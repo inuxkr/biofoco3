@@ -70,7 +70,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 			msg = new EndMessage(task);
 		} catch (Exception e) {
-			msg = new TaskErrorMessage(id, t.getID(), e.getMessage());
+			msg = new TaskErrorMessage(id, t.getId(), e.getMessage());
 		}
 
 		return msg;
@@ -89,7 +89,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 			if (fTask.isDone()) {
 				Message message = buildFinishedTaskMsg(task, fTask);
-				taskMap.remove(task.getID());
+				taskMap.remove(task.getId());
 				p2p.sendMessage(message);
 			}
 		}
@@ -177,7 +177,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 			PluginTask task = new PluginTask();
 			Future<PluginTask> fTask = executorService.submit(new HadoopTask(task));
 			Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
-			taskMap.put(task.getID(), pair);
+			taskMap.put(task.getId(), pair);
 			// TODO enviar mensagem de taskId como resposta.
 			break;
 		case STATUSREQ:

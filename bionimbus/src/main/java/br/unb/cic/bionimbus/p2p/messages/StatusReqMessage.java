@@ -7,14 +7,25 @@ public class StatusReqMessage implements Message {
 	
 	private String taskId;
 	
+	public StatusReqMessage() {
+	}
+	
+	public StatusReqMessage(String taskId) {
+		this.taskId = taskId;
+	}
+	
 	public String getTaskId() {
 		return taskId;
 	}
 
 	@Override
+	public void deserialize(byte[] buffer) throws Exception {
+		this.taskId = new String(buffer);
+	}
+
+	@Override
 	public byte[] serialize() {
-		// TODO Auto-generated method stub
-		return null;
+		return taskId.getBytes();
 	}
 
 	@Override

@@ -16,14 +16,18 @@ public class InfoErrorMessage extends ErrorMessage {
 	}
 
 	@Override
-	public P2PErrorType getErrorType() {
-		return P2PErrorType.INFO;
+	public void deserialize(byte[] buffer) throws Exception {
+		this.pluginId = new String(buffer);
+	}
+	
+	@Override
+	public byte[] serialize() {
+		return pluginId.getBytes();
 	}
 
 	@Override
-	public byte[] serialize() {
-		// TODO Auto-generated method stub
-		return null;
+	public P2PErrorType getErrorType() {
+		return P2PErrorType.INFO;
 	}
 
 }

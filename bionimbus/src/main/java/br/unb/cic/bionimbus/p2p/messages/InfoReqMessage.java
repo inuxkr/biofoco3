@@ -6,8 +6,12 @@ import br.unb.cic.bionimbus.p2p.P2PMessageType;
 public class InfoReqMessage implements Message {
 
 	@Override
+	public void deserialize(byte[] buffer) throws Exception {
+	}
+
+	@Override
 	public byte[] serialize() {
-		// TODO Auto-generated method stub
+		/* this message is empty */
 		return null;
 	}
 
