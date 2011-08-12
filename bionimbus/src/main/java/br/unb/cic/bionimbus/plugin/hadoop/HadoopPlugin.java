@@ -1,6 +1,5 @@
 package br.unb.cic.bionimbus.plugin.hadoop;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -14,10 +13,12 @@ import java.util.concurrent.Future;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.messaging.Message;
-import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
+import br.unb.cic.bionimbus.p2p.P2PEventType;
 import br.unb.cic.bionimbus.p2p.P2PListener;
+import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
@@ -32,7 +33,7 @@ import br.unb.cic.bionimbus.utils.Pair;
 public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 	private volatile boolean running = false;
-	
+
 	private final String id = UUID.randomUUID().toString();
 
 	private final ExecutorService executorService = Executors
@@ -65,7 +66,8 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 		try {
 			PluginTask task = f.get();
 
-			// pegar arquivos de saida e mandar para o storage service (sincrono ou assincrono?)
+			// pegar arquivos de saida e mandar para o storage service (sincrono
+			// ou assincrono?)
 			// salvar ID na task
 
 			msg = new EndMessage(task);
@@ -77,13 +79,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	}
 
 	private void checkFinishedTasks() {
-		Pair<PluginTask, Future<PluginTask>> pair;
 		Future<PluginTask> fTask;
 		PluginTask task;
-		Iterator<Pair<PluginTask, Future<PluginTask>>> it = taskMap.values().iterator();
-
-		while (it.hasNext()) {
-			pair = it.next();
+		
+		for (Pair<PluginTask, Future<PluginTask>> pair : taskMap.values()) {
 			task = pair.first;
 			fTask = pair.second;
 
@@ -163,8 +162,11 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		Message msg = event.getMessage();
+		if (event.getType() != P2PEventType.MESSAGE)
+			return;
 
+		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
+		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
 

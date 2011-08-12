@@ -28,10 +28,10 @@ public class BioNimbus implements P2PListener {
 		if (!config.isClient())
 			plugin.setP2P(p2p);
 
-		//if (p2p.isMaster()) {
-			//ServiceManager manager = new ServiceManager();
-			//manager.startAll(p2p);
-		//}
+		if (p2p.isMaster()) {
+			ServiceManager manager = new ServiceManager();
+			manager.startAll(p2p);
+		}
 
 		//p2p.addListener(this);
 	}

@@ -1,23 +1,53 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PErrorType;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 
 public abstract class ErrorMessage implements Message {
-	
+
 	private String error;
-	
+
 	public ErrorMessage(String error) {
 		this.error = error;
 	}
-	
+
 	public String getError() {
 		return error;
 	}
-	
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	static public P2PErrorType deserializeErrorType(byte[] buffer)
+			throws Exception {
+		P2PErrorType type = null;
+		JsonFactory f = new JsonFactory();
+		JsonParser p = f.createJsonParser(buffer);
+
+		String debug = new String(buffer);
+		System.out.println(debug);
+
+		p.nextToken();
+		while (p.nextToken() != JsonToken.END_OBJECT) {
+			p.nextToken();
+			if (p.getCurrentName().equals("type")) {
+				type = P2PErrorType.valueOf(p.getText());
+				break;
+			}
+		}
+		p.close();
+
+		return type;
+	}
+
 	public abstract P2PErrorType getErrorType();
-	
+
 	@Override
 	public abstract void deserialize(byte[] buffer) throws Exception;
 
