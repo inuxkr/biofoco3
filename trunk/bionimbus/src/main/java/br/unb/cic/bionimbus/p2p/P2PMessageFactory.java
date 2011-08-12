@@ -4,6 +4,8 @@ import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageFactory;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
+import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
+import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
@@ -60,6 +62,9 @@ public class P2PMessageFactory extends MessageFactory {
 		//case CLOUDRESP:
 			//message = new CloudRespMessage();
 			//break;
+		case ERROR:
+			message = buildErrorMessage(buffer);
+			break;
 		}
 
 		try {
@@ -70,6 +75,25 @@ public class P2PMessageFactory extends MessageFactory {
 			message = null;
 		}
 
+		return message;
+	}
+	
+	private Message buildErrorMessage(byte[] buffer) {
+		Message message = null;
+		
+		try {
+			switch (ErrorMessage.deserializeErrorType(buffer)) {
+			case INFO:
+				message = new InfoErrorMessage();
+				message.deserialize(buffer);
+				break;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			message = null;
+		}
+		
 		return message;
 	}
 

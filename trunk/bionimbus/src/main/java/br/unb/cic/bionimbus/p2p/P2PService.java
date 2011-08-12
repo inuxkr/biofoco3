@@ -48,10 +48,9 @@ public class P2PService implements MessageListener {
 
 	@Override
 	public void onEvent(Message message) {
-		// for (P2PListener listener : listeners) {
-		// P2PEvent event = new P2PMessageEvent(message);
-		// listener.onEvent(event);
-		// }
-		System.out.println("chegou mensagem: type = " + message.getType());
+		for (P2PListener listener : listeners) {
+			P2PEvent event = new P2PMessageEvent(message);
+			listener.onEvent(event);
+		}
 	}
 }
