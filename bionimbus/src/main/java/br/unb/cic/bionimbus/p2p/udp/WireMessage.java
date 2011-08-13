@@ -1,4 +1,4 @@
-package br.unb.cic.bionimbus.p2p.rpc;
+package br.unb.cic.bionimbus.p2p.udp;
 
 
 public final class WireMessage {

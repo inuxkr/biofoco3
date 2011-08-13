@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.utils;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Callable;
@@ -16,7 +17,7 @@ public class AsyncOpTest2 {
 	private static int value1;
 	private static int value2;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		
 		
 		
@@ -33,6 +34,7 @@ public class AsyncOpTest2 {
 			@Override
 			public void run() {
 				try {
+					
 					value1 = future1.get();
 					System.out.println(value1);
 					barrier.await();
@@ -79,17 +81,34 @@ public class AsyncOpTest2 {
 			
 		}, Executors.newCachedThreadPool());
 		
+		TimeUnit.SECONDS.sleep(3);
+		
+		System.out.println("cancelando...");
+//		op1.cancel();
+		op2.cancel();
 	}
 	
 	public static class Operation implements Callable<Integer>{
 
 		@Override
 		public Integer call() throws Exception {
+			
+			System.out.println("dormindo ...");
+			try {
+				Runtime.getRuntime().exec("sleep 3");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+//			Runtime.getRuntime().exec("sleep 3");
 			Random random = new Random(System.nanoTime());
 			TimeUnit.SECONDS.sleep(random.nextInt(30)); // waits random time up to a minute
 			return Math.abs(random.nextInt(50));
 		}
 		
 	}
+	
+	
 
 }

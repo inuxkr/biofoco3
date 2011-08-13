@@ -1,20 +1,19 @@
-package br.unb.cic.bionimbus.p2p.rpc;
-
+package br.unb.cic.bionimbus.p2p.udp;
 
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
 
-public class JsonUdpServerPipelineFactory implements ChannelPipelineFactory {
+
+public class JsonUdpClientPipelineFactory implements ChannelPipelineFactory {
 
 	@Override
 	public ChannelPipeline getPipeline() throws Exception {
-		
 		ChannelPipeline p = Channels.pipeline();
-	
 		p.addLast("decoder", new JsonDecoder());
 		p.addLast("encoder", new JsonEncoder());
-		p.addLast("handler", new UdpServerHandler());
+		p.addLast("handler", new UdpClientHandler());
 		return p;
 	}
+
 }
