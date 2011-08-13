@@ -1,94 +1,101 @@
 package br.unb.cic.bionimbus.p2p.rpc;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class AsyncOp<T> implements Runnable {
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+
+public class AsyncOp<T> {
+
 
 	protected volatile T result;
 
-	private final Thread timerThread;
-	private volatile boolean started = false;
-	private final CopyOnWriteArraySet<AsyncOpListener<T>> listeners = new CopyOnWriteArraySet<AsyncOpListener<T>>();
-	private final long timeout;
+	private volatile AsyncOpStatus status = AsyncOpStatus.UNSTARTED;
 	
-	private final Callable<T> operation;
-
 	private long initTime;
 	private long endTime;
-	
+
 	private static final ThreadFactory factory = Executors.defaultThreadFactory();
-	private final ExecutorService executor = Executors.newSingleThreadExecutor();
+	private final ExecutorService executor;
+	private final long timeout;
+	private final Callable<T> operation;
 
-	private Future<T> future;
+	private Future<T> operationFuture;
 
-	public AsyncOp(Callable<T> operation, AsyncOpListener<T> listener, long timeout) {
+	public AsyncOp(Callable<T> operation, ExecutorService executor, long timeout) {
 		this.operation = operation;
-//		this.executor = executor;
-		this.listeners.add(listener);
+		this.executor = executor;
 		this.timeout = timeout;
-		this.timerThread = factory.newThread(this);
-	}
-	
-	public final void completed(T value) {
-
-		this.result = value;
-
-		if (result != null) {
-			timerThread.interrupt();
-		}
 	}
 
 	public final T getResult() {
 		return result;
 	}
+	
+	public AsyncOpStatus getStatus() {
+		return status;
+	}
 
 	public final void cancel() {
-		if (timerThread.isAlive() && started)
-			timerThread.interrupt();
-	}
-
-	public final void start() {
-		started = true;
-		timerThread.start();
-		initTime = System.currentTimeMillis();
-		future = executor.submit(operation);
-	}
-
-	public final void run() {
-
-		if (timeout > 0) {
-			try {
-				Thread.sleep(timeout);
-			} catch (InterruptedException e) {
-				// Thread was interrupted, operation may have completed
-			}
-		}
-
-		endTime = System.currentTimeMillis();
-
-		for (AsyncOpListener<T> listener : listeners) {
-			if (result == null) {
-				if ((endTime - initTime) >= timeout) {
-					listener.onTimeoutException();
-				} else {
-					listener.onInterruptedException();
-				}
-			} else {
-				listener.onFinished(result);
-			}
-		}
+		operationFuture.cancel(true);
 	}
 	
-	public final void addListener(AsyncOpListener<T> listener) {
-		listeners.add(listener);
+	public long elapsedTimeInMilliseconds() {
+		if (endTime < initTime)
+			System.out.println("true");
+		return (endTime - initTime + 1);
 	}
 
-	public boolean removeListener(AsyncOpListener<T> listener) {
-		return listeners.remove(listener);
+	public final ListenableFuture<T> execute() {
+		
+		final SettableFuture<T> future = SettableFuture.create();
+
+		operationFuture = executor.submit(operation);
+		
+		initTime = System.currentTimeMillis();
+		
+		status = AsyncOpStatus.EXECUTING;
+	
+		Thread execThread = factory.newThread(new Runnable() {
+			public void run() {
+				try {					
+					
+					result = operationFuture.get(timeout, TimeUnit.MILLISECONDS);
+					System.out.println("completed!");
+					future.set(result);
+					
+					endTime = System.currentTimeMillis();
+					
+					status = AsyncOpStatus.FINISHED;
+					
+				} catch (InterruptedException e) {					
+					System.out.println("interrupted exception!");					
+					status = AsyncOpStatus.ABORTED;
+					future.setException(e);
+					
+				} catch (ExecutionException e) {					
+					System.out.println("execution exception!");
+					status = AsyncOpStatus.ABORTED;
+					future.setException(e);
+					
+				} catch (TimeoutException e) {					
+					System.out.println("timeout!");
+					status = AsyncOpStatus.TIMED_OUT;
+					endTime = System.currentTimeMillis();
+					future.setException(e);				
+				}
+			}
+		});
+		
+		execThread.start();
+				
+		return future;
 	}
 }
