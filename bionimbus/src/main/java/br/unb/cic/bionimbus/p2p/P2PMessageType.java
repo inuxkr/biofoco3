@@ -14,5 +14,7 @@ public enum P2PMessageType {
 	GETRESP,
 	CLOUDREQ,
 	CLOUDRESP,
+	SCHEDREQ,
+	SCHEDRESP,
 	ERROR,
 }
