@@ -31,7 +31,7 @@ public class JsonEncoder extends OneToOneEncoder {
 		int dataLength = data.length;
 
 		System.out.println("message: " + json);
-		System.out.println("tamanho: " + dataLength);
+		System.out.println("message length: " + dataLength);
 
 		ChannelBuffer buf = ChannelBuffers.dynamicBuffer();
 //		buf.writeByte((byte) 'J'); //magic number

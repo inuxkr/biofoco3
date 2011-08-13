@@ -16,7 +16,21 @@ public class JsonDecoder extends FrameDecoder {
 	@Override
 	protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer) throws Exception {
 
-		byte[] decoded = new byte[buffer.readableBytes()];
+		//wait until the length prefix is available (in bytes)
+		if (buffer.readableBytes() < 4){
+			return null;
+		}
+
+		buffer.markReaderIndex();
+
+		//wait until the whole data is available
+		int dataLength = buffer.readInt();
+		if (buffer.readableBytes() < dataLength){
+			buffer.resetReaderIndex();
+			return null;
+		}
+
+		byte[] decoded = new byte[dataLength];
 		buffer.readBytes(decoded);
 
 		return deserialize(decoded);

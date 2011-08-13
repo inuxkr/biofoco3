@@ -6,6 +6,13 @@ public final class WireMessage {
 	private int id;
 
 	private String data;
+	
+	public WireMessage() {}
+	
+	public WireMessage(int id, String data) {
+		this.id = id;
+		this.data = data;
+	}
 
 	public int getId() {
 
