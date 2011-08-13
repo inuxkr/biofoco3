@@ -1,4 +1,4 @@
-package br.unb.cic.bionimbus.p2p.rpc;
+package br.unb.cic.bionimbus.p2p.udp;
 
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;

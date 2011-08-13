@@ -97,16 +97,13 @@ public class AsyncOp<T> {
 	}
 
 	public long elapsedTimeInMilliseconds() {
-		if (endTime < initTime)
-			System.out.println("true");
 		return (endTime - initTime + 1);
 	}
 
 	public final ListenableFuture<T> execute() {
 
 		if (status != AsyncOpStatus.UNSTARTED)
-			throw new IllegalStateException(
-					"cannot start async op, current status=" + status);
+			throw new IllegalStateException("cannot start async op, current status=" + status);
 
 		final SettableFuture<T> future = SettableFuture.create();
 
@@ -120,7 +117,13 @@ public class AsyncOp<T> {
 			public void run() {
 				try {
 
-					result = operationFuture.get(timeout, TimeUnit.MILLISECONDS);
+					if (timeout > 0) {
+						result = operationFuture.get(timeout, TimeUnit.MILLISECONDS);
+					}
+					else { 
+						result = operationFuture.get();
+					}
+					
 					System.out.println("completed!");
 					future.set(result);
 
