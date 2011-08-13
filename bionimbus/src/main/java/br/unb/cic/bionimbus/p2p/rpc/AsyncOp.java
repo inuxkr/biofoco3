@@ -1,43 +1,45 @@
 package br.unb.cic.bionimbus.p2p.rpc;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 public class AsyncOp<T> implements Runnable {
 
 	protected volatile T result;
 
-	private final Thread thread;
+	private final Thread timerThread;
+	private volatile boolean started = false;
 	private final CopyOnWriteArraySet<AsyncOpListener<T>> listeners = new CopyOnWriteArraySet<AsyncOpListener<T>>();
 	private final long timeout;
-
-	private volatile boolean started = false;
+	
+	private final Callable<T> operation;
 
 	private long initTime;
 	private long endTime;
+	
 	private static final ThreadFactory factory = Executors.defaultThreadFactory();
+	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-	public AsyncOp(AsyncOpListener<T> listener, long timeout) {
+	private Future<T> future;
+
+	public AsyncOp(Callable<T> operation, AsyncOpListener<T> listener, long timeout) {
+		this.operation = operation;
+//		this.executor = executor;
 		this.listeners.add(listener);
 		this.timeout = timeout;
-		this.thread = factory.newThread(this);
+		this.timerThread = factory.newThread(this);
 	}
 	
-	public final void addListener(AsyncOpListener<T> listener) {
-		listeners.add(listener);
-	}
-	
-	public boolean removeListener(AsyncOpListener<T> listener) {
-		return listeners.remove(listener);
-	}
-
 	public final void completed(T value) {
 
 		this.result = value;
 
 		if (result != null) {
-			thread.interrupt();
+			timerThread.interrupt();
 		}
 	}
 
@@ -46,22 +48,25 @@ public class AsyncOp<T> implements Runnable {
 	}
 
 	public final void cancel() {
-		if (thread.isAlive() && started)
-			thread.interrupt();
+		if (timerThread.isAlive() && started)
+			timerThread.interrupt();
 	}
 
 	public final void start() {
-		thread.start();
+		started = true;
+		timerThread.start();
 		initTime = System.currentTimeMillis();
-		started = true;		
+		future = executor.submit(operation);
 	}
 
 	public final void run() {
 
-		try {
-			Thread.sleep(timeout);
-		} catch (InterruptedException e) {
-			// Thread was interrupted, operation may have completed
+		if (timeout > 0) {
+			try {
+				Thread.sleep(timeout);
+			} catch (InterruptedException e) {
+				// Thread was interrupted, operation may have completed
+			}
 		}
 
 		endTime = System.currentTimeMillis();
@@ -77,5 +82,13 @@ public class AsyncOp<T> implements Runnable {
 				listener.onFinished(result);
 			}
 		}
+	}
+	
+	public final void addListener(AsyncOpListener<T> listener) {
+		listeners.add(listener);
+	}
+
+	public boolean removeListener(AsyncOpListener<T> listener) {
+		return listeners.remove(listener);
 	}
 }
