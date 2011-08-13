@@ -18,7 +18,7 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
-import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
@@ -87,8 +87,8 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 					infoMsg.getPluginInfo());
 			break;
 		case CLOUDREQ:
-			CloudReqMessage cloudInfoMsg = new CloudReqMessage(infoMap.values());
-			p2p.sendMessage(cloudInfoMsg);
+			CloudRespMessage cloudMsg = new CloudRespMessage(infoMap.values());
+			p2p.sendMessage(cloudMsg);
 			break;
 		case ERROR:
 			ErrorMessage errMsg = (ErrorMessage) msg;

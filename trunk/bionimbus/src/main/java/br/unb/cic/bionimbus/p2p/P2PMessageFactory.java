@@ -3,6 +3,7 @@ package br.unb.cic.bionimbus.p2p;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageFactory;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
@@ -59,9 +60,9 @@ public class P2PMessageFactory extends MessageFactory {
 		case CLOUDREQ:
 			message = new CloudReqMessage();
 			break;
-		//case CLOUDRESP:
-			//message = new CloudRespMessage();
-			//break;
+		case CLOUDRESP:
+			message = new CloudRespMessage();
+			break;
 		case ERROR:
 			message = buildErrorMessage(buffer);
 			break;
