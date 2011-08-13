@@ -12,6 +12,56 @@ import java.util.concurrent.TimeoutException;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
+/**
+
+  AsyncOp permite a chamada de operações assíncronas (RPC, I/O, etc), utilizando recursos do Java 1.5
+  e da biblioteca Guava da Google. 
+  
+  Exemplo de uso:
+ 	<code>
+ 			ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
+		builder.setDaemon(true).setNameFormat("async");
+		
+		ExecutorService executor = Executors.newCachedThreadPool(builder.build());
+				
+		AsyncOp<String> a = new AsyncOp<String>(new Callable<String>() {
+
+			@Override
+			public String call() throws Exception {
+				TimeUnit.SECONDS.sleep(1);
+				System.out.println("executing");
+				return "OK";
+			}
+			
+		}
+		,executor
+		, 3 * 1000);
+		
+		// waiting for result
+		final ListenableFuture<String> listener = a.execute();
+		listener.addListener(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					System.out.println("answer: " + listener.get());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			
+		}, executor);
+	</code>
+ * 
+ * @author edward
+ *
+ * @param <T>
+ */
 public class AsyncOp<T> {
 
 	protected volatile T result;
@@ -21,8 +71,7 @@ public class AsyncOp<T> {
 	private long initTime;
 	private long endTime;
 
-	private static final ThreadFactory factory = Executors
-			.defaultThreadFactory();
+	private static final ThreadFactory factory = Executors.defaultThreadFactory();
 	private final ExecutorService executor;
 	private final long timeout;
 	private final Callable<T> operation;
@@ -67,12 +116,11 @@ public class AsyncOp<T> {
 
 		status = AsyncOpStatus.EXECUTING;
 
-		Thread execThread = factory.newThread(new Runnable() {
+		Thread resultThread = factory.newThread(new Runnable() {
 			public void run() {
 				try {
 
-					result = operationFuture
-							.get(timeout, TimeUnit.MILLISECONDS);
+					result = operationFuture.get(timeout, TimeUnit.MILLISECONDS);
 					System.out.println("completed!");
 					future.set(result);
 
@@ -101,7 +149,7 @@ public class AsyncOp<T> {
 			}
 		});
 
-		execThread.start();
+		resultThread.start();
 
 		return future;
 	}
