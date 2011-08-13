@@ -12,15 +12,15 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 public class MessageServiceServer {
 
-	private final ChannelFactory factory = new NioServerSocketChannelFactory(
-			Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
+	private final ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 
-	private final ChannelGroup channelGroup = new DefaultChannelGroup(
-			"msg-server");
+	private final ChannelGroup channelGroup = new DefaultChannelGroup("msg-server");
 
 	private MessageService service;
+	
+	private static final int DEFAULT_PORT = 8080;
 
-	private int port = 8080;
+	private int port = DEFAULT_PORT;
 
 	public void start(MessageService service, MessageFactory messageFactory) {
 
@@ -28,8 +28,7 @@ public class MessageServiceServer {
 
 		ServerBootstrap server = new ServerBootstrap(factory);
 
-		server.setPipelineFactory(new MessageServiceServerPipelineFactory(this,
-				messageFactory));
+		server.setPipelineFactory(new MessageServiceServerPipelineFactory(this, messageFactory));
 
 		server.bind(new InetSocketAddress(port));
 	}

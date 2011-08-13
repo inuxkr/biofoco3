@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PListener;
@@ -14,7 +15,10 @@ public class BioNimbus implements P2PListener {
 	private P2PService p2p = null;
 
 	public BioNimbus() {
+		
 		config = new BioNimbusConfig();
+		config.setHost(new Host("localhost", 9999));
+		
 		plugin = null;
 
 		if (!config.isClient()) {
@@ -23,6 +27,7 @@ public class BioNimbus implements P2PListener {
 		}
 
 		p2p = new P2PService();
+		p2p.setConfig(config);
 		p2p.start();
 
 		if (!config.isClient())

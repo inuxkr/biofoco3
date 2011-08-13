@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import br.unb.cic.bionimbus.config.BioNimbusConfig;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageListener;
 import br.unb.cic.bionimbus.messaging.MessageService;
@@ -14,6 +15,8 @@ public class P2PService implements MessageListener {
 	private final MessageService msgService = new MessageService();
 
 	private final CopyOnWriteArrayList<P2PListener> listeners = new CopyOnWriteArrayList<P2PListener>();
+
+	private BioNimbusConfig config;
 
 	public void start() {
 		List<Integer> types = new ArrayList<Integer>();
@@ -52,5 +55,9 @@ public class P2PService implements MessageListener {
 			P2PEvent event = new P2PMessageEvent(message);
 			listener.onEvent(event);
 		}
+	}
+
+	public void setConfig(BioNimbusConfig config) {
+		this.config = config;
 	}
 }
