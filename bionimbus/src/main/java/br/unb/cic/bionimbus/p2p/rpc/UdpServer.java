@@ -1,6 +1,8 @@
 package br.unb.cic.bionimbus.p2p.rpc;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap;
@@ -8,30 +10,70 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory;
 
-public class UdpServer {
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+public final class UdpServer {
 	
-	private static final int PORT = 9090;
+	public static final int DEFAULT_PORT = 9999;
+	
+	private int port;
 	
 	private ChannelFactory factory;
 	private ConnectionlessBootstrap bootstrap;
 	
-	void start() {
-		factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool());
+	private volatile boolean running = false;
+
+	private ExecutorService executorService;
+
+	private Channel serverChannel;
+	
+	
+	public UdpServer() {
+		this(DEFAULT_PORT);
+	}
+	
+	public UdpServer(int port) {
+		this.port = port;
+	}
+	
+	void start() throws IOException {
+		
+		ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
+		builder.setDaemon(true).setDaemon(true).setNameFormat("udp-server");
+		
+		executorService = Executors.newCachedThreadPool(builder.build());
+		
+		factory = new NioDatagramChannelFactory(executorService);
 		bootstrap = new ConnectionlessBootstrap(factory);
 		
 		bootstrap.setPipelineFactory(new JsonUdpServerPipelineFactory());
 		
+		bootstrap.setOption("reuseAddress", true);
 		bootstrap.setOption("tcpNoDelay", true);
-		bootstrap.setOption("broadcast", "false");
+		bootstrap.setOption("broadcast", false);
 		bootstrap.setOption("sendBufferSize", 65536);
 		bootstrap.setOption("receiveBufferSize", 65536);
 		
-		System.out.println("Listening on port " + PORT);
+		System.out.println("UDP server listening on port " + port);
 		
-		bootstrap.bind(new InetSocketAddress(PORT));		
+		serverChannel = bootstrap.bind(new InetSocketAddress(port));
+		
+		running = true;
 	}
-
-	public static void main(String[] args) {
-		new UdpServer().start();
+	
+	public void stop() {
+		System.out.println("stopping UDP server");
+		
+		serverChannel.close();
+//		factory.releaseExternalResources();
+		bootstrap.releaseExternalResources();
+		
+		running = false;
+		
+		System.out.println("server stopped");
+	}
+	
+	public boolean isRunning() {
+		return running;
 	}
 }
