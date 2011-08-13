@@ -30,9 +30,6 @@ public abstract class ErrorMessage implements Message {
 		JsonFactory f = new JsonFactory();
 		JsonParser p = f.createJsonParser(buffer);
 
-		String debug = new String(buffer);
-		System.out.println(debug);
-
 		p.nextToken();
 		while (p.nextToken() != JsonToken.END_OBJECT) {
 			p.nextToken();
