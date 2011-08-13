@@ -9,6 +9,9 @@ import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
+import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 
@@ -63,6 +66,12 @@ public class P2PMessageFactory extends MessageFactory {
 		case CLOUDRESP:
 			message = new CloudRespMessage();
 			break;
+		case SCHEDREQ:
+			message = new SchedReqMessage();
+			break;
+		case SCHEDRESP:
+			message = new SchedRespMessage();
+			break;
 		case ERROR:
 			message = buildErrorMessage(buffer);
 			break;
@@ -86,6 +95,10 @@ public class P2PMessageFactory extends MessageFactory {
 			switch (ErrorMessage.deserializeErrorType(buffer)) {
 			case INFO:
 				message = new InfoErrorMessage();
+				message.deserialize(buffer);
+				break;
+			case SCHED:
+				message = new SchedErrorMessage();
 				message.deserialize(buffer);
 				break;
 			}
