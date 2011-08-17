@@ -1,7 +1,6 @@
 package br.unb.cic.bionimbus.sched;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,10 +33,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("SchedService-%d").build());
 
-	private final ExecutorService executorService = Executors
-			.newCachedThreadPool(new BasicThreadFactory.Builder()
-					.namingPattern("schedservice-%d").build());
-
 	private P2PService p2p = null;
 
 	public SchedService(ServiceManager manager) {
@@ -62,7 +57,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 	@Override
 	public void shutdown() {
 		p2p.remove(this);
-		executorService.shutdownNow();
+		schedExecService.shutdownNow();
 	}
 
 	@Override

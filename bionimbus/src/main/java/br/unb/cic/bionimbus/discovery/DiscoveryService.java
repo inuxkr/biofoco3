@@ -2,7 +2,6 @@ package br.unb.cic.bionimbus.discovery;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,10 +31,6 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("DiscoveryService-%d").build());
 
-	private final ExecutorService executorService = Executors
-			.newCachedThreadPool(new BasicThreadFactory.Builder()
-					.namingPattern("DiscoveryService-workers-%d").build());
-
 	private P2PService p2p;
 
 	public DiscoveryService(ServiceManager manager) {
@@ -61,7 +56,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 	@Override
 	public void shutdown() {
 		p2p.remove(this);
-		executorService.shutdownNow();
+		schedExecService.shutdownNow();
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package br.unb.cic.bionimbus.monitor;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +26,6 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	private final ScheduledExecutorService schedExecService = Executors
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("MonitorService-%d").build());
-
-	private final ExecutorService executorService = Executors
-			.newCachedThreadPool(new BasicThreadFactory.Builder()
-					.namingPattern("monitorservice-%d").build());
 
 	private P2PService p2p = null;
 
@@ -61,7 +56,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	@Override
 	public void shutdown() {
 		p2p.remove(this);
-		executorService.shutdownNow();
+		schedExecService.shutdownNow();
 	}
 
 	@Override
