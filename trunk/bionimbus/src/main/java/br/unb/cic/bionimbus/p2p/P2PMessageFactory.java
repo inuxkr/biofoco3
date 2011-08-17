@@ -9,9 +9,13 @@ import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 
@@ -33,12 +37,12 @@ public class P2PMessageFactory extends MessageFactory {
 		case INFORESP:
 			message = new InfoRespMessage();
 			break;
-		//case STARTREQ:
-			//message = new StartReqMessage();
-			//break;
-		//case STARTRESP:
-			//message = new StartRespMessage();
-			//break;
+		case STARTREQ:
+			message = new StartReqMessage();
+			break;
+		case STARTRESP:
+			message = new StartRespMessage();
+			break;
 		case END:
 			message = new EndMessage();
 			break;
@@ -71,6 +75,12 @@ public class P2PMessageFactory extends MessageFactory {
 			break;
 		case SCHEDRESP:
 			message = new SchedRespMessage();
+			break;
+		case JOBREQ:
+			message = new JobReqMessage();
+			break;
+		case JOBRESP:
+			message = new JobRespMessage();
 			break;
 		case ERROR:
 			message = buildErrorMessage(buffer);
