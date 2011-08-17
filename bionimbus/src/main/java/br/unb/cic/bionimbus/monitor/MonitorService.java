@@ -1,6 +1,8 @@
 package br.unb.cic.bionimbus.monitor;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -18,14 +20,22 @@ import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 
 public class MonitorService implements Service, P2PListener, Runnable {
 
 	private final ScheduledExecutorService schedExecService = Executors
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("MonitorService-%d").build());
+	
+	private final Map<String, JobInfo> newJobs = new ConcurrentHashMap<String, JobInfo>();
+	
+	private final Map<String, JobInfo> runJobs = new ConcurrentHashMap<String, JobInfo>();
 
 	private P2PService p2p = null;
 
@@ -36,13 +46,9 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	@Override
 	public void run() {
 		System.out.println("running MonitorService...");
-		JobInfo jobInfo = new JobInfo();
-		jobInfo.setId(UUID.randomUUID().toString());
-		jobInfo.setServiceId(1023296285);
-		jobInfo.setArgs(null);
-		jobInfo.setInputs(null);
-		Message msg = new SchedReqMessage(jobInfo);
-		p2p.sendMessage(msg);
+		
+		// checar jobs ainda nao escalonados ou precisando reescalonar
+		// e checar status dos jobs ja' iniciados
 	}
 
 	@Override
@@ -74,14 +80,23 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
-		
-		// recebe eventos de startJob() e endTask()
-		
+
+		// recebe eventos de endTask()
+
 		switch (P2PMessageType.values()[msg.getType()]) {
+		case JOBREQ:
+			JobReqMessage jobMsg = (JobReqMessage) msg;
+			sendSchedReq(jobMsg.getJobInfo());
+			break;
 		case SCHEDRESP:
 			SchedRespMessage schedMsg = (SchedRespMessage) msg;
-			System.out.println("jobId = " + schedMsg.getJobId());
-			System.out.println("pluginId = " + schedMsg.getPluginId());
+			JobInfo schedJob = newJobs.get(schedMsg.getJobId());
+			sendStartReq(schedJob);
+			break;
+		case STARTRESP:
+			StartRespMessage respMsg = (StartRespMessage) msg;
+			JobInfo startJob = respMsg.getJobInfo();
+			sendJobResp(startJob);
 			break;
 		case ERROR:
 			ErrorMessage errMsg = (ErrorMessage) msg;
@@ -90,6 +105,25 @@ public class MonitorService implements Service, P2PListener, Runnable {
 					+ errMsg.getError());
 			break;
 		}
+	}
+	
+	private void sendSchedReq(JobInfo jobInfo) {
+		jobInfo.setId(UUID.randomUUID().toString());
+		newJobs.put(jobInfo.getId(), jobInfo);
+		SchedReqMessage newMsg = new SchedReqMessage(jobInfo);
+		p2p.sendMessage(newMsg);
+	}
+	
+	private void sendJobResp(JobInfo jobInfo) {
+		newJobs.remove(jobInfo.getId());
+		runJobs.put(jobInfo.getId(), jobInfo);
+		JobRespMessage jobRespMsg = new JobRespMessage(jobInfo);
+		p2p.sendMessage(jobRespMsg);
+	}
+	
+	private void sendStartReq(JobInfo jobInfo) {
+		StartReqMessage startMsg = new StartReqMessage(jobInfo);
+		p2p.sendMessage(startMsg);
 	}
 
 }
