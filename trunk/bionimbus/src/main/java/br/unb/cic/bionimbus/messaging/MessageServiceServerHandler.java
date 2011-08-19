@@ -30,7 +30,7 @@ public class MessageServiceServerHandler extends SimpleChannelHandler {
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e)
 			throws Exception {
-		server.geMessageService().recvMessage((Message) e.getMessage());
+		server.getMessageService().recvMessage((Message) e.getMessage());
 	}
 
 }

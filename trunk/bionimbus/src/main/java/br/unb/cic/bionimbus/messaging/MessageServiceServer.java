@@ -1,6 +1,5 @@
 package br.unb.cic.bionimbus.messaging;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -17,20 +16,12 @@ public class MessageServiceServer {
 	private final ChannelGroup channelGroup = new DefaultChannelGroup("msg-server");
 
 	private MessageService service;
-	
-	private static final int DEFAULT_PORT = 8080;
-
-	private int port = DEFAULT_PORT;
 
 	public void start(MessageService service, MessageFactory messageFactory) {
-
 		this.service = service;
-
 		ServerBootstrap server = new ServerBootstrap(factory);
-
 		server.setPipelineFactory(new MessageServiceServerPipelineFactory(this, messageFactory));
-
-		server.bind(new InetSocketAddress(port));
+		server.bind(service.getSocket());
 	}
 
 	public void shutdown() {
@@ -43,7 +34,7 @@ public class MessageServiceServer {
 		return channelGroup;
 	}
 	
-	public MessageService geMessageService() {
+	public MessageService getMessageService() {
 		return service;
 	}
 

@@ -24,6 +24,7 @@ public class P2PService implements MessageListener {
 		for (P2PMessageType enumType : P2PMessageType.values())
 			types.add(enumType.ordinal());
 
+		msgService.bind(new InetSocketAddress(config.getHost().getAddress(), config.getHost().getPort()));
 		msgService.addListener(this, types);
 		msgService.start(new P2PMessageFactory());
 	}
@@ -35,10 +36,13 @@ public class P2PService implements MessageListener {
 	public boolean isMaster() {
 		return true;
 	}
-
+	
 	public void sendMessage(Message message) {
-		msgService.sendMessage(new InetSocketAddress("localhost", 8080),
-				message);
+		msgService.sendMessage(new InetSocketAddress("localhost", 9999), message);
+	}
+
+	public void sendMessage(Host host, Message message) {
+		msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
 	}
 
 	public void addListener(P2PListener listener) {
