@@ -33,7 +33,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("MonitorService-%d").build());
 	
-	private final Map<String, JobInfo> newJobs = new ConcurrentHashMap<String, JobInfo>();
+	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
 	
 	private final Map<String, JobInfo> runJobs = new ConcurrentHashMap<String, JobInfo>();
 
@@ -90,13 +90,12 @@ public class MonitorService implements Service, P2PListener, Runnable {
 			break;
 		case SCHEDRESP:
 			SchedRespMessage schedMsg = (SchedRespMessage) msg;
-			JobInfo schedJob = newJobs.get(schedMsg.getJobId());
+			JobInfo schedJob = pendingJobs.get(schedMsg.getJobId());
 			sendStartReq(schedJob);
 			break;
 		case STARTRESP:
 			StartRespMessage respMsg = (StartRespMessage) msg;
-			JobInfo startJob = respMsg.getJobInfo();
-			sendJobResp(startJob);
+			sendJobResp(respMsg.getJobInfo());
 			break;
 		case ERROR:
 			ErrorMessage errMsg = (ErrorMessage) msg;
@@ -109,13 +108,13 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	
 	private void sendSchedReq(JobInfo jobInfo) {
 		jobInfo.setId(UUID.randomUUID().toString());
-		newJobs.put(jobInfo.getId(), jobInfo);
+		pendingJobs.put(jobInfo.getId(), jobInfo);
 		SchedReqMessage newMsg = new SchedReqMessage(jobInfo);
 		p2p.sendMessage(newMsg);
 	}
 	
 	private void sendJobResp(JobInfo jobInfo) {
-		newJobs.remove(jobInfo.getId());
+		pendingJobs.remove(jobInfo.getId());
 		runJobs.put(jobInfo.getId(), jobInfo);
 		JobRespMessage jobRespMsg = new JobRespMessage(jobInfo);
 		p2p.sendMessage(jobRespMsg);

@@ -3,15 +3,17 @@ package br.unb.cic.bionimbus.plugin.hadoop;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PEventType;
@@ -22,6 +24,7 @@ import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
@@ -30,15 +33,15 @@ import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.utils.Pair;
 
-public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
-
-	private volatile boolean running = false;
+public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 	private final String id = UUID.randomUUID().toString();
+	
+	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("HadoopPlugin-%d").build());
 
 	private final ExecutorService executorService = Executors
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
-					.namingPattern("hadoopplugin-%d").build());
+					.namingPattern("HadoopPlugin-workers-%d").build());
 
 	private final List<Future<PluginInfo>> reqList = new CopyOnWriteArrayList<Future<PluginInfo>>();
 
@@ -47,17 +50,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	private P2PService p2p;
 
 	@Override
-	public Boolean call() throws Exception {
-		running = true;
-
-		while (running) {
-			System.out.println("running Plugin loop...");
-			checkFinishedGetInfo();
-			checkFinishedTasks();
-			Thread.sleep(10000);
-		}
-
-		return true;
+	public void run() {
+		System.out.println("running Plugin loop...");
+		checkFinishedGetInfo();
+		checkFinishedTasks();
 	}
 
 	private Message buildFinishedTaskMsg(PluginTask t, Future<PluginTask> f) {
@@ -81,7 +77,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	private void checkFinishedTasks() {
 		Future<PluginTask> fTask;
 		PluginTask task;
-		
+
 		for (Pair<PluginTask, Future<PluginTask>> pair : taskMap.values()) {
 			task = pair.first;
 			fTask = pair.second;
@@ -139,13 +135,13 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 	@Override
 	public void start() {
 		System.out.println("starting Hadoop plugin...");
-		executorService.submit(this);
+		schedExecutorService.scheduleAtFixedRate(this, 0, 10, TimeUnit.SECONDS);
 	}
 
 	@Override
 	public void shutdown() {
-		running = false;
 		executorService.shutdownNow();
+		schedExecutorService.shutdownNow();
 		p2p.remove(this);
 	}
 
@@ -172,14 +168,13 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case INFOREQ:
-			Future<PluginInfo> fInfo = executorService.submit(new HadoopGetInfo());
+			Future<PluginInfo> fInfo = executorService
+					.submit(new HadoopGetInfo());
 			reqList.add(fInfo);
 			break;
 		case STARTREQ:
-			PluginTask task = new PluginTask();
-			Future<PluginTask> fTask = executorService.submit(new HadoopTask(task));
-			Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
-			taskMap.put(task.getId(), pair);
+			JobInfo job = ((StartReqMessage)msg).getJobInfo();
+			startTask(job);
 			// TODO enviar mensagem de taskId como resposta.
 			break;
 		case STATUSREQ:
@@ -193,5 +188,12 @@ public class HadoopPlugin implements Plugin, P2PListener, Callable<Boolean> {
 			getFile();
 			break;
 		}
+	}
+	
+	private void startTask(JobInfo job) {
+		PluginTask task = new PluginTask();
+		Future<PluginTask> fTask = executorService.submit(new HadoopTask(task));
+		Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
+		taskMap.put(task.getId(), pair);
 	}
 }

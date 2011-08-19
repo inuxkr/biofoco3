@@ -13,6 +13,16 @@ public class MessageService {
 	private final MessageServiceClient client = new MessageServiceClient();
 
 	private final Multimap<Integer, MessageListener> listenersMap = HashMultimap.create();
+	
+	private InetSocketAddress bindSocket;
+	
+	public void bind(InetSocketAddress bindSocket) {
+		this.bindSocket = bindSocket;
+	}
+	
+	public InetSocketAddress getSocket() {
+		return bindSocket;
+	}
 
 	public void start(MessageFactory messageFactory) {
 		server.start(this, messageFactory);
