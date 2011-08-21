@@ -16,9 +16,8 @@ public final class Hashifier {
 
 		MessageDigest md;
 		md = MessageDigest.getInstance("SHA-1");
-		byte[] sha1hash = new byte[40];
 		md.update(seed, 0, seed.length);
-		sha1hash = md.digest();
+		byte[] sha1hash = md.digest();
 		System.out.println(new BigInteger(sha1hash).toString(16));
 		return new ID(new BigInteger(sha1hash));
 	}

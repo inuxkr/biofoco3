@@ -16,7 +16,7 @@ public final class ChordRing {
 	private final ID id;
 	private final PeerNode peer;
 
-	private PeerNode predecessor;
+//	private PeerNode predecessor;
 
 	public ChordRing(PeerNode thisNode) {
 		this(thisNode, SHA1_BIT_SIZE);
