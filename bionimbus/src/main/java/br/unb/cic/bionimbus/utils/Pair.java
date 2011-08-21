@@ -22,6 +22,7 @@ public class Pair<F,S> {
 			return false;
 		}
 		
+		@SuppressWarnings("unchecked")
 		Pair<F,S> other = (Pair<F,S>) object;
 		
 		return first.equals(other.first) && second.equals(other.second);

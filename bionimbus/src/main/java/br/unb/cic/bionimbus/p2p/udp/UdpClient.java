@@ -13,8 +13,8 @@ import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory;
 
 public final class UdpClient {
 		
-	private static ChannelFactory factory;
-	private static ConnectionlessBootstrap bootstrap;
+	private ChannelFactory factory;
+	private ConnectionlessBootstrap bootstrap;
 	private DatagramChannel channel;
 	
 	public UdpClient() {
