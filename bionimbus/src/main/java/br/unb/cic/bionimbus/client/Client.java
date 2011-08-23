@@ -34,6 +34,10 @@ public class Client implements P2PListener {
 		JobReqMessage msg = new JobReqMessage(job);
 		p2p.sendMessage(msg);
 	}
+	
+	/*public void jobStatus(String jobId) {
+		
+	}*/
 
 	@Override
 	public void onEvent(P2PEvent event) {
