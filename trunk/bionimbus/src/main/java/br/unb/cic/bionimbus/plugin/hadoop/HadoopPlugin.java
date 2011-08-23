@@ -25,6 +25,7 @@ import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
@@ -168,14 +169,13 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case INFOREQ:
-			Future<PluginInfo> fInfo = executorService
-					.submit(new HadoopGetInfo());
+			Future<PluginInfo> fInfo = executorService.submit(new HadoopGetInfo());
 			reqList.add(fInfo);
 			break;
 		case STARTREQ:
 			JobInfo job = ((StartReqMessage)msg).getJobInfo();
-			startTask(job);
-			// TODO enviar mensagem de taskId como resposta.
+			StartRespMessage resp = new StartRespMessage(job.getId(), startTask(job));
+			p2p.sendMessage(resp);
 			break;
 		case STATUSREQ:
 			StatusReqMessage reqMsg = (StatusReqMessage) msg;
@@ -190,10 +190,11 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		}
 	}
 	
-	private void startTask(JobInfo job) {
+	private PluginTask startTask(JobInfo job) {
 		PluginTask task = new PluginTask();
 		Future<PluginTask> fTask = executorService.submit(new HadoopTask(task));
 		Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
 		taskMap.put(task.getId(), pair);
+		return task;
 	}
 }

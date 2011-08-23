@@ -19,6 +19,7 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
@@ -26,6 +27,10 @@ import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
+import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.utils.Pair;
 
 public class MonitorService implements Service, P2PListener, Runnable {
 
@@ -35,7 +40,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	
 	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
 	
-	private final Map<String, JobInfo> runJobs = new ConcurrentHashMap<String, JobInfo>();
+	private final Map<String, Pair<JobInfo, PluginTask>> runningJobs = new ConcurrentHashMap<String, Pair<JobInfo, PluginTask>>();
 
 	private P2PService p2p = null;
 
@@ -47,8 +52,8 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	public void run() {
 		System.out.println("running MonitorService...");
 		
-		// checar jobs ainda nao escalonados ou precisando reescalonar
-		// e checar status dos jobs ja' iniciados
+		checkPendingJobs();
+		checkRunningJobs();
 	}
 
 	@Override
@@ -70,6 +75,17 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		// TODO Auto-generated method stub
 
 	}
+	
+	private void checkPendingJobs() {
+		// TODO aqui temos que checar os jobs que estão aguardando o escalonamento.
+		// precisamos esperar um timeout ate' fazer nova requisicao.
+	}
+	
+	private void checkRunningJobs() {
+		for (String taskId : (String[]) runningJobs.keySet().toArray()) {
+			sendStatusReq(taskId);
+		}
+	}
 
 	@Override
 	public void onEvent(P2PEvent event) {
@@ -80,8 +96,6 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
-
-		// recebe eventos de endTask()
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case JOBREQ:
@@ -95,7 +109,15 @@ public class MonitorService implements Service, P2PListener, Runnable {
 			break;
 		case STARTRESP:
 			StartRespMessage respMsg = (StartRespMessage) msg;
-			sendJobResp(respMsg.getJobInfo());
+			sendJobResp(respMsg.getJobId(), respMsg.getPluginTask());
+			break;
+		case STATUSRESP:
+			StatusRespMessage status = (StatusRespMessage) msg;
+			updateJobStatus(status.getPluginTask());
+			break;
+		case END:
+			EndMessage end = (EndMessage) msg;
+			finalizeJob(end.getTask());
 			break;
 		case ERROR:
 			ErrorMessage errMsg = (ErrorMessage) msg;
@@ -113,9 +135,9 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		p2p.sendMessage(newMsg);
 	}
 	
-	private void sendJobResp(JobInfo jobInfo) {
-		pendingJobs.remove(jobInfo.getId());
-		runJobs.put(jobInfo.getId(), jobInfo);
+	private void sendJobResp(String jobId, PluginTask task) {
+		JobInfo jobInfo = pendingJobs.remove(jobId);
+		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
 		JobRespMessage jobRespMsg = new JobRespMessage(jobInfo);
 		p2p.sendMessage(jobRespMsg);
 	}
@@ -123,6 +145,24 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	private void sendStartReq(JobInfo jobInfo) {
 		StartReqMessage startMsg = new StartReqMessage(jobInfo);
 		p2p.sendMessage(startMsg);
+	}
+	
+	private void sendStatusReq(String taskId) {
+		StatusReqMessage msg = new StatusReqMessage(taskId);
+		p2p.sendMessage(msg);
+	}
+	
+	private void updateJobStatus(PluginTask task) {
+		Pair<JobInfo, PluginTask> pair = runningJobs.get(task.getId());
+		JobInfo job = pair.first;
+		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(job, task));
+	}
+	
+	private void finalizeJob(PluginTask task) {
+		Pair<JobInfo, PluginTask> pair = runningJobs.remove(task.getId());
+		JobInfo job = pair.first;
+		job.setOutputs(null);
+		//p2p.sendMessage(new EndJobMessage(job));
 	}
 
 }

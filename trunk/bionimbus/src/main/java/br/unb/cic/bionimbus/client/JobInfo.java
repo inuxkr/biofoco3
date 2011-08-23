@@ -9,6 +9,7 @@ public class JobInfo {
 	private long serviceId;
 	private List<String> args;
 	private List<String> inputs;
+	private List<String> outputs;
 	
 	public String getId() {
 		return id;
@@ -33,5 +34,11 @@ public class JobInfo {
 	}
 	public void setInputs(List<String> inputs) {
 		this.inputs = inputs;
+	}
+	public List<String> getOutputs() {
+		return outputs;
+	}
+	public void setOutputs(List<String> outputs) {
+		this.outputs = outputs;
 	}
 }
