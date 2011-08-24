@@ -13,6 +13,7 @@ public class PluginService {
 	private List<String> input;
 	private List<String> output;
 	private String info;
+	private String path;
 
 	public long getId() {
 		return id;
@@ -60,6 +61,14 @@ public class PluginService {
 
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	@Override

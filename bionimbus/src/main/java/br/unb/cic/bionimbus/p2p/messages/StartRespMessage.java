@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.plugin.PluginTaskState;
 
 public class StartRespMessage implements Message {
 	
@@ -46,7 +47,11 @@ public class StartRespMessage implements Message {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> data = mapper.readValue(buffer, Map.class);
 		this.jobId = (String) data.get("jobId");
-		this.task = (PluginTask) data.get("task");
+
+		this.task = new PluginTask();
+		Map<String, Object> taskMap = (Map<String, Object>) data.get("task");
+		this.task.setId((String) taskMap.get("id"));
+		this.task.setState(PluginTaskState.valueOf((String) taskMap.get("state")));
 	}
 
 	@Override

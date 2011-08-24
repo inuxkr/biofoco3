@@ -63,4 +63,11 @@ public class PluginInfo {
 	public void setServices(List<PluginService> services) {
 		this.services = services;
 	}
+
+	public PluginService getService(long serviceId) {
+		for (PluginService service : getServices())
+			if (service.getId() == serviceId)
+				return service;
+		return null;
+	}
 }

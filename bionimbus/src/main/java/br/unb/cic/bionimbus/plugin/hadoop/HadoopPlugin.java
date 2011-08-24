@@ -1,10 +1,8 @@
 package br.unb.cic.bionimbus.plugin.hadoop;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -31,6 +29,7 @@ import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
 import br.unb.cic.bionimbus.plugin.Plugin;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.utils.Pair;
 
@@ -43,8 +42,12 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private final ExecutorService executorService = Executors
 			.newCachedThreadPool(new BasicThreadFactory.Builder()
 					.namingPattern("HadoopPlugin-workers-%d").build());
-
-	private final List<Future<PluginInfo>> reqList = new CopyOnWriteArrayList<Future<PluginInfo>>();
+	
+	private Future<PluginInfo> fInfo = null;
+	
+	private PluginInfo myInfo = null;
+	
+	private String errorString = "Plugin is loading...";
 
 	private final Map<String, Pair<PluginTask, Future<PluginTask>>> taskMap = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
 
@@ -53,8 +56,8 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	@Override
 	public void run() {
 		System.out.println("running Plugin loop...");
-		checkFinishedGetInfo();
-		checkFinishedTasks();
+		checkGetInfo();
+		checkFinishedTasks();	
 	}
 
 	private Message buildFinishedTaskMsg(PluginTask t, Future<PluginTask> f) {
@@ -91,26 +94,26 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		}
 	}
 
-	private Message buildFinishedGetInfoMsg(Future<PluginInfo> f) {
-		Message msg;
+	private Message buildFinishedGetInfoMsg(PluginInfo info) {
+		if (info == null)
+			return new InfoErrorMessage(id, errorString);
 
-		try {
-			PluginInfo info = f.get();
-			info.setId(id);
-			msg = new InfoRespMessage(info);
-		} catch (Exception e) {
-			msg = new InfoErrorMessage(id, e.getMessage());
-		}
-
-		return msg;
+		info.setId(id);
+		return new InfoRespMessage(info);
 	}
 
-	private void checkFinishedGetInfo() {
-		for (Future<PluginInfo> fInfo : reqList) {
-			if (fInfo.isDone()) {
-				Message message = buildFinishedGetInfoMsg(fInfo);
-				reqList.remove(fInfo);
-				p2p.sendMessage(message);
+	private void checkGetInfo() {
+		if (fInfo == null) {
+			fInfo = executorService.submit(new HadoopGetInfo());
+			return;
+		}
+
+		if (fInfo.isDone()) {
+			try {
+				myInfo = fInfo.get();
+				fInfo = null;
+			} catch (Exception e) {
+				errorString = e.getMessage();
 			}
 		}
 	}
@@ -136,7 +139,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	@Override
 	public void start() {
 		System.out.println("starting Hadoop plugin...");
-		schedExecutorService.scheduleAtFixedRate(this, 0, 10, TimeUnit.SECONDS);
+		schedExecutorService.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -169,8 +172,8 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case INFOREQ:
-			Future<PluginInfo> fInfo = executorService.submit(new HadoopGetInfo());
-			reqList.add(fInfo);
+			Message infoMsg = buildFinishedGetInfoMsg(myInfo);
+			p2p.sendMessage(infoMsg);
 			break;
 		case STARTREQ:
 			JobInfo job = ((StartReqMessage)msg).getJobInfo();
@@ -191,10 +194,15 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	}
 	
 	private PluginTask startTask(JobInfo job) {
+		PluginService service = myInfo.getService(job.getServiceId());
+		if (service == null)
+			return null;
+
 		PluginTask task = new PluginTask();
-		Future<PluginTask> fTask = executorService.submit(new HadoopTask(task));
+		Future<PluginTask> fTask = executorService.submit(new HadoopTask(service, task));
 		Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
 		taskMap.put(task.getId(), pair);
+
 		return task;
 	}
 }
