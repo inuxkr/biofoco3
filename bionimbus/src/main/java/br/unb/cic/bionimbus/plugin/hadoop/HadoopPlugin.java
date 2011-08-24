@@ -199,7 +199,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			return null;
 
 		PluginTask task = new PluginTask();
-		Future<PluginTask> fTask = executorService.submit(new HadoopTask(service, task));
+		Future<PluginTask> fTask = executorService.submit(new HadoopTask(job, service, task));
 		Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
 		taskMap.put(task.getId(), pair);
 
