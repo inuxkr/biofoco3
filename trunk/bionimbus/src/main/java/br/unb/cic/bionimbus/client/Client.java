@@ -27,7 +27,7 @@ public class Client implements P2PListener {
 	public void startJob() {
 		JobInfo job = new JobInfo();
 		job.setId(null);
-		job.setArgs(null);
+		job.addArg("-R");
 		job.setServiceId(1023296285);
 		job.setInputs(null);
 		
