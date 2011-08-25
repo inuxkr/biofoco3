@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.sched;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,6 +29,10 @@ import br.unb.cic.bionimbus.plugin.PluginService;
 
 public class SchedService implements Service, P2PListener, Runnable {
 
+	private final int CORES_WEIGHT = 3;
+	private final int NODES_WEIGHT = 2;
+	
+	
 	private final ConcurrentHashMap<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
 
 	private final ScheduledExecutorService schedExecService = Executors
@@ -101,19 +107,50 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 
 	private void scheduleJob(JobInfo jobInfo) {
+		try {
+			List<PluginInfo> availablePlugins = filterByService(jobInfo.getServiceId());
+			PluginInfo pluginInfo = getBestPluginForJob(availablePlugins, jobInfo);
+			SchedRespMessage msg = new SchedRespMessage();
+			msg.setJobId(jobInfo.getId());
+			msg.setPluginId(pluginInfo.getId());
+			p2p.sendMessage(msg);		
+		} catch (SchedException ex) {
+			Message errMsg = new SchedErrorMessage(jobInfo.getId(), ex.getMessage());
+			p2p.sendMessage(errMsg);	
+		}
+	}
+	
+	private List<PluginInfo> filterByService(long serviceId) throws SchedException {
+		ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>();
 		for (PluginInfo pluginInfo : cloudMap.values()) {
-			for (PluginService service : pluginInfo.getServices()) {
-				if (service.getId() == jobInfo.getServiceId()) {
-					SchedRespMessage msg = new SchedRespMessage();
-					msg.setJobId(jobInfo.getId());
-					msg.setPluginId(pluginInfo.getId());
-					p2p.sendMessage(msg);
-					return;
-				}
-			}
+			if (pluginInfo.getService(serviceId) != null)
+				plugins.add(pluginInfo);
 		}
 		
-		Message errMsg = new SchedErrorMessage(jobInfo.getId(), "Service not found");
-		p2p.sendMessage(errMsg);
+		if (plugins.size() == 0) {
+			throw new SchedException("Service not found.");
+		}
+		
+		return plugins;
+	}
+	
+	private PluginInfo getBestPluginForJob(List<PluginInfo> plugins, JobInfo job) throws SchedException {
+		// O que fazer para pegar o tamanho do job?
+		// Como fazer para pegar a lista de jobs em execucao no momento? E a de jobs pendentes?
+		
+		if (plugins.size() == 0) {
+			throw new SchedException("Empty plugins list sent to sched alghorithm.");
+		}
+		
+		PluginInfo best = plugins.get(0);
+		for (PluginInfo plugin : plugins) {
+			if (calculateWeightSum(plugin) > calculateWeightSum(best)) best = plugin;
+		}
+		
+		return best;
+	}
+	
+	private int calculateWeightSum(PluginInfo plugin) {
+		return (plugin.getNumCores() * CORES_WEIGHT) + (plugin.getNumNodes() * NODES_WEIGHT);
 	}
 }
