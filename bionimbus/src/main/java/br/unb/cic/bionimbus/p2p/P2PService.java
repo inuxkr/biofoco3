@@ -42,6 +42,7 @@ public class P2PService implements MessageListener {
 	}
 
 	public void sendMessage(Host host, Message message) {
+		ESSE METODO TEM QUE FUNCIONAR!
 		msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
 	}
 
@@ -54,9 +55,9 @@ public class P2PService implements MessageListener {
 	}
 
 	@Override
-	public void onEvent(Message message) {
+	public void onEvent(Host host, Message message) {
 		for (P2PListener listener : listeners) {
-			P2PEvent event = new P2PMessageEvent(message);
+			P2PEvent event = new P2PMessageEvent(host, message);
 			listener.onEvent(event);
 		}
 	}
