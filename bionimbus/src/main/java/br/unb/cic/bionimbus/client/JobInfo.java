@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.client;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +34,8 @@ public class JobInfo {
 	}
 
 	public List<String> getArgs() {
+		if (args == null)
+			return Collections.emptyList();
 		return args;
 	}
 
