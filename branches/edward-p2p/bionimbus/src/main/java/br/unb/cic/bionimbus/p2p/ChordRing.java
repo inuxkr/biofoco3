@@ -4,6 +4,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 
 public final class ChordRing {
@@ -16,6 +23,9 @@ public final class ChordRing {
 	private final ID id;
 	private final PeerNode peer;
 
+	
+	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+
 //	private PeerNode predecessor;
 
 	public ChordRing(PeerNode thisNode) {
@@ -27,6 +37,18 @@ public final class ChordRing {
 		peer = thisNode;
 		m  = bitsize;
 		finger = new PeerNode[m];
+		
+		ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("chord").build();
+		executor = Executors.newScheduledThreadPool(3, threadFactory);
+		
+	}
+	
+	public void start() {
+		executor.scheduleAtFixedRate(new Gossiper(), 1, 2, TimeUnit.MINUTES);
+	}
+	
+	public void stop() {
+		executor.shutdownNow();
 	}
 
 	public synchronized PeerNode successor(ID key) {
@@ -120,4 +142,12 @@ public final class ChordRing {
 		return sb.toString();
 	}
 
+	private class Gossiper implements Runnable {
+
+		@Override
+		public void run() {
+			System.out.println("updating DHT tables");
+		}
+		
+	}
 }

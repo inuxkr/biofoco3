@@ -15,10 +15,15 @@ public class P2PService implements MessageListener {
 	private final MessageService msgService = new MessageService();
 
 	private final CopyOnWriteArrayList<P2PListener> listeners = new CopyOnWriteArrayList<P2PListener>();
+	
+	private final PeerNode peerNode = PeerFactory.createPeer(true);
+	
+	private final ChordRing chord = new ChordRing(peerNode);
 
 	private BioNimbusConfig config;
 
 	public void start() {
+		
 		List<Integer> types = new ArrayList<Integer>();
 
 		for (P2PMessageType enumType : P2PMessageType.values())
@@ -27,10 +32,14 @@ public class P2PService implements MessageListener {
 		msgService.bind(new InetSocketAddress(config.getHost().getAddress(), config.getHost().getPort()));
 		msgService.addListener(this, types);
 		msgService.start(new P2PMessageFactory());
+		
+		chord.start();
+		
 	}
 
 	public void shutdown() {
 		msgService.shutdown();
+		chord.stop();
 	}
 
 	public boolean isMaster() {
@@ -42,7 +51,7 @@ public class P2PService implements MessageListener {
 	}
 
 	public void sendMessage(Host host, Message message) {
-		ESSE METODO TEM QUE FUNCIONAR!
+		//TODO: ESSE METODO TEM QUE FUNCIONAR!
 		msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
 	}
 
@@ -54,15 +63,22 @@ public class P2PService implements MessageListener {
 		listeners.remove(listener);
 	}
 
-	@Override
-	public void onEvent(Host host, Message message) {
-		for (P2PListener listener : listeners) {
-			P2PEvent event = new P2PMessageEvent(host, message);
-			listener.onEvent(event);
-		}
-	}
+	//Todo: CONSERTAR?
+//	@Override
+//	public void onEvent(Host host, Message message) {
+//		for (P2PListener listener : listeners) {
+//			P2PEvent event = new P2PMessageEvent(host, message);
+//			listener.onEvent(event);
+//		}
+//	}
 
 	public void setConfig(BioNimbusConfig config) {
 		this.config = config;
+	}
+
+	@Override
+	public void onEvent(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 }
