@@ -1,6 +1,10 @@
 package br.unb.cic.bionimbus.client;
 
+import java.io.IOException;
+import java.util.List;
+
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.config.BioNimbusConfigLoader;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
@@ -21,7 +25,12 @@ public class Client implements P2PListener {
 
 	public void listServices() {
 		Message message = new CloudReqMessage();
-		p2p.sendMessage(new Host("localhost", 9999), message);
+		
+		List<Host> seeds = p2p.getSeeds();
+		
+		Host host = seeds.get(0);
+		
+		p2p.sendMessage(host, message);
 	}
 
 	public void startJob() {
@@ -46,12 +55,12 @@ public class Client implements P2PListener {
 		p2p.shutdown();
 	}
 
-	public static void main(String[] args) {
-		BioNimbusConfig config = new BioNimbusConfig();
-		config.setHost(new Host("localhost", 8080));
-
-		P2PService p2p = new P2PService();
-		p2p.setConfig(config);
+	public static void main(String[] args) throws IOException {
+		
+		String configFile = System.getProperty("config.file", "conf/client.json");		
+		BioNimbusConfig config = BioNimbusConfigLoader.loadHostConfig(configFile);
+				
+		P2PService p2p = new P2PService(config);
 		p2p.start();
 
 		Client client = new Client();
