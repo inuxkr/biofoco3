@@ -21,8 +21,11 @@ import com.google.common.collect.ComparisonChain;
 
 public final class Host implements Comparable<Host> {
 
-	private final String address;
-	private final int port;
+	private String address;
+	private int port;
+	
+	// o json decoder precisa deste construtor vazio
+	Host() {}
 	
 	public Host(String address, int port) {	
 		this.address = address.trim();
@@ -35,8 +38,16 @@ public final class Host implements Comparable<Host> {
 
 	public int getPort() {
 		return port;
-	}
+	}	
 	
+	public void setAddress(String address) {
+		this.address = address.trim();
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(address, port);

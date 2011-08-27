@@ -1,23 +1,24 @@
 package br.unb.cic.bionimbus;
 
+import java.io.IOException;
+
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
-import br.unb.cic.bionimbus.p2p.Host;
-import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.config.BioNimbusConfigLoader;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PListener;
+import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.plugin.Plugin;
 import br.unb.cic.bionimbus.plugin.PluginFactory;
 
 public class BioNimbus implements P2PListener {
 
 	private Plugin plugin = null;
-	private BioNimbusConfig config = null;
 	private P2PService p2p = null;
+	private final BioNimbusConfig config;
 
-	public BioNimbus() {
+	public BioNimbus(BioNimbusConfig config) {
 		
-		config = new BioNimbusConfig();
-		config.setHost(new Host("localhost", 9999));
+		this.config = config;
 		
 		plugin = null;
 
@@ -45,7 +46,11 @@ public class BioNimbus implements P2PListener {
 	public void onEvent(P2PEvent event) {
 	}
 
-	public static void main(String[] args) {
-		new BioNimbus();
+	public static void main(String[] args) throws IOException {
+		
+		String configFile = System.getProperty("config.file", "conf/peer.json");		
+		BioNimbusConfig config = BioNimbusConfigLoader.loadHostConfig(configFile);
+				
+		new BioNimbus(config);
 	}
 }
