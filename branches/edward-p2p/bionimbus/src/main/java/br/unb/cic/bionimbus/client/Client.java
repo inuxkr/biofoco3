@@ -1,12 +1,10 @@
 package br.unb.cic.bionimbus.client;
 
 import java.io.IOException;
-import java.util.List;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
 import br.unb.cic.bionimbus.config.BioNimbusConfigLoader;
 import br.unb.cic.bionimbus.messaging.Message;
-import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PService;

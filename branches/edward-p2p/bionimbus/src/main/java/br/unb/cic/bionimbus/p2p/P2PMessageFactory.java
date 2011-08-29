@@ -11,6 +11,8 @@ import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.PingReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.PingRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
@@ -85,7 +87,14 @@ public class P2PMessageFactory extends MessageFactory {
 		case ERROR:
 			message = buildErrorMessage(buffer);
 			break;
+		case PINGREQ:
+			message = new PingReqMessage();
+			break;
+		case PINGRESP:
+			message = new PingRespMessage();
+			break;
 		}
+	
 
 		try {
 			message.deserialize(buffer);
