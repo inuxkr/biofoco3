@@ -19,4 +19,6 @@ public enum P2PMessageType {
 	JOBREQ,
 	JOBRESP,
 	ERROR,
+	PINGREQ,
+	PINGRESP
 }

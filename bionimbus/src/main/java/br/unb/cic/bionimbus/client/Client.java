@@ -24,13 +24,8 @@ public class Client implements P2PListener {
 	}
 
 	public void listServices() {
-		Message message = new CloudReqMessage();
-		
-		List<Host> seeds = p2p.getSeeds();
-		
-		Host host = seeds.get(0);
-		
-		p2p.sendMessage(host, message);
+		Message message = new CloudReqMessage();		
+		p2p.broadcast(message);
 	}
 
 	public void startJob() {		

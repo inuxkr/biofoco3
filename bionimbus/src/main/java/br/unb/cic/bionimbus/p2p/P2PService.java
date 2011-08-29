@@ -3,12 +3,21 @@ package br.unb.cic.bionimbus.p2p;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageListener;
 import br.unb.cic.bionimbus.messaging.MessageService;
+import br.unb.cic.bionimbus.p2p.messages.PingReqMessage;
 
 public class P2PService implements MessageListener {
 
@@ -21,11 +30,18 @@ public class P2PService implements MessageListener {
 	private final ChordRing chord;
 
 	private final BioNimbusConfig config;
+	
+	private final Set<Host> seeds = new CopyOnWriteArraySet<Host>();
+	
+	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 		
 	public P2PService(BioNimbusConfig config) {
 		this.peerNode = PeerFactory.createPeer(true);
 		peerNode.setHost(config.getHost());		
 		chord = new ChordRing(peerNode);
+		
+		seeds.addAll(config.getSeeds());
+		
 		this.config = config;
 	}
 
@@ -40,13 +56,20 @@ public class P2PService implements MessageListener {
 		msgService.addListener(this, types);
 		msgService.start(new P2PMessageFactory());
 		
-		chord.start();
+		ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("chord").build();
+		executor = Executors.newScheduledThreadPool(3, threadFactory);
 		
+		startSeedCollectionChecking();
+		
+	}
+
+	private void startSeedCollectionChecking() {
+		executor.scheduleAtFixedRate(new SeedChecker(), 0, 30, TimeUnit.SECONDS);
 	}
 
 	public void shutdown() {
 		msgService.shutdown();
-		chord.stop();
+		executor.shutdownNow();
 	}
 
 	public boolean isMaster() {
@@ -94,5 +117,16 @@ public class P2PService implements MessageListener {
 
 	public List<Host> getSeeds() {
 		return new ArrayList<Host>(config.getSeeds());
+	}
+	
+	private class SeedChecker implements Runnable {
+
+		@Override
+		public void run() {
+			for (Host host: seeds) {
+				sendMessage(host, new PingReqMessage());
+			}
+		}
+		
 	}
 }
