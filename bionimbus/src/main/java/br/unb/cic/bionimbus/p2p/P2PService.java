@@ -2,10 +2,7 @@ package br.unb.cic.bionimbus.p2p;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
@@ -19,14 +16,17 @@ public class P2PService implements MessageListener {
 
 	private final CopyOnWriteArrayList<P2PListener> listeners = new CopyOnWriteArrayList<P2PListener>();
 	
-	private final PeerNode peerNode = PeerFactory.createPeer(true);
+	private final PeerNode peerNode;
 	
-	private final ChordRing chord = new ChordRing(peerNode);
+	private final ChordRing chord;
 
 	private final BioNimbusConfig config;
 	
 	
 	public P2PService(BioNimbusConfig config) {
+		this.peerNode = PeerFactory.createPeer(true);
+		peerNode.setHost(config.getHost());		
+		chord = new ChordRing(peerNode);
 		this.config = config;
 	}
 

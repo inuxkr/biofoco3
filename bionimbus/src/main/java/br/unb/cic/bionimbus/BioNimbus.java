@@ -4,13 +4,11 @@ import java.io.IOException;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
 import br.unb.cic.bionimbus.config.BioNimbusConfigLoader;
-import br.unb.cic.bionimbus.p2p.P2PEvent;
-import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.plugin.Plugin;
 import br.unb.cic.bionimbus.plugin.PluginFactory;
 
-public class BioNimbus implements P2PListener {
+public class BioNimbus {
 
 	private Plugin plugin = null;
 	private P2PService p2p = null;
@@ -32,13 +30,6 @@ public class BioNimbus implements P2PListener {
 			ServiceManager manager = new ServiceManager();
 			manager.startAll(p2p);
 		}
-
-		//p2p.addListener(this);
-	}
-
-	@Override
-	public void onEvent(P2PEvent event) {
-		
 	}
 
 	public static void main(String[] args) throws IOException {
