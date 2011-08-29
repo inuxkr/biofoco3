@@ -49,7 +49,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 	public void run() {
 		System.out.println("running SchedService...");
 		Message msg = new CloudReqMessage();
-		p2p.sendMessage(msg);
+		p2p.broadcast(msg);
 	}
 
 	@Override

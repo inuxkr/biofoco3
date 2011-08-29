@@ -82,7 +82,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	}
 	
 	private void checkRunningJobs() {
-		for (String taskId : (String[]) runningJobs.keySet().toArray()) {
+		for (String taskId : runningJobs.keySet()) {
 			sendStatusReq(taskId);
 		}
 	}
