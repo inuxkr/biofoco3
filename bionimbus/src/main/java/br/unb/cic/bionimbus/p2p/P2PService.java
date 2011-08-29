@@ -2,6 +2,7 @@ package br.unb.cic.bionimbus.p2p;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -11,14 +12,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageListener;
 import br.unb.cic.bionimbus.messaging.MessageService;
 import br.unb.cic.bionimbus.p2p.messages.PingReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.PingRespMessage;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class P2PService implements MessageListener {
 
@@ -141,5 +142,9 @@ public class P2PService implements MessageListener {
 			}
 		}
 		
+	}
+
+	public List<PeerNode> getPeers() {
+		return new ArrayList<PeerNode>(chord.peers());
 	}
 }
