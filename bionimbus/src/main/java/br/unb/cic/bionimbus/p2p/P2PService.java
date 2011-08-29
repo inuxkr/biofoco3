@@ -18,6 +18,7 @@ import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageListener;
 import br.unb.cic.bionimbus.messaging.MessageService;
 import br.unb.cic.bionimbus.p2p.messages.PingReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.PingRespMessage;
 
 public class P2PService implements MessageListener {
 
@@ -64,7 +65,7 @@ public class P2PService implements MessageListener {
 	}
 
 	private void startSeedCollectionChecking() {
-		executor.scheduleAtFixedRate(new SeedChecker(), 0, 30, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(new SeedFinger(), 0, 30, TimeUnit.SECONDS);
 	}
 
 	public void shutdown() {
@@ -111,20 +112,32 @@ public class P2PService implements MessageListener {
 
 	@Override
 	public void onEvent(Message message) {
-		// TODO Auto-generated method stub
 		
+		if (message instanceof PingReqMessage) {
+			PeerNode node = ((PingReqMessage) message).getPeerNode();
+			System.out.println("received req message from " + node.getHost().getPort());
+			chord.add(node);
+			sendMessage(node.getHost(), new PingRespMessage(peerNode));
+		}
+		
+		if (message instanceof PingRespMessage) {
+			PeerNode node = ((PingRespMessage) message).getPeerNode();
+			System.out.println("received resp message " + node.getHost().getPort());
+			chord.add(node);
+		}
 	}
 
 	public List<Host> getSeeds() {
 		return new ArrayList<Host>(config.getSeeds());
 	}
 	
-	private class SeedChecker implements Runnable {
+	private class SeedFinger implements Runnable {
 
 		@Override
 		public void run() {
+			System.out.println("checking seed list");
 			for (Host host: seeds) {
-				sendMessage(host, new PingReqMessage());
+				sendMessage(host, new PingReqMessage(peerNode));
 			}
 		}
 		
