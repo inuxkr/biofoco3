@@ -42,7 +42,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 	public void run() {
 		System.out.println("running DiscoveryService...");
 		Message msg = new InfoReqMessage();
-		p2p.sendMessage(msg);
+		p2p.broadcast(msg);
 	}
 
 	@Override

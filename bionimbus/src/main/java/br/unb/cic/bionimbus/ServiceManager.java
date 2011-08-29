@@ -11,10 +11,9 @@ import br.unb.cic.bionimbus.storage.StorageService;
 
 public class ServiceManager {
 
-	private final List<Service> services;
+	private final List<Service> services = new ArrayList<Service>();
 
 	public ServiceManager() {
-		services = new ArrayList<Service>();
 		new DiscoveryService(this);
 		new StorageService(this);
 		new SchedService(this);

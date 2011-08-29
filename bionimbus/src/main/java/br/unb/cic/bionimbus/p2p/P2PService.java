@@ -14,15 +14,14 @@ public class P2PService implements MessageListener {
 
 	private final MessageService msgService = new MessageService();
 
-	private final CopyOnWriteArrayList<P2PListener> listeners = new CopyOnWriteArrayList<P2PListener>();
+	private final List<P2PListener> listeners = new CopyOnWriteArrayList<P2PListener>();
 	
 	private final PeerNode peerNode;
 	
 	private final ChordRing chord;
 
 	private final BioNimbusConfig config;
-	
-	
+		
 	public P2PService(BioNimbusConfig config) {
 		this.peerNode = PeerFactory.createPeer(true);
 		peerNode.setHost(config.getHost());		
@@ -54,13 +53,20 @@ public class P2PService implements MessageListener {
 		return true;
 	}
 	
-	public void sendMessage(Message message) {
-		msgService.sendMessage(new InetSocketAddress("localhost", 9999), message);
+	public void broadcast(Message message) {
+		for (PeerNode node : chord.getRing()) {
+			Host host = node.getHost();
+			msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
+		}
 	}
-
+	
 	public void sendMessage(Host host, Message message) {
 		//TODO: ESSE METODO TEM QUE FUNCIONAR!
 		msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
+	}
+	
+	public void sendMessage(Message message) {
+		msgService.sendMessage(new InetSocketAddress("localhost", 9999), message);
 	}
 
 	public void addListener(P2PListener listener) {

@@ -33,7 +33,7 @@ public class Client implements P2PListener {
 		p2p.sendMessage(host, message);
 	}
 
-	public void startJob() {
+	public void startJob() {		
 		JobInfo job = new JobInfo();
 		job.setId(null);
 		//job.setArgs(null);
@@ -64,7 +64,7 @@ public class Client implements P2PListener {
 		p2p.start();
 
 		Client client = new Client();
-		client.setP2P(p2p);
+		client.setP2P(p2p);		
 		client.startJob();
 	}
 
