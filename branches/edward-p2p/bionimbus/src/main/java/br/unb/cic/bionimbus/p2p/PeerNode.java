@@ -4,6 +4,7 @@ package br.unb.cic.bionimbus.p2p;
 public class PeerNode implements Comparable<PeerNode> {
 
 	private final ID id;
+	private Host host;
 
 	public PeerNode(ID id) {
 		this.id = id;
@@ -45,6 +46,14 @@ public class PeerNode implements Comparable<PeerNode> {
 	//TODO: RPC call
 	public PeerNode retrieveSuccessor(ID key) {
 		throw new UnsupportedOperationException();
+	}
+
+	public void setHost(Host host) {
+		this.host = host;
+	}
+	
+	public Host getHost() {
+		return host;
 	}
 
 }
