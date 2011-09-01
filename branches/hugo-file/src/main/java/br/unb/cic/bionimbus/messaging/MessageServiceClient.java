@@ -28,5 +28,17 @@ public class MessageServiceClient {
 		client.setPipelineFactory(new MessageServiceClientPipelineFactory(message, channelGroup));
 		client.connect(addr);
 	}
+	
+	public void sendFile(InetSocketAddress addr, String fileName) {
+		ClientBootstrap client = new ClientBootstrap(factory);
+		client.setPipelineFactory(new MessageServiceFileClientPipelineFactory(fileName));
+		client.connect(addr);
+	}
+	
+	public void getFile(InetSocketAddress addr, String fileName) {
+		ClientBootstrap client = new ClientBootstrap(factory);
+		client.setPipelineFactory(new MessageServiceFileClientPipelineFactory(fileName, true));
+		client.connect(addr);
+	}
 
 }
