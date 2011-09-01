@@ -46,4 +46,8 @@ public class MessageService {
 	public void sendMessage(InetSocketAddress addr, Message message) {
 		client.sendMessage(addr, message);
 	}
+	
+	public void sendFile(InetSocketAddress addr, String fileName) {
+		client.sendFile(addr, fileName);
+	}
 }
