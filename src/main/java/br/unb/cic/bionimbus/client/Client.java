@@ -39,6 +39,10 @@ public class Client implements P2PListener {
 	/*public void jobStatus(String jobId) {
 		
 	}*/
+	
+	public void uploadFile(String fileName) {
+		p2p.sendFile(fileName);
+	}
 
 	@Override
 	public void onEvent(P2PEvent event) {
@@ -56,7 +60,7 @@ public class Client implements P2PListener {
 
 		Client client = new Client();
 		client.setP2P(p2p);
-		client.startJob();
+		client.uploadFile("/home/hugo.saldanha/Downloads/UNL.tar.gz");
 	}
 
 }

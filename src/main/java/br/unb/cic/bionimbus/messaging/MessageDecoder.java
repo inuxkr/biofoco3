@@ -23,7 +23,7 @@ public class MessageDecoder extends FrameDecoder {
 		buffer.markReaderIndex();
 
 		// droping magic char
-		buffer.readChar();
+		buffer.readByte();
 
 		final int length = buffer.readInt();
 		final int type = buffer.readInt();

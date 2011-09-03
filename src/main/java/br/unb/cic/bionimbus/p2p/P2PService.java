@@ -28,6 +28,7 @@ public class P2PService implements MessageListener, FileListener {
 
 		msgService.bind(new InetSocketAddress(config.getHost().getAddress(), config.getHost().getPort()));
 		msgService.addListener(this, types);
+		msgService.addFileListener(this);
 		msgService.start(new P2PMessageFactory());
 	}
 
@@ -65,6 +66,10 @@ public class P2PService implements MessageListener, FileListener {
 
 	public void setConfig(BioNimbusConfig config) {
 		this.config = config;
+	}
+	
+	public void sendFile(String fileName) {
+		msgService.sendFile(new InetSocketAddress("localhost", 9999), fileName);
 	}
 
 	@Override
