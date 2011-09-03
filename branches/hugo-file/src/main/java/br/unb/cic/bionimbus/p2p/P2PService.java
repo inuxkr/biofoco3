@@ -1,16 +1,18 @@
 package br.unb.cic.bionimbus.p2p;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.messaging.FileListener;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageListener;
 import br.unb.cic.bionimbus.messaging.MessageService;
 
-public class P2PService implements MessageListener {
+public class P2PService implements MessageListener, FileListener {
 
 	private final MessageService msgService = new MessageService();
 
@@ -63,5 +65,13 @@ public class P2PService implements MessageListener {
 
 	public void setConfig(BioNimbusConfig config) {
 		this.config = config;
+	}
+
+	@Override
+	public void onFileRecvd(File file) {
+		for (P2PListener listener : listeners) {
+			P2PEvent event = new P2PFileEvent(file);
+			listener.onEvent(event);
+		}
 	}
 }
