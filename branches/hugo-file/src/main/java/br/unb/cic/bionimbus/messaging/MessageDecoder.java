@@ -17,13 +17,16 @@ public class MessageDecoder extends FrameDecoder {
 	protected Object decode(ChannelHandlerContext ctx, Channel channel,
 			ChannelBuffer buffer) throws Exception {
 
-		if (buffer.readableBytes() < 8)
+		if (buffer.readableBytes() < 9)
 			return null;
 
 		buffer.markReaderIndex();
 
-		int length = buffer.readInt();
-		int type = buffer.readInt();
+		// droping magic char
+		buffer.readChar();
+
+		final int length = buffer.readInt();
+		final int type = buffer.readInt();
 		byte[] decoded = null;
 
 		if (length > 0) {
