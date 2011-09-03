@@ -26,7 +26,7 @@ public class MessageServiceServerDecoder extends FrameDecoder {
 			return null;
 		
 		ChannelPipeline pipeline = ctx.getPipeline();
-		final char magic = buf.getChar(buf.readerIndex());
+		final char magic = (char) buf.getByte(buf.readerIndex());
 		
 		if (magic == 'X') {
 			pipeline.addLast("decoder", new MessageDecoder(factory));
@@ -36,6 +36,7 @@ public class MessageServiceServerDecoder extends FrameDecoder {
 			pipeline.addLast("codec", new HttpServerCodec());
 			pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
 			pipeline.addLast("handler", new MessageServiceServerHttpHandler(server));
+			pipeline.remove(this);
 		}
 		return buf.readBytes(buf.readableBytes());
 	}
