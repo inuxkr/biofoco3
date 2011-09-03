@@ -10,12 +10,16 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 public class MessageServiceServer {
+	
+	private final static String PATH_DIR = "/home/hugo.saldanha/";
 
 	private final ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 
 	private final ChannelGroup channelGroup = new DefaultChannelGroup("msg-server");
 
 	private MessageService service;
+	
+	private String pathDir = PATH_DIR;
 
 	public void start(MessageService service, MessageFactory messageFactory) {
 		this.service = service;
@@ -36,6 +40,10 @@ public class MessageServiceServer {
 	
 	public MessageService getMessageService() {
 		return service;
+	}
+	
+	public String getPathDir() {
+		return pathDir;
 	}
 
 }

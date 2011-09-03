@@ -1,6 +1,8 @@
 package br.unb.cic.bionimbus.messaging;
 
+import java.io.File;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.HashMultimap;
@@ -13,6 +15,8 @@ public class MessageService {
 	private final MessageServiceClient client = new MessageServiceClient();
 
 	private final Multimap<Integer, MessageListener> listenersMap = HashMultimap.create();
+	
+	private final List<FileListener> fileListenersList = new ArrayList<FileListener>();
 	
 	private InetSocketAddress bindSocket;
 	
@@ -47,7 +51,17 @@ public class MessageService {
 		client.sendMessage(addr, message);
 	}
 	
+	public void addFileListener(FileListener listener) {
+		fileListenersList.remove(listener);
+		fileListenersList.add(listener);
+	}
+	
 	public void sendFile(InetSocketAddress addr, String fileName) {
 		client.sendFile(addr, fileName);
+	}
+
+	public void recvFile(File file) {
+		for (FileListener listener : fileListenersList)
+			listener.onFileRecvd(file);
 	}
 }

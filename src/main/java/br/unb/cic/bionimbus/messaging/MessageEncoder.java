@@ -19,7 +19,8 @@ public class MessageEncoder extends SimpleChannelHandler {
 		if (encoded != null)
 			length = encoded.length;
 
-		ChannelBuffer buffer = ChannelBuffers.buffer(8 + length);
+		ChannelBuffer buffer = ChannelBuffers.buffer(9 + length);
+		buffer.writeChar('X');
 		buffer.writeInt(length);
 		buffer.writeInt(message.getType());
 
