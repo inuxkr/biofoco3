@@ -1,8 +1,5 @@
 package br.unb.cic.bionimbus.p2p;
 
-import br.unb.cic.bionimbus.messaging.Message;
-
-import com.google.common.collect.BiMap;
 
 public enum P2PMessageType {
 	
