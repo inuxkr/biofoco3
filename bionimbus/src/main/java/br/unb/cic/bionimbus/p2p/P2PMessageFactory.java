@@ -29,9 +29,9 @@ public class P2PMessageFactory extends MessageFactory {
 
 	@Override
 	public Message getMessage(int id, byte[] buffer) {
-		
-		Message message = null;		
-		P2PMessageType type = P2PMessageType.values()[id];
+
+		Message message = null;
+		P2PMessageType type = P2PMessageType.of(id);
 
 		switch (type) {
 		case INFOREQ:
@@ -55,18 +55,18 @@ public class P2PMessageFactory extends MessageFactory {
 		case STATUSRESP:
 			message = new StatusRespMessage();
 			break;
-		//case STOREREQ:
-			//message = new StoreReqMessage();
-			//break;
-		//case STORERESP:
-			//message = new StoreRespMessage();
-			//break;
-		//case GETREQ:
-			//message = new GetReqMessage();
-			//break;
-		//case GETRESP:
-			//message = new GetRespMessage();
-			//break;
+		// case STOREREQ:
+		// message = new StoreReqMessage();
+		// break;
+		// case STORERESP:
+		// message = new StoreRespMessage();
+		// break;
+		// case GETREQ:
+		// message = new GetReqMessage();
+		// break;
+		// case GETRESP:
+		// message = new GetRespMessage();
+		// break;
 		case CLOUDREQ:
 			message = new CloudReqMessage();
 			break;
@@ -95,7 +95,6 @@ public class P2PMessageFactory extends MessageFactory {
 			message = new PingRespMessage();
 			break;
 		}
-	
 
 		try {
 			message.deserialize(buffer);
@@ -107,10 +106,10 @@ public class P2PMessageFactory extends MessageFactory {
 
 		return message;
 	}
-	
+
 	private Message buildErrorMessage(byte[] buffer) {
 		Message message = null;
-		
+
 		try {
 			switch (ErrorMessage.deserializeErrorType(buffer)) {
 			case INFO:
@@ -127,7 +126,7 @@ public class P2PMessageFactory extends MessageFactory {
 			e.printStackTrace();
 			message = null;
 		}
-		
+
 		return message;
 	}
 

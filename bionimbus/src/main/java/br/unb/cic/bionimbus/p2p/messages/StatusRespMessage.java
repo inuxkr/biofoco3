@@ -9,10 +9,6 @@ public class StatusRespMessage extends AbstractMessage {
 	
 	private PluginTask task;
 	
-	public StatusRespMessage(){
-		super();
-	}
-	
 	public StatusRespMessage(PeerNode peer, PluginTask task) {
 		super(peer);
 		this.task = task;

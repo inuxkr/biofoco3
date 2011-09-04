@@ -8,11 +8,7 @@ public class PingRespMessage extends AbstractMessage {
 	public PingRespMessage(PeerNode peerNode) {
 		super(peerNode);
 	}
-	
-	public PingRespMessage() {
-		super();
-	}
-	
+		
 	@Override
 	public int getType() {
 		return P2PMessageType.PINGRESP.code();

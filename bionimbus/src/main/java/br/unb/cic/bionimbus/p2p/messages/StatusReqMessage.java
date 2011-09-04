@@ -8,10 +8,6 @@ public class StatusReqMessage extends AbstractMessage {
 	
 	private String taskId;
 	
-	public StatusReqMessage() {
-		super();
-	}
-	
 	public StatusReqMessage(PeerNode peer, String taskId) {
 		super(peer);
 		this.taskId = taskId;
