@@ -4,6 +4,10 @@ import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.PeerNode;
 
 public class InfoReqMessage extends AbstractMessage {
+	
+	public InfoReqMessage() {
+		super();
+	}
 
 	public InfoReqMessage(PeerNode peer) {
 		super(peer);

@@ -12,6 +12,9 @@ public class InfoErrorMessage extends ErrorMessage {
 	
 	private String pluginId;
 	
+	public InfoErrorMessage() {
+		super();
+	}
 	
 	public InfoErrorMessage(PeerNode peer, String pluginId, String error) {
 		super(peer, error);

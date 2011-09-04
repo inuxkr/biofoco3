@@ -8,6 +8,10 @@ import br.unb.cic.bionimbus.utils.JsonCodec;
 public class SchedReqMessage extends AbstractMessage {
 	
 	private JobInfo jobInfo;
+	
+	public SchedReqMessage() {
+		super();
+	}
 		
 	public SchedReqMessage(PeerNode peer, JobInfo jobInfo) {
 		super(peer);

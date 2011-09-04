@@ -8,6 +8,10 @@ public class SchedRespMessage extends AbstractMessage {
 	
 	private String jobId;
 	private String pluginId;
+	
+	public SchedRespMessage() {
+		super();
+	}
 		
 	public SchedRespMessage(PeerNode peer) {
 		super(peer);

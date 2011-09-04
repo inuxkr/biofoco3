@@ -11,6 +11,10 @@ import br.unb.cic.bionimbus.p2p.PeerNode;
 public class SchedErrorMessage extends ErrorMessage {
 	
 	private String jobId;
+	
+	public SchedErrorMessage() {
+		super();
+	}
 		
 	public SchedErrorMessage(PeerNode peer, String jobId, String error) {
 		super(peer, error);
