@@ -6,17 +6,18 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.p2p.P2PErrorType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 
 public class InfoErrorMessage extends ErrorMessage {
 	
 	private String pluginId;
 	
 	public InfoErrorMessage() {
-		super(null);
+		super();
 	}
 	
-	public InfoErrorMessage(String pluginId, String error) {
-		super(error);
+	public InfoErrorMessage(PeerNode peer, String pluginId, String error) {
+		super(peer, error);
 		this.pluginId = pluginId;
 	}
 	

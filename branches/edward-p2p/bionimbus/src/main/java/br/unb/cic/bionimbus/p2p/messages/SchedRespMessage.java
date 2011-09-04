@@ -1,19 +1,21 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.messaging.Message;
+import br.unb.cic.bionimbus.p2p.IDFactory;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 
-public class SchedRespMessage implements Message {
+import com.google.common.base.Charsets;
+
+public class SchedRespMessage extends AbstractMessage {
 	
 	private String jobId;
 	private String pluginId;
 	
 	public SchedRespMessage() {
+		super();
 	}
 
 	public String getJobId() {
@@ -34,20 +36,41 @@ public class SchedRespMessage implements Message {
 
 	@Override
 	public byte[] serialize() throws Exception {
+//		ObjectMapper mapper = new ObjectMapper();
+//		Map<String, Object> data = new HashMap<String, Object>();
+//		data.put("jobId", jobId);
+//		data.put("pluginId", pluginId);
+//		return mapper.writeValueAsBytes(data);
+		
+		BulkMessage message = new BulkMessage();
+		message.setPeerID(peer.getId().toString());
+		message.setHost(peer.getHost());
+		message.setJobId(jobId);
+		message.setPluginId(pluginId);
+		
 		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("jobId", jobId);
-		data.put("pluginId", pluginId);
-		return mapper.writeValueAsBytes(data);
+		String raw = mapper.writeValueAsString(message);
+		return raw.getBytes(Charsets.UTF_8);
 		
 	}
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
+//		ObjectMapper mapper = new ObjectMapper();
+//		Map<String, Object> data = mapper.readValue(buffer, Map.class);
+//		this.jobId = (String) data.get("jobId");
+//		this.pluginId = (String) data.get("pluginId");
+		
 		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> data = mapper.readValue(buffer, Map.class);
-		this.jobId = (String) data.get("jobId");
-		this.pluginId = (String) data.get("pluginId");
+		BulkMessage message = mapper.readValue(buffer, BulkMessage.class);
+		
+		String id = message.getPeerID();
+		peer = new PeerNode(IDFactory.fromString(id));
+		peer.setHost(message.getHost());
+		
+		jobId = message.getJobId();		
+		pluginId = message.getPluginId();
+		
 	}
 
 	@Override

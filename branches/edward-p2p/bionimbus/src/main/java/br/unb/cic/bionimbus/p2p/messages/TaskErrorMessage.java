@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
 import br.unb.cic.bionimbus.p2p.P2PErrorType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 
 public class TaskErrorMessage extends ErrorMessage {
 	
@@ -8,8 +9,8 @@ public class TaskErrorMessage extends ErrorMessage {
 	
 	private String taskId;
 	
-	public TaskErrorMessage(String pluginId, String taskId, String error) {
-		super(error);
+	public TaskErrorMessage(PeerNode peer, String pluginId, String taskId, String error) {
+		super(peer, error);
 		this.pluginId = pluginId;
 		this.taskId = taskId;
 	}
