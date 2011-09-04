@@ -16,6 +16,7 @@ public class StartRespMessage extends AbstractMessage {
 	private PluginTask task;
 	
 	public StartRespMessage() {
+		super();
 	}
 	
 	public StartRespMessage(String jobId, PluginTask task) {

@@ -52,7 +52,7 @@ public class P2PService implements MessageListener {
 		List<Integer> types = new ArrayList<Integer>();
 
 		for (P2PMessageType enumType : P2PMessageType.values())
-			types.add(enumType.ordinal());
+			types.add(enumType.code());
 
 		msgService.bind(new InetSocketAddress(config.getHost().getAddress(), config.getHost().getPort()));
 		msgService.addListener(this, types);
