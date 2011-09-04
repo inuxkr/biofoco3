@@ -33,9 +33,7 @@ public class CloudRespMessage extends AbstractMessage {
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-//		ObjectMapper mapper = new ObjectMapper();
-//		values = mapper.readValue(buffer, mapper.getTypeFactory().constructCollectionType(ArrayList.class, PluginInfo.class));
-		
+
 		BulkMessage message = decodeBasicMessage(buffer);		
 		values = message.getValues();
 	}
