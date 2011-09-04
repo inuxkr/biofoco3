@@ -29,7 +29,8 @@ public class P2PMessageFactory extends MessageFactory {
 
 	@Override
 	public Message getMessage(int id, byte[] buffer) {
-		Message message = null;
+		
+		Message message = null;		
 		P2PMessageType type = P2PMessageType.values()[id];
 
 		switch (type) {
