@@ -184,7 +184,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			break;
 		case STARTREQ:
 			JobInfo job = ((StartReqMessage)msg).getJobInfo();
-			StartRespMessage resp = new StartRespMessage(job.getId(), startTask(job));
+			StartRespMessage resp = new StartRespMessage(p2p.getPeerNode(), job.getId(), startTask(job));
 			p2p.sendMessage(receiver.getHost(), resp);
 			break;
 		case STATUSREQ:
