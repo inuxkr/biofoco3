@@ -5,12 +5,11 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.plugin.PluginTaskState;
 
-public class StartRespMessage implements Message {
+public class StartRespMessage extends AbstractMessage {
 	
 	private String jobId;
 	
@@ -56,7 +55,7 @@ public class StartRespMessage implements Message {
 
 	@Override
 	public int getType() {
-		return P2PMessageType.STARTRESP.ordinal();
+		return P2PMessageType.STARTRESP.code();
 	}
 
 }

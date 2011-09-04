@@ -1,22 +1,27 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import br.unb.cic.bionimbus.messaging.Message;
+import br.unb.cic.bionimbus.p2p.IDFactory;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.utils.JsonCodec;
 
-public class CloudRespMessage implements Message {
+import com.google.common.base.Charsets;
+
+public class CloudRespMessage extends AbstractMessage {
 
 	private Collection<PluginInfo> values;
 
 	public CloudRespMessage() {
+		super();
 	}
 
-	public CloudRespMessage(Collection<PluginInfo> values) {
+	public CloudRespMessage(PeerNode peer, Collection<PluginInfo> values) {
+		super(peer);
 		this.values = values;
 	}
 
@@ -25,21 +30,24 @@ public class CloudRespMessage implements Message {
 	}
 
 	@Override
-	public byte[] serialize() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsBytes(values);
+	public byte[] serialize() throws Exception {		
+		BulkMessage message = encodeBasicMessage();
+		message.setValues(values);				
+		return JsonCodec.encodeMessage(message);
 	}
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		values = mapper.readValue(buffer, mapper.getTypeFactory()
-				.constructCollectionType(ArrayList.class, PluginInfo.class));
+//		ObjectMapper mapper = new ObjectMapper();
+//		values = mapper.readValue(buffer, mapper.getTypeFactory().constructCollectionType(ArrayList.class, PluginInfo.class));
+		
+		BulkMessage message = decodeBasicMessage(buffer);		
+		values = message.getValues();
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.CLOUDRESP.ordinal();
+		return P2PMessageType.CLOUDRESP.code();
 	}
 
 }

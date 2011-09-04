@@ -3,14 +3,14 @@ package br.unb.cic.bionimbus.p2p.messages;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.client.JobInfo;
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 
-public class JobRespMessage implements Message {
+public class JobRespMessage extends AbstractMessage {
 	
 	private JobInfo jobInfo;
 	
 	public JobRespMessage() {
+		super();
 	}
 	
 	public JobRespMessage(JobInfo jobInfo) {
@@ -35,7 +35,7 @@ public class JobRespMessage implements Message {
 
 	@Override
 	public int getType() {
-		return P2PMessageType.JOBRESP.ordinal();
+		return P2PMessageType.JOBRESP.code();
 	}
 
 }
