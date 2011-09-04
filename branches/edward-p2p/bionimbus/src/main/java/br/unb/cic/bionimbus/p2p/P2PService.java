@@ -86,13 +86,12 @@ public class P2PService implements MessageListener {
 	}
 	
 	public void sendMessage(Host host, Message message) {
-		//TODO: ESSE METODO TEM QUE FUNCIONAR!
 		msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
 	}
 	
-	public void sendMessage(Message message) {
-		msgService.sendMessage(new InetSocketAddress("localhost", 9999), message);
-	}
+//	public void sendMessage(Message message) {
+//		msgService.sendMessage(new InetSocketAddress("localhost", 9999), message);
+//	}
 
 	public void addListener(P2PListener listener) {
 		listeners.add(listener);
@@ -142,6 +141,10 @@ public class P2PService implements MessageListener {
 			}
 		}
 		
+	}
+	
+	public PeerNode getPeerNode() {
+		return peerNode;
 	}
 
 	public List<PeerNode> getPeers() {

@@ -17,6 +17,10 @@ public class SchedRespMessage extends AbstractMessage {
 	public SchedRespMessage() {
 		super();
 	}
+	
+	public SchedRespMessage(PeerNode peer) {
+		super(peer);
+	}
 
 	public String getJobId() {
 		return jobId;

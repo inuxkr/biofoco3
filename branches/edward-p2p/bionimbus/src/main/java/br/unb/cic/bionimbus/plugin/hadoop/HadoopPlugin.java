@@ -19,6 +19,8 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
@@ -70,9 +72,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			// ou assincrono?)
 			// salvar ID na task
 
-			msg = new EndMessage(task);
+			msg = new EndMessage(p2p.getPeerNode(), task);
 		} catch (Exception e) {
-			msg = new TaskErrorMessage(id, t.getId(), e.getMessage());
+			msg = new TaskErrorMessage(p2p.getPeerNode(), id, t.getId(), e.getMessage());
 		}
 
 		return msg;
@@ -89,17 +91,17 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			if (fTask.isDone()) {
 				Message message = buildFinishedTaskMsg(task, fTask);
 				taskMap.remove(task.getId());
-				p2p.sendMessage(message);
+				p2p.broadcast(message); //TODO: isto é um broadcast?
 			}
 		}
 	}
 
 	private Message buildFinishedGetInfoMsg(PluginInfo info) {
 		if (info == null)
-			return new InfoErrorMessage(id, errorString);
+			return new InfoErrorMessage(p2p.getPeerNode(), id, errorString);
 
 		info.setId(id);
-		return new InfoRespMessage(info);
+		return new InfoRespMessage(p2p.getPeerNode(), info);
 	}
 
 	private void checkGetInfo() {
@@ -118,10 +120,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		}
 	}
 
-	private void checkTaskStatus(String taskId) {
+	private void checkTaskStatus(PeerNode receiver, String taskId) {
 		Pair<PluginTask, Future<PluginTask>> pair = taskMap.get(taskId);
-		StatusRespMessage msg = new StatusRespMessage(pair.first);
-		p2p.sendMessage(msg);
+		StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), pair.first);
+		p2p.sendMessage(receiver.getHost(), msg);
 	}
 
 	private void storeFile() {
@@ -169,20 +171,25 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
+		
+		PeerNode receiver = null;
+		if (msg instanceof AbstractMessage) {
+			receiver = ((AbstractMessage) msg).getPeer();
+		}		
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case INFOREQ:
 			Message infoMsg = buildFinishedGetInfoMsg(myInfo);
-			p2p.sendMessage(infoMsg);
+			p2p.sendMessage(receiver.getHost(), infoMsg);
 			break;
 		case STARTREQ:
 			JobInfo job = ((StartReqMessage)msg).getJobInfo();
 			StartRespMessage resp = new StartRespMessage(job.getId(), startTask(job));
-			p2p.sendMessage(resp);
+			p2p.sendMessage(receiver.getHost(), resp);
 			break;
 		case STATUSREQ:
 			StatusReqMessage reqMsg = (StatusReqMessage) msg;
-			checkTaskStatus(reqMsg.getTaskId());
+			checkTaskStatus(receiver, reqMsg.getTaskId());
 			break;
 		case STOREREQ:
 			storeFile();
