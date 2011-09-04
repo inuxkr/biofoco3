@@ -19,6 +19,8 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
@@ -81,6 +83,12 @@ public class SchedService implements Service, P2PListener, Runnable {
 		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
+		
+		PeerNode sender = p2p.getPeerNode();
+		PeerNode receiver = null;
+		if (msg instanceof AbstractMessage) {
+			receiver = ((AbstractMessage) msg).getPeer();
+		}
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case CLOUDRESP:
@@ -101,22 +109,22 @@ public class SchedService implements Service, P2PListener, Runnable {
 			break;
 		case SCHEDREQ:
 			SchedReqMessage schedMsg = (SchedReqMessage) msg;
-			scheduleJob(schedMsg.getJobInfo());
+			scheduleJob(sender, receiver, schedMsg.getJobInfo());
 			break;
 		}
 	}
 
-	private void scheduleJob(JobInfo jobInfo) {
+	private void scheduleJob(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
 		try {
 			List<PluginInfo> availablePlugins = filterByService(jobInfo.getServiceId());
 			PluginInfo pluginInfo = getBestPluginForJob(availablePlugins, jobInfo);
-			SchedRespMessage msg = new SchedRespMessage();
+			SchedRespMessage msg = new SchedRespMessage(sender);
 			msg.setJobId(jobInfo.getId());
 			msg.setPluginId(pluginInfo.getId());
-			p2p.sendMessage(msg);		
+			p2p.sendMessage(receiver.getHost(), msg);		
 		} catch (SchedException ex) {
-			Message errMsg = new SchedErrorMessage(jobInfo.getId(), ex.getMessage());
-			p2p.sendMessage(errMsg);	
+			Message errMsg = new SchedErrorMessage(sender, jobInfo.getId(), ex.getMessage());
+			p2p.sendMessage(receiver.getHost(), errMsg);	
 		}
 	}
 	

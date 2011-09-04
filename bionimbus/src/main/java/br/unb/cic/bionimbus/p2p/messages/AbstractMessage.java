@@ -18,6 +18,10 @@ public abstract class AbstractMessage implements Message {
 	public void setHost(PeerNode peer) {
 		this.peer = peer;
 	}
+	
+	public PeerNode getPeer() {
+		return peer;
+	}
 
 	@Override
 	public byte[] serialize() throws Exception {

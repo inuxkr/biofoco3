@@ -17,6 +17,8 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
@@ -27,9 +29,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 
 	private final Map<String, PluginInfo> infoMap = new ConcurrentHashMap<String, PluginInfo>();
 
-	private final ScheduledExecutorService schedExecService = Executors
-			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
-					.namingPattern("DiscoveryService-%d").build());
+	private final ScheduledExecutorService schedExecService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("DiscoveryService-%d").build());
 
 	private P2PService p2p;
 
@@ -67,23 +67,31 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 
 	@Override
 	public void onEvent(P2PEvent event) {
+		
 		if (event.getType() != P2PEventType.MESSAGE)
 			return;
 
 		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
 		Message msg = msgEvent.getMessage();
+		
 		if (msg == null)
 			return;
+		
+		PeerNode sender = p2p.getPeerNode();
+		PeerNode receiver = null;
+		if (msg instanceof AbstractMessage) {
+			receiver = ((AbstractMessage) msg).getPeer();
+		}
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case INFORESP:
 			InfoRespMessage infoMsg = (InfoRespMessage) msg;
-			infoMap.put(infoMsg.getPluginInfo().getId(),
-					infoMsg.getPluginInfo());
+			infoMap.put(infoMsg.getPluginInfo().getId(), infoMsg.getPluginInfo());
 			break;
 		case CLOUDREQ:
-			CloudRespMessage cloudMsg = new CloudRespMessage(infoMap.values());
-			p2p.sendMessage(cloudMsg);
+			CloudRespMessage cloudMsg = new CloudRespMessage(sender, infoMap.values());
+			if (receiver != null)
+				p2p.sendMessage(receiver.getHost(), cloudMsg);
 			break;
 		case ERROR:
 			ErrorMessage errMsg = (ErrorMessage) msg;
