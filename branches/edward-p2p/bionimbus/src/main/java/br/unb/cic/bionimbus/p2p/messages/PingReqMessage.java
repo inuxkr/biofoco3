@@ -5,6 +5,10 @@ import br.unb.cic.bionimbus.p2p.PeerNode;
 
 public class PingReqMessage extends AbstractMessage {
 	
+	public PingReqMessage() {
+		super();
+	}
+	
 	public PingReqMessage(PeerNode peer) {
 		super(peer);
 	}

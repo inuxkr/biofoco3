@@ -10,6 +10,10 @@ import br.unb.cic.bionimbus.utils.JsonCodec;
 public class CloudRespMessage extends AbstractMessage {
 
 	private Collection<PluginInfo> values;
+	
+	public CloudRespMessage() {
+		super();
+	}
 
 	public CloudRespMessage(PeerNode peer, Collection<PluginInfo> values) {
 		super(peer);

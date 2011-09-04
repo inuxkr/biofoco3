@@ -8,6 +8,10 @@ import br.unb.cic.bionimbus.utils.JsonCodec;
 public class EndMessage extends AbstractMessage {
 	
 	private PluginTask task;
+	
+	public EndMessage(){
+		super();
+	}
 		
 	public EndMessage(PeerNode peer, PluginTask task) {
 		super(peer);

@@ -12,6 +12,10 @@ public abstract class ErrorMessage extends AbstractMessage {
 
 	private String error;
 	
+	public ErrorMessage() {
+		super();
+	}
+	
 	public ErrorMessage(PeerNode peer, String error) {
 		super(peer);
 		this.error = error;

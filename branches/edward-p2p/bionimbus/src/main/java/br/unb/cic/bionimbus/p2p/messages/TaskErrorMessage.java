@@ -9,6 +9,10 @@ public class TaskErrorMessage extends ErrorMessage {
 	private String pluginId;	
 	private String taskId;
 	
+	public TaskErrorMessage() {
+		super();
+	}
+	
 	public TaskErrorMessage(PeerNode peer, String pluginId, String taskId, String error) {
 		super(peer, error);
 		this.pluginId = pluginId;
