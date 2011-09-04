@@ -33,4 +33,13 @@ public enum P2PMessageType {
 	public int code() {
 		return code;
 	}
+	
+	static P2PMessageType of(int code) {
+		for (P2PMessageType type : values()){			
+			if (type.code() == code)
+				return type;
+		}
+		
+		throw new IllegalArgumentException("code " + code + "is not registered!");
+	}
 }

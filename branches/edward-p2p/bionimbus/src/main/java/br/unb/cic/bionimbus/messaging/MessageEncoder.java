@@ -10,8 +10,7 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 public class MessageEncoder extends SimpleChannelHandler {
 
 	@Override
-	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e)
-			throws Exception {
+	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 		Message message = (Message) e.getMessage();
 
 		byte[] encoded = message.serialize();

@@ -50,8 +50,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	@Override
 	public void run() {
 		System.out.println("running SchedService...");
-		Message msg = new CloudReqMessage();
-		p2p.broadcast(msg);
+		Message msg = new CloudReqMessage(p2p.getPeerNode());
+		p2p.broadcast(msg); //TODO: isto é broadcast?
 	}
 
 	@Override

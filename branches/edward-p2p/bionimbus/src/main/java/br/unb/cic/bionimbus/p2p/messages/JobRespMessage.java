@@ -8,11 +8,7 @@ import br.unb.cic.bionimbus.utils.JsonCodec;
 public class JobRespMessage extends AbstractMessage {
 	
 	private JobInfo jobInfo;
-	
-	public JobRespMessage() {
-		super();
-	}
-	
+		
 	public JobRespMessage(PeerNode peer, JobInfo jobInfo) {
 		super(peer);
 		this.jobInfo = jobInfo;

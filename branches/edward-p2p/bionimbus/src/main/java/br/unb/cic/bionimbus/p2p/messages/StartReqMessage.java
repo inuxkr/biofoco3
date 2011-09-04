@@ -9,10 +9,6 @@ public class StartReqMessage extends AbstractMessage {
 	
 	private JobInfo jobInfo;
 	
-	public StartReqMessage() {
-		super();
-	}
-	
 	public StartReqMessage(PeerNode peer, JobInfo jobInfo) {
 		super(peer);
 		this.jobInfo = jobInfo;

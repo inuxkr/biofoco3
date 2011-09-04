@@ -4,16 +4,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.utils.JsonCodec;
 
 public class JobReqMessage extends AbstractMessage {
 	
 	private JobInfo jobInfo;
-	
-	public JobReqMessage() {
-		super();
-	}
-	
-	public JobReqMessage(JobInfo jobInfo) {
+		
+	public JobReqMessage(PeerNode peer, JobInfo jobInfo) {
+		super(peer);
 		this.jobInfo = jobInfo;
 	}
 	
@@ -22,15 +21,21 @@ public class JobReqMessage extends AbstractMessage {
 	}
 
 	@Override
-	public byte[] serialize() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsBytes(jobInfo);
-	}
-
-	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		this.jobInfo = mapper.readValue(buffer, JobInfo.class);
+
+		BulkMessage message = decodeBasicMessage(buffer);
+		jobInfo = message.getJobInfo();		
+	}
+	
+	@Override
+	public byte[] serialize() throws Exception {
+		
+		BulkMessage message = encodeBasicMessage();
+		
+		message.setJobInfo(jobInfo);
+		
+		return JsonCodec.encodeMessage(message);
+		
 	}
 
 	@Override

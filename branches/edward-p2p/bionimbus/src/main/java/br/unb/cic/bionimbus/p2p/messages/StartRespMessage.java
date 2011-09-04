@@ -11,10 +11,6 @@ public class StartRespMessage extends AbstractMessage {
 	
 	private PluginTask task;
 	
-	public StartRespMessage() {
-		super();
-	}
-	
 	public StartRespMessage(PeerNode peer, String jobId, PluginTask task) {
 		super(peer);
 		this.jobId = jobId;

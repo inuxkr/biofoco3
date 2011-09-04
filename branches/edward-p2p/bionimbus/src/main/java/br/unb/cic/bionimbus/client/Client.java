@@ -23,7 +23,7 @@ public class Client implements P2PListener {
 	}
 
 	public void listServices() {
-		Message message = new CloudReqMessage();		
+		Message message = new CloudReqMessage(p2p.getPeerNode());		
 		p2p.broadcast(message);
 	}
 
@@ -36,7 +36,7 @@ public class Client implements P2PListener {
 		job.setServiceId(1023296285);
 		job.setInputs(null);
 		
-		JobReqMessage msg = new JobReqMessage(job);
+		JobReqMessage msg = new JobReqMessage(p2p.getPeerNode(), job);
 		p2p.sendMessage(node.getHost(), msg);
 		
 	}

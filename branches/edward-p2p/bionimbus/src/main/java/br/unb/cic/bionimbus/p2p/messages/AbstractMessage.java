@@ -13,7 +13,7 @@ public abstract class AbstractMessage implements Message {
 		this.peer = peer;
 	}
 	
-	public AbstractMessage() {}
+//	public AbstractMessage() {}
 
 	public void setHost(PeerNode peer) {
 		this.peer = peer;

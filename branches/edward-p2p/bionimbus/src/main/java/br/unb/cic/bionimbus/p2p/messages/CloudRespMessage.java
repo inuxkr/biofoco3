@@ -11,10 +11,6 @@ public class CloudRespMessage extends AbstractMessage {
 
 	private Collection<PluginInfo> values;
 
-	public CloudRespMessage() {
-		super();
-	}
-
 	public CloudRespMessage(PeerNode peer, Collection<PluginInfo> values) {
 		super(peer);
 		this.values = values;
