@@ -35,7 +35,7 @@ public class JobReqMessage extends AbstractMessage {
 
 	@Override
 	public int getType() {
-		return P2PMessageType.JOBREQ.ordinal();
+		return P2PMessageType.JOBREQ.code();
 	}
 
 }

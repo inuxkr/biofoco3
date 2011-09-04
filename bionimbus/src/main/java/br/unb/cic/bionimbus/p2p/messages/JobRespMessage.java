@@ -1,7 +1,5 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.PeerNode;
