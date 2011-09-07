@@ -83,7 +83,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 			receiver = ((AbstractMessage) msg).getPeer();
 		}
 
-		switch (P2PMessageType.values()[msg.getType()]) {
+		switch (P2PMessageType.of(msg.getType())) {
 		case INFORESP:
 			InfoRespMessage infoMsg = (InfoRespMessage) msg;
 			infoMap.put(infoMsg.getPluginInfo().getId(), infoMsg.getPluginInfo());

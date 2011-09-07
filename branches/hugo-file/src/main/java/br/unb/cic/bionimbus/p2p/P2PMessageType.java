@@ -34,7 +34,7 @@ public enum P2PMessageType {
 		return code;
 	}
 	
-	static P2PMessageType of(int code) {
+	public static P2PMessageType of(int code) {
 		for (P2PMessageType type : values()){			
 			if (type.code() == code)
 				return type;
