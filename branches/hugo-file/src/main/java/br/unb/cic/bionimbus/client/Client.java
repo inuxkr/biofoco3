@@ -1,11 +1,14 @@
 package br.unb.cic.bionimbus.client;
 
+import java.io.IOException;
+
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
+import br.unb.cic.bionimbus.config.BioNimbusConfigLoader;
 import br.unb.cic.bionimbus.messaging.Message;
-import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 
@@ -20,20 +23,21 @@ public class Client implements P2PListener {
 	}
 
 	public void listServices() {
-		Message message = new CloudReqMessage();
-		p2p.sendMessage(new Host("localhost", 9999), message);
+		Message message = new CloudReqMessage(p2p.getPeerNode());		
+		p2p.broadcast(message);
 	}
 
-	public void startJob() {
+	public void startJob(PeerNode node) {
+		
 		JobInfo job = new JobInfo();
 		job.setId(null);
-		//job.setArgs(null);
 		job.addArg("--help");
 		job.setServiceId(1023296285);
 		job.setInputs(null);
 		
-		JobReqMessage msg = new JobReqMessage(job);
-		p2p.sendMessage(msg);
+		JobReqMessage msg = new JobReqMessage(p2p.getPeerNode(), job);
+		p2p.sendMessage(node.getHost(), msg);
+		
 	}
 	
 	/*public void jobStatus(String jobId) {
@@ -50,17 +54,22 @@ public class Client implements P2PListener {
 		p2p.shutdown();
 	}
 
-	public static void main(String[] args) {
-		BioNimbusConfig config = new BioNimbusConfig();
-		config.setHost(new Host("localhost", 8080));
-
-		P2PService p2p = new P2PService();
-		p2p.setConfig(config);
+	public static void main(String[] args) throws IOException {
+		
+		String configFile = System.getProperty("config.file", "conf/client.json");		
+		BioNimbusConfig config = BioNimbusConfigLoader.loadHostConfig(configFile);
+				
+		P2PService p2p = new P2PService(config);
 		p2p.start();
 
 		Client client = new Client();
 		client.setP2P(p2p);
-		client.uploadFile("/home/hugo.saldanha/Downloads/UNL.tar.gz");
+		
+		while (p2p.getPeers().size() == 0) {}
+		System.out.println("I am not alone in the dark anymore!");
+		
+		PeerNode node = p2p.getPeers().get(0);
+			
+		client.startJob(node);
 	}
-
 }

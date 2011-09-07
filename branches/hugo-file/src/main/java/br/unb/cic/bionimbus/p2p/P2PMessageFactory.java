@@ -11,6 +11,8 @@ import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.PingReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.PingRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
@@ -27,8 +29,9 @@ public class P2PMessageFactory extends MessageFactory {
 
 	@Override
 	public Message getMessage(int id, byte[] buffer) {
+
 		Message message = null;
-		P2PMessageType type = P2PMessageType.values()[id];
+		P2PMessageType type = P2PMessageType.of(id);
 
 		switch (type) {
 		case INFOREQ:
@@ -52,18 +55,18 @@ public class P2PMessageFactory extends MessageFactory {
 		case STATUSRESP:
 			message = new StatusRespMessage();
 			break;
-		//case STOREREQ:
-			//message = new StoreReqMessage();
-			//break;
-		//case STORERESP:
-			//message = new StoreRespMessage();
-			//break;
-		//case GETREQ:
-			//message = new GetReqMessage();
-			//break;
-		//case GETRESP:
-			//message = new GetRespMessage();
-			//break;
+		// case STOREREQ:
+		// message = new StoreReqMessage();
+		// break;
+		// case STORERESP:
+		// message = new StoreRespMessage();
+		// break;
+		// case GETREQ:
+		// message = new GetReqMessage();
+		// break;
+		// case GETRESP:
+		// message = new GetRespMessage();
+		// break;
 		case CLOUDREQ:
 			message = new CloudReqMessage();
 			break;
@@ -85,6 +88,12 @@ public class P2PMessageFactory extends MessageFactory {
 		case ERROR:
 			message = buildErrorMessage(buffer);
 			break;
+		case PINGREQ:
+			message = new PingReqMessage();
+			break;
+		case PINGRESP:
+			message = new PingRespMessage();
+			break;
 		}
 
 		try {
@@ -97,10 +106,10 @@ public class P2PMessageFactory extends MessageFactory {
 
 		return message;
 	}
-	
+
 	private Message buildErrorMessage(byte[] buffer) {
 		Message message = null;
-		
+
 		try {
 			switch (ErrorMessage.deserializeErrorType(buffer)) {
 			case INFO:
@@ -117,7 +126,7 @@ public class P2PMessageFactory extends MessageFactory {
 			e.printStackTrace();
 			message = null;
 		}
-		
+
 		return message;
 	}
 

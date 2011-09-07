@@ -4,15 +4,20 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PErrorType;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 
-public abstract class ErrorMessage implements Message {
+public abstract class ErrorMessage extends AbstractMessage {
 
 	private String error;
-
-	public ErrorMessage(String error) {
+	
+	public ErrorMessage() {
+		super();
+	}
+	
+	public ErrorMessage(PeerNode peer, String error) {
+		super(peer);
 		this.error = error;
 	}
 
@@ -24,8 +29,7 @@ public abstract class ErrorMessage implements Message {
 		this.error = error;
 	}
 
-	static public P2PErrorType deserializeErrorType(byte[] buffer)
-			throws Exception {
+	static public P2PErrorType deserializeErrorType(byte[] buffer) throws Exception {
 		P2PErrorType type = null;
 		JsonFactory f = new JsonFactory();
 		JsonParser p = f.createJsonParser(buffer);
@@ -53,7 +57,7 @@ public abstract class ErrorMessage implements Message {
 
 	@Override
 	public int getType() {
-		return P2PMessageType.ERROR.ordinal();
+		return P2PMessageType.ERROR.code();
 	}
 
 }

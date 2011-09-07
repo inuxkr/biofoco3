@@ -19,6 +19,8 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
@@ -34,9 +36,7 @@ import br.unb.cic.bionimbus.utils.Pair;
 
 public class MonitorService implements Service, P2PListener, Runnable {
 
-	private final ScheduledExecutorService schedExecService = Executors
-			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
-					.namingPattern("MonitorService-%d").build());
+	private final ScheduledExecutorService schedExecService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("MonitorService-%d").build());
 	
 	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
 	
@@ -82,8 +82,9 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	}
 	
 	private void checkRunningJobs() {
-		for (String taskId : (String[]) runningJobs.keySet().toArray()) {
-			sendStatusReq(taskId);
+		PeerNode peer = p2p.getPeerNode();
+		for (String taskId : runningJobs.keySet()) {
+			sendStatusReq(peer, taskId);
 		}
 	}
 
@@ -96,20 +97,27 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
+		
+		PeerNode sender = p2p.getPeerNode();
+		PeerNode receiver = null;
+		
+		if (msg instanceof AbstractMessage) {
+			receiver = ((AbstractMessage) msg).getPeer();
+		}
 
 		switch (P2PMessageType.values()[msg.getType()]) {
 		case JOBREQ:
 			JobReqMessage jobMsg = (JobReqMessage) msg;
-			sendSchedReq(jobMsg.getJobInfo());
+			sendSchedReq(sender, receiver, jobMsg.getJobInfo());
 			break;
 		case SCHEDRESP:
 			SchedRespMessage schedMsg = (SchedRespMessage) msg;
 			JobInfo schedJob = pendingJobs.get(schedMsg.getJobId());
-			sendStartReq(schedJob);
+			sendStartReq(sender, receiver, schedJob);
 			break;
 		case STARTRESP:
 			StartRespMessage respMsg = (StartRespMessage) msg;
-			sendJobResp(respMsg.getJobId(), respMsg.getPluginTask());
+			sendJobResp(sender, receiver, respMsg.getJobId(), respMsg.getPluginTask());
 			break;
 		case STATUSRESP:
 			StatusRespMessage status = (StatusRespMessage) msg;
@@ -128,28 +136,28 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		}
 	}
 	
-	private void sendSchedReq(JobInfo jobInfo) {
+	private void sendSchedReq(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
 		jobInfo.setId(UUID.randomUUID().toString());
 		pendingJobs.put(jobInfo.getId(), jobInfo);
-		SchedReqMessage newMsg = new SchedReqMessage(jobInfo);
-		p2p.sendMessage(newMsg);
+		SchedReqMessage newMsg = new SchedReqMessage(sender, jobInfo);
+		p2p.sendMessage(receiver.getHost(), newMsg);
 	}
 	
-	private void sendJobResp(String jobId, PluginTask task) {
+	private void sendJobResp(PeerNode sender, PeerNode receiver, String jobId, PluginTask task) {
 		JobInfo jobInfo = pendingJobs.remove(jobId);
 		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
-		JobRespMessage jobRespMsg = new JobRespMessage(jobInfo);
-		p2p.sendMessage(jobRespMsg);
+		JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
+		p2p.sendMessage(receiver.getHost(), jobRespMsg);
 	}
 	
-	private void sendStartReq(JobInfo jobInfo) {
-		StartReqMessage startMsg = new StartReqMessage(jobInfo);
-		p2p.sendMessage(startMsg);
+	private void sendStartReq(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
+		StartReqMessage startMsg = new StartReqMessage(sender, jobInfo);
+		p2p.sendMessage(receiver.getHost(), startMsg);
 	}
 	
-	private void sendStatusReq(String taskId) {
-		StatusReqMessage msg = new StatusReqMessage(taskId);
-		p2p.sendMessage(msg);
+	private void sendStatusReq(PeerNode sender, String taskId) {
+		StatusReqMessage msg = new StatusReqMessage(sender, taskId);
+		p2p.broadcast(msg); //TODO: isto é realmente um broadcast?
 	}
 	
 	private void updateJobStatus(PluginTask task) {

@@ -14,8 +14,7 @@ public class MessageDecoder extends FrameDecoder {
 	}
 
 	@Override
-	protected Object decode(ChannelHandlerContext ctx, Channel channel,
-			ChannelBuffer buffer) throws Exception {
+	protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer) throws Exception {
 
 		if (buffer.readableBytes() < 9)
 			return null;

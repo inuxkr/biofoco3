@@ -1,19 +1,20 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.utils.JsonCodec;
 
-public class SchedRespMessage implements Message {
+public class SchedRespMessage extends AbstractMessage {
 	
 	private String jobId;
 	private String pluginId;
 	
 	public SchedRespMessage() {
+		super();
+	}
+		
+	public SchedRespMessage(PeerNode peer) {
+		super(peer);
 	}
 
 	public String getJobId() {
@@ -34,25 +35,27 @@ public class SchedRespMessage implements Message {
 
 	@Override
 	public byte[] serialize() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("jobId", jobId);
-		data.put("pluginId", pluginId);
-		return mapper.writeValueAsBytes(data);
+
+		BulkMessage message = encodeBasicMessage();
+		message.setJobId(jobId);
+		message.setPluginId(pluginId);
+		
+		return JsonCodec.encodeMessage(message);
 		
 	}
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> data = mapper.readValue(buffer, Map.class);
-		this.jobId = (String) data.get("jobId");
-		this.pluginId = (String) data.get("pluginId");
+		
+		BulkMessage message = decodeBasicMessage(buffer);
+		
+		jobId = message.getJobId();		
+		pluginId = message.getPluginId();		
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.SCHEDRESP.ordinal();
+		return P2PMessageType.SCHEDRESP.code();
 	}
 
 }

@@ -1,19 +1,20 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import br.unb.cic.bionimbus.client.JobInfo;
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.utils.JsonCodec;
 
-public class SchedReqMessage implements Message {
+public class SchedReqMessage extends AbstractMessage {
 	
 	private JobInfo jobInfo;
 	
 	public SchedReqMessage() {
+		super();
 	}
-	
-	public SchedReqMessage(JobInfo jobInfo) {
+		
+	public SchedReqMessage(PeerNode peer, JobInfo jobInfo) {
+		super(peer);
 		this.jobInfo = jobInfo;
 	}
 	
@@ -23,18 +24,24 @@ public class SchedReqMessage implements Message {
 
 	@Override
 	public byte[] serialize() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsBytes(jobInfo);
+		
+		BulkMessage message = encodeBasicMessage();
+		message.setJobInfo(jobInfo);
+		
+		return JsonCodec.encodeMessage(message);
 	}
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		this.jobInfo = mapper.readValue(buffer, JobInfo.class);
+		
+		BulkMessage message = decodeBasicMessage(buffer);
+		
+		jobInfo = message.getJobInfo();
+		
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.SCHEDREQ.ordinal();
+		return P2PMessageType.SCHEDREQ.code();
 	}
 }
