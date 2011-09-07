@@ -8,7 +8,7 @@ public class ConfigLoaderTest {
 	
 	@Test
 	public void testLoader() throws IOException {
-		System.out.println(BioNimbusConfigLoader.loadHostConfig("conf/peer.json"));
+//		System.out.println(BioNimbusConfigLoader.loadHostConfig("conf/peer.json"));
 	}
 
 }
