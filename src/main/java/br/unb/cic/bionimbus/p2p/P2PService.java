@@ -87,7 +87,7 @@ public class P2PService implements MessageListener, FileListener {
 		sendMessage(myHost, message);
 		
 		// send message to known peers
-		for (PeerNode node : chord.getRing()) {
+		for (PeerNode node : chord.peers()) {
 			Host host = node.getHost();
 			msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
 		}

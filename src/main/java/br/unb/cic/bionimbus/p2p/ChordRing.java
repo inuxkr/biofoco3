@@ -61,17 +61,6 @@ public final class ChordRing {
 		return finger[0];
 	}
 
-	public synchronized Collection<PeerNode> getRing() {
-		
-		List<PeerNode> nodes = new ArrayList<PeerNode>();
-		for (PeerNode p : finger) {
-			if (p != null) {
-				nodes.add(p);
-			}
-		}
-		return nodes;
-	}
-
 	public synchronized int size() {
 		int count = 0;
 		for (int i = 0; i < finger.length; i++){
@@ -121,7 +110,7 @@ public final class ChordRing {
 	}
 
 	public synchronized String printRawTable() {
-		return getRing().toString();
+		return peers().toString();
 	}
 
 	@Override
