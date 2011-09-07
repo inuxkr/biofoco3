@@ -23,10 +23,12 @@ public final class ChordRing {
 	}
 
 	public ChordRing(PeerNode thisNode, int bitsize) {
+		
 		id = thisNode.getId();
 		peer = thisNode;
 		m  = bitsize;
 		finger = new PeerNode[m];
+		
 	}
 
 	public synchronized PeerNode successor(ID key) {
@@ -71,7 +73,7 @@ public final class ChordRing {
 		return count;
 	}
 
-	public synchronized void insert(PeerNode peerNode) {
+	public synchronized void add(PeerNode peerNode) {
 
 		ID candidate = peerNode.getId();
 
@@ -87,6 +89,8 @@ public final class ChordRing {
 				break;
 			}
 		}
+		
+		System.out.println("chord ring: " + peers());
 	}
 
 	public synchronized void remove(PeerNode peerNode) {
@@ -99,7 +103,11 @@ public final class ChordRing {
 
 	public synchronized Collection<PeerNode> peers() {
 		final SortedSet<PeerNode> peers = new TreeSet<PeerNode>();
-		peers.addAll(Arrays.asList(finger));
+		for (PeerNode p : finger) {
+			if (p != null){
+				peers.add(p);
+			}
+		}
 		return peers;
 	}
 
@@ -119,5 +127,4 @@ public final class ChordRing {
 		sb.append(ids.toString());
 		return sb.toString();
 	}
-
 }
