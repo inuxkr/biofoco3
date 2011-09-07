@@ -1,7 +1,9 @@
 package br.unb.cic.bionimbus.p2p;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -60,7 +62,14 @@ public final class ChordRing {
 	}
 
 	public synchronized Collection<PeerNode> getRing() {
-		return Arrays.asList(finger);
+		
+		List<PeerNode> nodes = new ArrayList<PeerNode>();
+		for (PeerNode p : finger) {
+			if (p != null) {
+				nodes.add(p);
+			}
+		}
+		return nodes;
 	}
 
 	public synchronized int size() {
