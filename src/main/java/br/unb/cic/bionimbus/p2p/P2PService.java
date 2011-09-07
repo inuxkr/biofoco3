@@ -89,7 +89,7 @@ public class P2PService implements MessageListener, FileListener {
 		// send message to known peers
 		for (PeerNode node : chord.peers()) {
 			Host host = node.getHost();
-			msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
+			sendMessage(host, message);
 		}
 	}
 	
@@ -117,15 +117,6 @@ public class P2PService implements MessageListener, FileListener {
 		listeners.remove(listener);
 	}
 
-	//Todo: CONSERTAR?
-//	@Override
-//	public void onEvent(Host host, Message message) {
-//		for (P2PListener listener : listeners) {
-//			P2PEvent event = new P2PMessageEvent(host, message);
-//			listener.onEvent(event);
-//		}
-//	}
-
 	@Override
 	public void onEvent(Message message) {
 		
@@ -134,12 +125,15 @@ public class P2PService implements MessageListener, FileListener {
 			System.out.println("received req message from " + node.getHost().getPort());
 			chord.add(node);
 			sendMessage(node.getHost(), new PingRespMessage(peerNode));
-		}
-		
-		if (message instanceof PingRespMessage) {
+		} else if (message instanceof PingRespMessage) {
 			PeerNode node = ((PingRespMessage) message).getPeerNode();
 			System.out.println("received resp message " + node.getHost().getPort());
 			chord.add(node);
+		} else {
+			for (P2PListener listener : listeners) {
+				P2PEvent event = new P2PMessageEvent(message);
+				listener.onEvent(event);
+			}
 		}
 	}
 

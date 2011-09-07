@@ -105,7 +105,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 			receiver = ((AbstractMessage) msg).getPeer();
 		}
 
-		switch (P2PMessageType.values()[msg.getType()]) {
+		switch (P2PMessageType.of(msg.getType())) {
 		case JOBREQ:
 			JobReqMessage jobMsg = (JobReqMessage) msg;
 			sendSchedReq(sender, receiver, jobMsg.getJobInfo());

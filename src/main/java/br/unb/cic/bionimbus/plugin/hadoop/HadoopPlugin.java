@@ -177,7 +177,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			receiver = ((AbstractMessage) msg).getPeer();
 		}		
 
-		switch (P2PMessageType.values()[msg.getType()]) {
+		switch (P2PMessageType.of(msg.getType())) {
 		case INFOREQ:
 			Message infoMsg = buildFinishedGetInfoMsg(myInfo);
 			p2p.sendMessage(receiver.getHost(), infoMsg);
