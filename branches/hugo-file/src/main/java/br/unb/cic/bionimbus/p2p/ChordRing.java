@@ -1,16 +1,18 @@
 package br.unb.cic.bionimbus.p2p;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public final class ChordRing {
 
 	public static final int SHA1_BIT_SIZE = 160;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ChordRing.class);
 
 	private final int m;
 
@@ -22,6 +24,7 @@ public final class ChordRing {
 
 	public ChordRing(PeerNode thisNode) {
 		this(thisNode, SHA1_BIT_SIZE);
+		LOG.debug("Starting chord ring");
 	}
 
 	public ChordRing(PeerNode thisNode, int bitsize) {
