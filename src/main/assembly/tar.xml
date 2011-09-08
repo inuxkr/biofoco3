@@ -11,7 +11,7 @@
 
 		<fileSet>
 			<directory>${basedir}/exported-folders/conf</directory>
-			<outputDirectory>/conf</outputDirectory>
+			<outputDirectory>bionimbus-${version}/conf</outputDirectory>
 			<includes>
 				<include>**/*.json</include>
 			</includes>
@@ -19,7 +19,7 @@
 
 		<fileSet>
 			<directory>${basedir}/exported-folders/bin</directory>
-			<outputDirectory>/bin</outputDirectory>
+			<outputDirectory>bionimbus-${version}/bin</outputDirectory>
 			<includes>
 				<include>**/*.sh</include>
 			</includes>
@@ -27,14 +27,14 @@
 
 		<fileSet>
 			<directory>${project.basedir}/src/main/resources</directory>
-			<outputDirectory />
+			<outputDirectory>bionimbus-${version}</outputDirectory>
 			<includes>
 				<include>log4j.properties</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}</directory>
-			<outputDirectory />
+			<outputDirectory>bionimbus-${version}/</outputDirectory>
 			<includes>
 				<include>*.jar</include>
 			</includes>
