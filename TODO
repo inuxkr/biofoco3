@@ -1,0 +1,14 @@
+1) Ajustar MonitorService para mandar requisicoes de Status para o plugin,
+   ao inves de broadcast
+
+2) Fazer upload de arquivos para a nuvem (StorageService)
+
+3) Fazer tratamento de erros de rede
+
+4) Fazer jobs que possuam arquivos de entrada e de saída
+
+5) Terminar parte de finalização de Jobs
+
+6) Fazer lógica de eleição de master no P2P e atualização de master.
+
+7) Incorporar UDP no servico de mensagens.
