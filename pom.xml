@@ -137,7 +137,7 @@
 						<descriptor>src/main/assembly/tar.xml</descriptor>
 					</descriptors>
 					<finalName>bionimbus-${version}-bundle</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
+					<appendAssemblyId>false</appendAssemblyId>					
 				</configuration>
 				<executions>
 					<execution>
