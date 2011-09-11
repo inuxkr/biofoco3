@@ -97,8 +97,8 @@ public class P2PService implements MessageListener, FileListener {
 		msgService.sendMessage(new InetSocketAddress(host.getAddress(), host.getPort()), message);
 	}
 	
-	public void sendFile(String fileName) {
-		msgService.sendFile(new InetSocketAddress("localhost", 9999), fileName);
+	public void sendFile(Host host, String fileName) {
+		msgService.sendFile(new InetSocketAddress(host.getAddress(), host.getPort()), fileName);
 	}
 
 	@Override
