@@ -15,6 +15,7 @@ import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PEventType;
+import br.unb.cic.bionimbus.p2p.P2PFileEvent;
 import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
@@ -113,10 +114,11 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		if (fInfo.isDone()) {
 			try {
 				myInfo = fInfo.get();
-				fInfo = null;
+				myInfo.setHost(p2p.getPeerNode().getHost());
 			} catch (Exception e) {
 				errorString = e.getMessage();
 			}
+			fInfo = null;
 		}
 	}
 
@@ -126,7 +128,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		p2p.sendMessage(receiver.getHost(), msg);
 	}
 
-	private void storeFile() {
+	private void storeFile(P2PEvent event) {
+		P2PFileEvent fileEvent = (P2PFileEvent) event;
+		System.out.println("recebi arquivo " + fileEvent.getFile().getName());
 		// 1. Receber todo o arquivo
 		// 2. Salvar arquivo no Hadoop
 		// 3. Construir mensagem de sucesso (com caminho do arquivo) ou de erro
@@ -164,7 +168,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		if (event.getType() != P2PEventType.MESSAGE)
+		if (event.getType().equals(P2PEventType.FILE)) {
+			storeFile(event);
+			return;
+		} else if (!event.getType().equals(P2PEventType.MESSAGE))
 			return;
 
 		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
@@ -190,9 +197,6 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		case STATUSREQ:
 			StatusReqMessage reqMsg = (StatusReqMessage) msg;
 			checkTaskStatus(receiver, reqMsg.getTaskId());
-			break;
-		case STOREREQ:
-			storeFile();
 			break;
 		case GETREQ:
 			getFile();

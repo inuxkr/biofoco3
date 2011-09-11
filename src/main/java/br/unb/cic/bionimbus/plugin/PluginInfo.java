@@ -2,9 +2,13 @@ package br.unb.cic.bionimbus.plugin;
 
 import java.util.List;
 
+import br.unb.cic.bionimbus.p2p.Host;
+
 public class PluginInfo {
 	
 	private String id;
+	
+	private Host host;
 	
 	private Integer numCores;
 	
@@ -23,7 +27,14 @@ public class PluginInfo {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public Host getHost() {
+		return host;
+	}
 
+	public void setHost(Host host) {
+		this.host = host;
+	}
 	public Float getFsFreeSize() {
 		return fsFreeSize;
 	}

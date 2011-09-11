@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
@@ -25,6 +26,9 @@ public class BulkMessage {
 	
 	@JsonIgnore
 	private JobInfo jobInfo;
+	
+	@JsonIgnore
+	private FileInfo fileInfo;
 	
 	@JsonIgnore
 	private String jobId;
@@ -92,6 +96,14 @@ public class BulkMessage {
 
 	public JobInfo getJobInfo() {
 		return jobInfo;
+	}
+	
+	public void setFileInfo(FileInfo fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+	
+	public FileInfo getFileInfo() {
+		return fileInfo;
 	}
 
 	public void setJobId(String jobId) {
