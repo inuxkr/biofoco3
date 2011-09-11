@@ -60,9 +60,13 @@ public class MessageServiceFileClientHandler extends
 		if (!readingChunks) {
 			HttpResponse resp = (HttpResponse) e.getMessage();
 
-			if (resp.getStatus() == HttpResponseStatus.CREATED) {
+			if (resp.getStatus().equals(HttpResponseStatus.CREATED)) {
 				System.out.println("File sent succesfully");
-				e.getChannel().close();
+				
+				if (resp.isChunked())
+					readingChunks = true;
+				else
+					e.getChannel().close();
 				return;
 			}
 			
@@ -83,7 +87,8 @@ public class MessageServiceFileClientHandler extends
 			HttpChunk chunk = (HttpChunk) e.getMessage();
 			if (chunk.isLast()) {
 				readingChunks = false;
-				fs.close();
+				if (isGet)
+				  fs.close();
 				e.getChannel().close();
 			} else {
 				ChannelBuffer content = chunk.getContent();
