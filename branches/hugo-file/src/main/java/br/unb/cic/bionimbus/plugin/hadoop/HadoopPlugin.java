@@ -1,8 +1,10 @@
 package br.unb.cic.bionimbus.plugin.hadoop;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -29,8 +31,10 @@ import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
 import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
 import br.unb.cic.bionimbus.plugin.Plugin;
+import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
@@ -53,6 +57,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private String errorString = "Plugin is loading...";
 
 	private final Map<String, Pair<PluginTask, Future<PluginTask>>> taskMap = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
+	
+	private final List<Future<PluginFile>> pendingSaves = new CopyOnWriteArrayList<Future<PluginFile>>();
+	
+	private final Map<String, PluginFile> pluginFiles = new ConcurrentHashMap<String, PluginFile>();
 
 	private P2PService p2p;
 
@@ -60,7 +68,8 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	public void run() {
 		System.out.println("running Plugin loop...");
 		checkGetInfo();
-		checkFinishedTasks();	
+		checkFinishedTasks();
+		checkPendingSaves();
 	}
 
 	private Message buildFinishedTaskMsg(PluginTask t, Future<PluginTask> f) {
@@ -127,14 +136,29 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), pair.first);
 		p2p.sendMessage(receiver.getHost(), msg);
 	}
+	
+	private void checkPendingSaves() {
+		for (Future<PluginFile> f : pendingSaves) {
+			if (f.isDone()) {
+				try {
+					PluginFile file = f.get();
+					pluginFiles.put(file.getId(), file);
+					StoreAckMessage msg = new StoreAckMessage(p2p.getPeerNode(), file);
+					p2p.broadcast(msg);
+				} catch (Exception e) {
+					e.printStackTrace();
+					//TODO criar mensagem de erro?
+				}
+			}
+		}
+	}
 
 	private void storeFile(P2PEvent event) {
 		P2PFileEvent fileEvent = (P2PFileEvent) event;
-		System.out.println("recebi arquivo " + fileEvent.getFile().getName());
-		// 1. Receber todo o arquivo
-		// 2. Salvar arquivo no Hadoop
-		// 3. Construir mensagem de sucesso (com caminho do arquivo) ou de erro
-		// 4. Enviar mensagem pelo P2P.
+		System.out.println("recebi arquivo " + fileEvent.getFile().getPath());
+		
+		Future<PluginFile> f = executorService.submit(new HadoopSaveFile(fileEvent.getFile().getPath()));
+		pendingSaves.add(f);
 	}
 
 	private void getFile() {

@@ -7,6 +7,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.p2p.Host;
+import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 
@@ -23,6 +24,9 @@ public class BulkMessage {
 	
 	@JsonIgnore
 	private PluginInfo pluginInfo;
+	
+	@JsonIgnore
+	private PluginFile pluginFile;
 	
 	@JsonIgnore
 	private JobInfo jobInfo;
@@ -88,6 +92,14 @@ public class BulkMessage {
 
 	public PluginInfo getPluginInfo() {
 		return pluginInfo;
+	}
+	
+	public void setPluginFile(PluginFile pluginFile) {
+		this.pluginFile = pluginFile;
+	}
+	
+	public PluginFile getPluginFile() {
+		return pluginFile;
 	}
 
 	public void setJobInfo(JobInfo jobInfo) {

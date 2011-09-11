@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.storage;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,8 +22,10 @@ import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreRespMessage;
+import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 
 public class StorageService implements Service, P2PListener, Runnable {
@@ -31,7 +34,9 @@ public class StorageService implements Service, P2PListener, Runnable {
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("StorageService-%d").build());
 	
-	private final ConcurrentHashMap<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
+	private final Map<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
+	
+	private final Map<String, PluginFile> savedFiles = new ConcurrentHashMap<String, PluginFile>();
 
 	private P2PService p2p = null;
 
@@ -93,6 +98,9 @@ public class StorageService implements Service, P2PListener, Runnable {
 			StoreReqMessage storeMsg = (StoreReqMessage) msg;
 			sendStoreResp(storeMsg.getFileInfo(), receiver);
 			break;
+		case STOREACK:
+			StoreAckMessage ackMsg = (StoreAckMessage) msg;
+			savedFiles.put(ackMsg.getPluginFile().getId(), ackMsg.getPluginFile());
 		}
 	}
 	
