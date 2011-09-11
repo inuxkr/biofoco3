@@ -20,6 +20,7 @@ import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreRespMessage;
 
@@ -62,6 +63,9 @@ public class P2PMessageFactory extends MessageFactory {
 			break;
 		case STORERESP:
 			message = new StoreRespMessage();
+			break;
+		case STOREACK:
+			message = new StoreAckMessage();
 			break;
 		// case GETREQ:
 		// message = new GetReqMessage();

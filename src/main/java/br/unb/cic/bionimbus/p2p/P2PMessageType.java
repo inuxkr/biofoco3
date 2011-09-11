@@ -22,7 +22,8 @@ public enum P2PMessageType {
 	JOBRESP(0X13),
 	ERROR(0x14),
 	PINGREQ(0x15),
-	PINGRESP(0x16);
+	PINGRESP(0x16),
+	STOREACK(0x17);
 	
 	private final int code;
 	
