@@ -7,6 +7,8 @@ public class PluginFile {
 	private String id = UUID.randomUUID().toString();
 	
 	private String path;
+	
+	private String pluginId;
 
 	public String getId() {
 		return id;
@@ -22,6 +24,14 @@ public class PluginFile {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public String getPluginId() {
+		return pluginId;
+	}
+
+	public void setPluginId(String pluginId) {
+		this.pluginId = pluginId;
 	}
 
 	@Override

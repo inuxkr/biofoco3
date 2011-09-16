@@ -6,13 +6,19 @@ import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
+import br.unb.cic.bionimbus.p2p.messages.GetReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.GetRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.ListReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.ListRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.PingReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.PingRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.PrepReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.PrepRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
@@ -67,12 +73,24 @@ public class P2PMessageFactory extends MessageFactory {
 		case STOREACK:
 			message = new StoreAckMessage();
 			break;
-		// case GETREQ:
-		// message = new GetReqMessage();
-		// break;
-		// case GETRESP:
-		// message = new GetRespMessage();
-		// break;
+		case LISTREQ:
+			message = new ListReqMessage();
+			break;
+		case LISTRESP:
+			message = new ListRespMessage();
+			break;
+		case GETREQ:
+			message = new GetReqMessage();
+			break;
+		case GETRESP:
+			message = new GetRespMessage();
+			break;
+		case PREPREQ:
+			message = new PrepReqMessage();
+			break;
+		case PREPRESP:
+			message = new PrepRespMessage();
+			break;
 		case CLOUDREQ:
 			message = new CloudReqMessage();
 			break;

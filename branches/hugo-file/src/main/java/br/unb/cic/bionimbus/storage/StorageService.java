@@ -22,6 +22,9 @@ import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.GetReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.GetRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.ListRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreRespMessage;
@@ -101,6 +104,22 @@ public class StorageService implements Service, P2PListener, Runnable {
 		case STOREACK:
 			StoreAckMessage ackMsg = (StoreAckMessage) msg;
 			savedFiles.put(ackMsg.getPluginFile().getId(), ackMsg.getPluginFile());
+			break;
+		case LISTREQ:
+			p2p.sendMessage(receiver.getHost(), new ListRespMessage(p2p.getPeerNode(), savedFiles.values()));
+			break;
+		case GETREQ:
+			GetReqMessage getMsg = (GetReqMessage) msg;
+			PluginFile file = savedFiles.get(getMsg.getFileId());
+			for (PluginInfo plugin : cloudMap.values()) {
+				if (plugin.getId().equals(file.getPluginId())) {
+					p2p.sendMessage(receiver.getHost(), new GetRespMessage(p2p.getPeerNode(), plugin, file));
+					return;
+				}
+			}
+			
+			//TODO mensagem de erro?
+			break;
 		}
 	}
 	

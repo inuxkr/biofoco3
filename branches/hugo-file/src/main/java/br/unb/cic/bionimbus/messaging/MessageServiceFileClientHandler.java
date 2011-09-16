@@ -27,14 +27,24 @@ public class MessageServiceFileClientHandler extends
 	private final String fileName;
 
 	private final boolean isGet;
+	
+	private final MessageServiceClient client;
+	
+	private final String pathDir;
 
 	private boolean readingChunks = false;
 	
 	private FileOutputStream fs;
 
-	public MessageServiceFileClientHandler(String fileName, boolean isGet) {
+	public MessageServiceFileClientHandler(String fileName, boolean isGet, MessageServiceClient client) {
 		this.fileName = fileName;
 		this.isGet = isGet;
+		this.client = client;
+
+		if (client != null)
+			this.pathDir = client.getMessageService().getConfig().getServerPath();
+		else
+			this.pathDir = "";
 	}
 
 	@Override
@@ -70,7 +80,7 @@ public class MessageServiceFileClientHandler extends
 				return;
 			}
 			
-			fs = new FileOutputStream(fileName);
+			fs = new FileOutputStream(pathDir + "/" + fileName);
 			
 			if (resp.isChunked()) {
 				readingChunks = true;
@@ -82,14 +92,17 @@ public class MessageServiceFileClientHandler extends
 				}
 				fs.close();
 				e.getChannel().close();
+				client.getMessageService().recvFile(new File(pathDir + "/" + fileName));
 			}
 		} else {
 			HttpChunk chunk = (HttpChunk) e.getMessage();
 			if (chunk.isLast()) {
 				readingChunks = false;
-				if (isGet)
-				  fs.close();
 				e.getChannel().close();
+				if (isGet) {
+					  fs.close();
+					  client.getMessageService().recvFile(new File(pathDir + "/" + fileName));
+				}
 			} else {
 				ChannelBuffer content = chunk.getContent();
 				int length = content.readableBytes();

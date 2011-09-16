@@ -23,7 +23,11 @@ public enum P2PMessageType {
 	ERROR(0x14),
 	PINGREQ(0x15),
 	PINGRESP(0x16),
-	STOREACK(0x17);
+	STOREACK(0x17),
+	LISTREQ(0x18),
+	LISTRESP(0x19),
+	PREPREQ(0x1A),
+	PREPRESP(0x1B);
 	
 	private final int code;
 	

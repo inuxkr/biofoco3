@@ -4,42 +4,42 @@ import java.util.Collection;
 
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.PeerNode;
-import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.utils.JsonCodec;
 
-public class CloudRespMessage extends AbstractMessage {
-
-	private Collection<PluginInfo> values;
+public class ListRespMessage extends AbstractMessage {
 	
-	public CloudRespMessage() {
+	private Collection<PluginFile> values;
+	
+	public ListRespMessage() {
 		super();
 	}
-
-	public CloudRespMessage(PeerNode peer, Collection<PluginInfo> values) {
+	
+	public ListRespMessage(PeerNode peer, Collection<PluginFile> values) {
 		super(peer);
 		this.values = values;
 	}
-
-	public Collection<PluginInfo> values() {
+	
+	public Collection<PluginFile> values() {
 		return values;
 	}
 
 	@Override
-	public byte[] serialize() throws Exception {		
+	public byte[] serialize() throws Exception {
 		BulkMessage message = encodeBasicMessage();
-		message.setPluginList(values);				
+		message.setFileList(values);				
 		return JsonCodec.encodeMessage(message);
 	}
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
 		BulkMessage message = decodeBasicMessage(buffer);		
-		values = message.getPluginList();
+		values = message.getFileList();
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.CLOUDRESP.code();
+		return P2PMessageType.LISTRESP.code();
 	}
 
 }
