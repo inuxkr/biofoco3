@@ -15,7 +15,18 @@ public class MessageServiceClient {
 	private final ChannelFactory factory = new NioClientSocketChannelFactory(
 			Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 
-	private final ChannelGroup channelGroup = new DefaultChannelGroup("msg-client");
+	private MessageService service;
+
+	private final ChannelGroup channelGroup = new DefaultChannelGroup(
+			"msg-client");
+
+	public void setService(MessageService service) {
+		this.service = service;
+	}
+	
+	public MessageService getMessageService() {
+		return service;
+	}
 
 	public void shutdown() {
 		ChannelGroupFuture f = channelGroup.close();
@@ -28,16 +39,16 @@ public class MessageServiceClient {
 		client.setPipelineFactory(new MessageServiceClientPipelineFactory(message, channelGroup));
 		client.connect(addr);
 	}
-	
+
 	public void sendFile(InetSocketAddress addr, String fileName) {
 		ClientBootstrap client = new ClientBootstrap(factory);
 		client.setPipelineFactory(new MessageServiceFileClientPipelineFactory(fileName));
 		client.connect(addr);
 	}
-	
+
 	public void getFile(InetSocketAddress addr, String fileName) {
 		ClientBootstrap client = new ClientBootstrap(factory);
-		client.setPipelineFactory(new MessageServiceFileClientPipelineFactory(fileName, true));
+		client.setPipelineFactory(new MessageServiceFileClientPipelineFactory(fileName, true, this));
 		client.connect(addr);
 	}
 

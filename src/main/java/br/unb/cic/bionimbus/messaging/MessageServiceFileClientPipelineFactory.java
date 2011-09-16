@@ -9,17 +9,20 @@ import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 public class MessageServiceFileClientPipelineFactory implements
 		ChannelPipelineFactory {
 
-	private String fileName;
+	private final String fileName;
 	
 	private boolean isGet = false;
+	
+	private MessageServiceClient client;
 
 	public MessageServiceFileClientPipelineFactory(String fileName) {
 		this.fileName = fileName;
 	}
 	
-	public MessageServiceFileClientPipelineFactory(String fileName, boolean isGet) {
+	public MessageServiceFileClientPipelineFactory(String fileName, boolean isGet, MessageServiceClient client) {
 		this.fileName = fileName;
 		this.isGet = isGet;
+		this.client = client;
 	}
 
 	@Override
@@ -28,7 +31,7 @@ public class MessageServiceFileClientPipelineFactory implements
 
 		pipeline.addLast("codec", new HttpClientCodec());
 		pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
-		pipeline.addLast("handler", new MessageServiceFileClientHandler(fileName, isGet));
+		pipeline.addLast("handler", new MessageServiceFileClientHandler(fileName, isGet, client));
 
 		return pipeline;
 	}

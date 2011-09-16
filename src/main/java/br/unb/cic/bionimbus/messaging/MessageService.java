@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.unb.cic.bionimbus.config.BioNimbusConfig;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -18,7 +20,13 @@ public class MessageService {
 	
 	private final List<FileListener> fileListenersList = new ArrayList<FileListener>();
 	
+	private BioNimbusConfig config;
+	
 	private InetSocketAddress bindSocket;
+	
+	public BioNimbusConfig getConfig() {
+		return config;
+	}
 	
 	public void bind(InetSocketAddress bindSocket) {
 		this.bindSocket = bindSocket;
@@ -28,8 +36,10 @@ public class MessageService {
 		return bindSocket;
 	}
 
-	public void start(MessageFactory messageFactory) {
+	public void start(MessageFactory messageFactory, BioNimbusConfig config) {
+		this.config = config;
 		server.start(this, messageFactory);
+		client.setService(this);
 	}
 
 	public void shutdown() {
@@ -58,6 +68,10 @@ public class MessageService {
 	
 	public void sendFile(InetSocketAddress addr, String fileName) {
 		client.sendFile(addr, fileName);
+	}
+	
+	public void getFile(InetSocketAddress addr, String fileName) {
+		client.getFile(addr, fileName);
 	}
 
 	public void recvFile(File file) {

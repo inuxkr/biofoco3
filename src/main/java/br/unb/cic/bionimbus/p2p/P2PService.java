@@ -47,6 +47,10 @@ public class P2PService implements MessageListener, FileListener {
 		
 		this.config = config;
 	}
+	
+	public BioNimbusConfig getConfig() {
+		return config;
+	}
 
 	public void start() {
 		
@@ -58,7 +62,7 @@ public class P2PService implements MessageListener, FileListener {
 		msgService.bind(new InetSocketAddress(config.getHost().getAddress(), config.getHost().getPort()));
 		msgService.addListener(this, types);
 		msgService.addFileListener(this);
-		msgService.start(new P2PMessageFactory());
+		msgService.start(new P2PMessageFactory(), this.config);
 		
 		ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("chord").build();
 		executor = Executors.newScheduledThreadPool(3, threadFactory);
@@ -99,6 +103,10 @@ public class P2PService implements MessageListener, FileListener {
 	
 	public void sendFile(Host host, String fileName) {
 		msgService.sendFile(new InetSocketAddress(host.getAddress(), host.getPort()), fileName);
+	}
+	
+	public void getFile(Host host, String fileName) {
+		msgService.getFile(new InetSocketAddress(host.getAddress(), host.getPort()), fileName);
 	}
 
 	@Override

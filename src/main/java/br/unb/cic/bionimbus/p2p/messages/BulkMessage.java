@@ -17,7 +17,10 @@ public class BulkMessage {
 	private Host host;
 	
 	@JsonIgnore
-	private Collection<PluginInfo> values;
+	private Collection<PluginInfo> pluginList;
+	
+	@JsonIgnore
+	private Collection<PluginFile> fileList;
 	
 	@JsonIgnore
 	private PluginTask task;
@@ -41,6 +44,9 @@ public class BulkMessage {
 	private String pluginId;
 	
 	@JsonIgnore
+	private String fileId;
+	
+	@JsonIgnore
 	private String taskId;
 
 	@JsonIgnore
@@ -62,12 +68,20 @@ public class BulkMessage {
 		return host;
 	}
 
-	public void setValues(Collection<PluginInfo> values) {
-		this.values = values;
+	public void setPluginList(Collection<PluginInfo> pluginList) {
+		this.pluginList = pluginList;
 	}
 
-	public Collection<PluginInfo> getValues() {
-		return values;
+	public Collection<PluginInfo> getPluginList() {
+		return pluginList;
+	}
+	
+	public void setFileList(Collection<PluginFile> fileList) {
+		this.fileList = fileList;
+	}
+	
+	public Collection<PluginFile> getFileList() {
+		return fileList;
 	}
 
 	public void setTask(PluginTask task) {
@@ -132,6 +146,14 @@ public class BulkMessage {
 
 	public String getPluginId() {
 		return pluginId;
+	}
+	
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
+	}
+	
+	public String getFileId() {
+		return fileId;
 	}
 
 	public void setTaskId(String taskId) {

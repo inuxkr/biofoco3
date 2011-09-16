@@ -27,6 +27,8 @@ import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.PrepReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.PrepRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
@@ -60,6 +62,8 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	
 	private final List<Future<PluginFile>> pendingSaves = new CopyOnWriteArrayList<Future<PluginFile>>();
 	
+	private final List<Future<HadoopGetFile>> pendingGets = new CopyOnWriteArrayList<Future<HadoopGetFile>>();
+	
 	private final Map<String, PluginFile> pluginFiles = new ConcurrentHashMap<String, PluginFile>();
 
 	private P2PService p2p;
@@ -70,6 +74,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		checkGetInfo();
 		checkFinishedTasks();
 		checkPendingSaves();
+		checkPendingGets();
 	}
 
 	private Message buildFinishedTaskMsg(PluginTask t, Future<PluginTask> f) {
@@ -142,12 +147,30 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			if (f.isDone()) {
 				try {
 					PluginFile file = f.get();
+					file.setPluginId(this.id);
+					pendingSaves.remove(f);
 					pluginFiles.put(file.getId(), file);
 					StoreAckMessage msg = new StoreAckMessage(p2p.getPeerNode(), file);
 					p2p.broadcast(msg);
 				} catch (Exception e) {
 					e.printStackTrace();
 					//TODO criar mensagem de erro?
+				}
+			}
+		}
+	}
+	
+	private void checkPendingGets() {
+		for (Future<HadoopGetFile> f : pendingGets) {
+			if (f.isDone()) {
+				try {
+					HadoopGetFile get = f.get();
+					pendingGets.remove(f);
+					Message msg = new PrepRespMessage(p2p.getPeerNode(), myInfo, get.getPluginFile());
+					p2p.sendMessage(get.getReceiver().getHost(), msg);
+				} catch (Exception e) {
+					// TODO criar mensagem de erro?
+					e.printStackTrace();
 				}
 			}
 		}
@@ -161,9 +184,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		pendingSaves.add(f);
 	}
 
-	private void getFile() {
-		// 1. Baixar arquivo do Hadoop.
-		// 2. Enviar arquivo todo ou mensagem de erro pelo P2P.
+	private void getFileFromHadoop(PluginFile file, PeerNode receiver) {
+		Future<HadoopGetFile> f = executorService.submit(new HadoopGetFile(file, receiver, p2p.getConfig().getServerPath()));
+		pendingGets.add(f);
 	}
 
 	@Override
@@ -222,8 +245,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			StatusReqMessage reqMsg = (StatusReqMessage) msg;
 			checkTaskStatus(receiver, reqMsg.getTaskId());
 			break;
-		case GETREQ:
-			getFile();
+		case PREPREQ:
+			PrepReqMessage prepMsg = (PrepReqMessage) msg;
+			getFileFromHadoop(prepMsg.getPluginFile(), receiver);
 			break;
 		}
 	}

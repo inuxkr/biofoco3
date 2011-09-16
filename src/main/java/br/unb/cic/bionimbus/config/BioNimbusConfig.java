@@ -18,6 +18,8 @@ public class BioNimbusConfig {
 	private Host host;
 	
 	private boolean client = false;
+	
+	private String serverPath = "";
 
 	public boolean isClient() {
 		return client;
@@ -55,6 +57,14 @@ public class BioNimbusConfig {
 		return id;
 	}
 	
+	public String getServerPath() {
+		return serverPath;
+	}
+
+	public void setServerPath(String serverPath) {
+		this.serverPath = serverPath;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
@@ -62,6 +72,7 @@ public class BioNimbusConfig {
 	                  .add("client", client)
 	                  .add("host", host)
 	                  .add("seeds", seeds)
+	                  .add(serverPath, serverPath)
 		              .toString();
 	}
 }
