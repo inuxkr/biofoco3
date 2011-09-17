@@ -1,7 +1,7 @@
 1) Ajustar MonitorService para mandar requisicoes de Status para o plugin,
    ao inves de broadcast
 
-2) Fazer upload de arquivos para a nuvem (StorageService)
+2) Fazer camada de abstracao de plugins, repassando somente eventos que interesse aos plugins
 
 3) Fazer tratamento de erros de rede
 
@@ -12,3 +12,7 @@
 6) Fazer lógica de eleição de master no P2P e atualização de master.
 
 7) Incorporar UDP no servico de mensagens.
+
+8) Fazer camada de abstracao de servicos, removendo codigo repetido no recebimento de eventos.
+
+9) Fazer o p2p retornar os peers onde estao os servicos, gerando menos broadcasts.
