@@ -8,23 +8,32 @@ public class GetReqMessage extends AbstractMessage {
 	
 	private String fileId;
 	
+	private String taskId;
+	
 	public GetReqMessage() {
 		super();
 	}
 	
-	public GetReqMessage(PeerNode peer, String fileId) {
+	public GetReqMessage(PeerNode peer, String fileId, String taskId) {
 		super(peer);
 		this.fileId = fileId;
+		this.taskId = taskId;
 	}
 	
 	public String getFileId() {
 		return fileId;
 	}
 	
+	public String getTaskId() {
+		return taskId;
+	}
+	
 	@Override
 	public byte[] serialize() throws Exception {		
 		BulkMessage message = encodeBasicMessage();
-		message.setFileId(fileId);				
+		message.setFileId(fileId);
+		if (taskId.length() > 0)
+			message.setTaskId(taskId);
 		return JsonCodec.encodeMessage(message);
 	}
 
@@ -32,6 +41,7 @@ public class GetReqMessage extends AbstractMessage {
 	public void deserialize(byte[] buffer) throws Exception {
 		BulkMessage message = decodeBasicMessage(buffer);		
 		fileId = message.getFileId();
+		taskId = message.getTaskId();
 	}
 
 	@Override

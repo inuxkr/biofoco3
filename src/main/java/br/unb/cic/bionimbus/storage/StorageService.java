@@ -113,7 +113,7 @@ public class StorageService implements Service, P2PListener, Runnable {
 			PluginFile file = savedFiles.get(getMsg.getFileId());
 			for (PluginInfo plugin : cloudMap.values()) {
 				if (plugin.getId().equals(file.getPluginId())) {
-					p2p.sendMessage(receiver.getHost(), new GetRespMessage(p2p.getPeerNode(), plugin, file));
+					p2p.sendMessage(receiver.getHost(), new GetRespMessage(p2p.getPeerNode(), plugin, file, getMsg.getTaskId()));
 					return;
 				}
 			}

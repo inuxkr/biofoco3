@@ -13,6 +13,7 @@ import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
+import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PEventType;
 import br.unb.cic.bionimbus.p2p.P2PListener;
@@ -90,7 +91,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		if (event.getType() != P2PEventType.MESSAGE)
+		if (!event.getType().equals(P2PEventType.MESSAGE))
 			return;
 
 		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
@@ -108,12 +109,12 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		switch (P2PMessageType.of(msg.getType())) {
 		case JOBREQ:
 			JobReqMessage jobMsg = (JobReqMessage) msg;
-			sendSchedReq(sender, receiver, jobMsg.getJobInfo());
+			sendSchedReq(sender, jobMsg.getJobInfo());
 			break;
 		case SCHEDRESP:
 			SchedRespMessage schedMsg = (SchedRespMessage) msg;
 			JobInfo schedJob = pendingJobs.get(schedMsg.getJobId());
-			sendStartReq(sender, receiver, schedJob);
+			sendStartReq(sender, schedMsg.getPluginInfo().getHost(), schedJob);
 			break;
 		case STARTRESP:
 			StartRespMessage respMsg = (StartRespMessage) msg;
@@ -136,23 +137,23 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		}
 	}
 	
-	private void sendSchedReq(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
+	private void sendSchedReq(PeerNode sender, JobInfo jobInfo) {
 		jobInfo.setId(UUID.randomUUID().toString());
 		pendingJobs.put(jobInfo.getId(), jobInfo);
 		SchedReqMessage newMsg = new SchedReqMessage(sender, jobInfo);
-		p2p.sendMessage(receiver.getHost(), newMsg);
+		p2p.broadcast(newMsg);
 	}
 	
 	private void sendJobResp(PeerNode sender, PeerNode receiver, String jobId, PluginTask task) {
 		JobInfo jobInfo = pendingJobs.remove(jobId);
 		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
 		JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
-		p2p.sendMessage(receiver.getHost(), jobRespMsg);
+		p2p.broadcast(jobRespMsg); // mandar direto pro cliente
 	}
 	
-	private void sendStartReq(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
+	private void sendStartReq(PeerNode sender, Host dest, JobInfo jobInfo) {
 		StartReqMessage startMsg = new StartReqMessage(sender, jobInfo);
-		p2p.sendMessage(receiver.getHost(), startMsg);
+		p2p.sendMessage(dest, startMsg);
 	}
 	
 	private void sendStatusReq(PeerNode sender, String taskId) {
@@ -169,7 +170,6 @@ public class MonitorService implements Service, P2PListener, Runnable {
 	private void finalizeJob(PluginTask task) {
 		Pair<JobInfo, PluginTask> pair = runningJobs.remove(task.getId());
 		JobInfo job = pair.first;
-		job.setOutputs(null);
 		//p2p.sendMessage(new EndJobMessage(job));
 	}
 

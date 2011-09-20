@@ -2,12 +2,13 @@ package br.unb.cic.bionimbus.p2p.messages;
 
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.utils.JsonCodec;
 
 public class SchedRespMessage extends AbstractMessage {
 	
 	private String jobId;
-	private String pluginId;
+	private PluginInfo pluginInfo;
 	
 	public SchedRespMessage() {
 		super();
@@ -25,12 +26,12 @@ public class SchedRespMessage extends AbstractMessage {
 		this.jobId = jobId;
 	}
 
-	public String getPluginId() {
-		return pluginId;
+	public PluginInfo getPluginInfo() {
+		return pluginInfo;
 	}
 
-	public void setPluginId(String pluginId) {
-		this.pluginId = pluginId;
+	public void setPluginInfo(PluginInfo pluginInfo) {
+		this.pluginInfo = pluginInfo;
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class SchedRespMessage extends AbstractMessage {
 
 		BulkMessage message = encodeBasicMessage();
 		message.setJobId(jobId);
-		message.setPluginId(pluginId);
+		message.setPluginInfo(pluginInfo);
 		
 		return JsonCodec.encodeMessage(message);
 		
@@ -50,7 +51,7 @@ public class SchedRespMessage extends AbstractMessage {
 		BulkMessage message = decodeBasicMessage(buffer);
 		
 		jobId = message.getJobId();		
-		pluginId = message.getPluginId();		
+		pluginInfo = message.getPluginInfo();		
 	}
 
 	@Override

@@ -3,7 +3,9 @@ package br.unb.cic.bionimbus.p2p;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -106,13 +108,18 @@ public class P2PService implements MessageListener, FileListener {
 	}
 	
 	public void getFile(Host host, String fileName) {
-		msgService.getFile(new InetSocketAddress(host.getAddress(), host.getPort()), fileName);
+		Map<String, String> emptyMap = Collections.emptyMap();
+		this.getFile(host, fileName, emptyMap);
+	}
+	
+	public void getFile(Host host, String fileName, Map<String, String> parms) {
+		msgService.getFile(new InetSocketAddress(host.getAddress(), host.getPort()), fileName, parms);
 	}
 
 	@Override
-	public void onFileRecvd(File file) {
+	public void onFileRecvd(File file, Map<String, String> parms) {
 		for (P2PListener listener : listeners) {
-			P2PEvent event = new P2PFileEvent(file);
+			P2PEvent event = new P2PFileEvent(file, parms);
 			listener.onEvent(event);
 		}
 	}

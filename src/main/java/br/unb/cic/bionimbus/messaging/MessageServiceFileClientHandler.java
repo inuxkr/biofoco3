@@ -3,6 +3,7 @@ package br.unb.cic.bionimbus.messaging;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.InetSocketAddress;
+import java.util.Map;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
@@ -26,23 +27,29 @@ public class MessageServiceFileClientHandler extends
 
 	private final String fileName;
 
+	private final Map<String, String> parms;
+
 	private final boolean isGet;
-	
+
 	private final MessageServiceClient client;
-	
+
 	private final String pathDir;
 
 	private boolean readingChunks = false;
-	
+
 	private FileOutputStream fs;
 
-	public MessageServiceFileClientHandler(String fileName, boolean isGet, MessageServiceClient client) {
+	public MessageServiceFileClientHandler(String fileName,
+			Map<String, String> parms, boolean isGet,
+			MessageServiceClient client) {
 		this.fileName = fileName;
+		this.parms = parms;
 		this.isGet = isGet;
 		this.client = client;
 
 		if (client != null)
-			this.pathDir = client.getMessageService().getConfig().getServerPath();
+			this.pathDir = client.getMessageService().getConfig()
+					.getServerPath();
 		else
 			this.pathDir = "";
 	}
@@ -72,16 +79,16 @@ public class MessageServiceFileClientHandler extends
 
 			if (resp.getStatus().equals(HttpResponseStatus.CREATED)) {
 				System.out.println("File sent succesfully");
-				
+
 				if (resp.isChunked())
 					readingChunks = true;
 				else
 					e.getChannel().close();
 				return;
 			}
-			
+
 			fs = new FileOutputStream(pathDir + "/" + fileName);
-			
+
 			if (resp.isChunked()) {
 				readingChunks = true;
 			} else {
@@ -92,7 +99,7 @@ public class MessageServiceFileClientHandler extends
 				}
 				fs.close();
 				e.getChannel().close();
-				client.getMessageService().recvFile(new File(pathDir + "/" + fileName));
+				client.getMessageService().recvFile(new File(pathDir + "/" + fileName), parms);
 			}
 		} else {
 			HttpChunk chunk = (HttpChunk) e.getMessage();
@@ -100,8 +107,8 @@ public class MessageServiceFileClientHandler extends
 				readingChunks = false;
 				e.getChannel().close();
 				if (isGet) {
-					  fs.close();
-					  client.getMessageService().recvFile(new File(pathDir + "/" + fileName));
+					fs.close();
+					client.getMessageService().recvFile(new File(pathDir + "/" + fileName), parms);
 				}
 			} else {
 				ChannelBuffer content = chunk.getContent();

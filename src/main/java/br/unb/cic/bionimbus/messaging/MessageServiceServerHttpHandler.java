@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
@@ -58,7 +60,7 @@ public class MessageServiceServerHttpHandler extends
 			throws Exception {
 		
 		if (!readingChunks) {
-			HttpRequest req = (HttpRequest) e.getMessage();			
+			HttpRequest req = (HttpRequest) e.getMessage();
 			URI uri = new URI(req.getUri());
 			
 			if (req.getMethod() == HttpMethod.GET) {
@@ -79,7 +81,8 @@ public class MessageServiceServerHttpHandler extends
 				}
 				fs.close();
 				writeResponse(e);
-				server.getMessageService().recvFile(file);
+				Map<String, String> emptyMap = Collections.emptyMap();
+				server.getMessageService().recvFile(file, emptyMap);
 			}
 		} else {
 			HttpChunk chunk = (HttpChunk) e.getMessage();
@@ -87,7 +90,8 @@ public class MessageServiceServerHttpHandler extends
 				readingChunks = false;
 				fs.close();
 				writeResponse(e);
-				server.getMessageService().recvFile(file);
+				Map<String, String> emptyMap = Collections.emptyMap();
+				server.getMessageService().recvFile(file, emptyMap);
 			} else {
 				int length = chunk.getContent().readableBytes();
 				chunk.getContent().readBytes(fs, length);

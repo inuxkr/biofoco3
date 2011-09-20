@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.messaging;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ClientBootstrap;
@@ -46,9 +47,9 @@ public class MessageServiceClient {
 		client.connect(addr);
 	}
 
-	public void getFile(InetSocketAddress addr, String fileName) {
+	public void getFile(InetSocketAddress addr, String fileName, Map<String, String> parms) {
 		ClientBootstrap client = new ClientBootstrap(factory);
-		client.setPipelineFactory(new MessageServiceFileClientPipelineFactory(fileName, true, this));
+		client.setPipelineFactory(new MessageServiceFileClientPipelineFactory(fileName, parms, true, this));
 		client.connect(addr);
 	}
 

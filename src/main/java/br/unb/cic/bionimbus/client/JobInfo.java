@@ -1,8 +1,9 @@
 package br.unb.cic.bionimbus.client;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class JobInfo {
@@ -11,11 +12,11 @@ public class JobInfo {
 
 	private long serviceId;
 
-	private List<String> args = null;
+	private String args = "";
 
-	private List<String> inputs = null;
+	private Map<String, Long> inputs = new HashMap<String, Long>();
 
-	private List<String> outputs = null;
+	private List<String> outputs = new ArrayList<String>();
 
 	public String getId() {
 		return id;
@@ -33,35 +34,27 @@ public class JobInfo {
 		this.serviceId = serviceId;
 	}
 
-	public List<String> getArgs() {
-		if (args == null)
-			return Collections.emptyList();
+	public String getArgs() {
 		return args;
 	}
 
-	public void setArgs(List<String> args) {
+	public void setArgs(String args) {
 		this.args = args;
 	}
 
-	public List<String> getInputs() {
+	public Map<String, Long> getInputs() {
 		return inputs;
 	}
 
-	public void setInputs(List<String> inputs) {
-		this.inputs = inputs;
+	public void addInput(String id, Long size) {
+		inputs.put(id, size);
 	}
 
 	public List<String> getOutputs() {
 		return outputs;
 	}
 
-	public void setOutputs(List<String> outputs) {
-		this.outputs = outputs;
-	}
-
-	public void addArg(String arg) {
-		if (this.args == null)
-			this.args = new ArrayList<String>();
-		this.args.add(arg);
+	public void addOutput(String name) {
+		outputs.add(name);
 	}
 }

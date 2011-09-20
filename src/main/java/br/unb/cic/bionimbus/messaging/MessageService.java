@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
 
@@ -70,12 +71,12 @@ public class MessageService {
 		client.sendFile(addr, fileName);
 	}
 	
-	public void getFile(InetSocketAddress addr, String fileName) {
-		client.getFile(addr, fileName);
+	public void getFile(InetSocketAddress addr, String fileName, Map<String, String> parms) {
+		client.getFile(addr, fileName, parms);
 	}
 
-	public void recvFile(File file) {
+	public void recvFile(File file, Map<String, String> parms) {
 		for (FileListener listener : fileListenersList)
-			listener.onFileRecvd(file);
+			listener.onFileRecvd(file, parms);
 	}
 }
