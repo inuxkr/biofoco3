@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.messaging;
 
+import java.util.Map;
+
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.Channels;
@@ -11,16 +13,24 @@ public class MessageServiceFileClientPipelineFactory implements
 
 	private final String fileName;
 	
-	private boolean isGet = false;
-	
-	private MessageServiceClient client;
+	private final Map<String, String> parms;
+
+	private final boolean isGet;
+
+	private final MessageServiceClient client;
 
 	public MessageServiceFileClientPipelineFactory(String fileName) {
 		this.fileName = fileName;
+		this.parms = null;
+		this.isGet = false;
+		this.client = null;
 	}
-	
-	public MessageServiceFileClientPipelineFactory(String fileName, boolean isGet, MessageServiceClient client) {
+
+	public MessageServiceFileClientPipelineFactory(String fileName,
+			Map<String, String> parms, boolean isGet,
+			MessageServiceClient client) {
 		this.fileName = fileName;
+		this.parms = parms;
 		this.isGet = isGet;
 		this.client = client;
 	}
@@ -31,7 +41,8 @@ public class MessageServiceFileClientPipelineFactory implements
 
 		pipeline.addLast("codec", new HttpClientCodec());
 		pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
-		pipeline.addLast("handler", new MessageServiceFileClientHandler(fileName, isGet, client));
+		pipeline.addLast("handler", new MessageServiceFileClientHandler(
+				fileName, parms, isGet, client));
 
 		return pipeline;
 	}

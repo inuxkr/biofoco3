@@ -11,15 +11,18 @@ public class PrepRespMessage extends AbstractMessage {
 	private PluginInfo pluginInfo;
 
 	private PluginFile pluginFile;
+	
+	private String taskId;
 
 	public PrepRespMessage() {
 		super();
 	}
 
-	public PrepRespMessage(PeerNode peer, PluginInfo pluginInfo, PluginFile pluginFile) {
+	public PrepRespMessage(PeerNode peer, PluginInfo pluginInfo, PluginFile pluginFile, String taskId) {
 		super(peer);
 		this.pluginInfo = pluginInfo;
 		this.pluginFile = pluginFile;
+		this.taskId = taskId;
 	}
 
 	public PluginFile getPluginFile() {
@@ -29,12 +32,18 @@ public class PrepRespMessage extends AbstractMessage {
 	public PluginInfo getPluginInfo() {
 		return pluginInfo;
 	}
+	
+	public String getTaskId() {
+		return taskId;
+	}
 
 	@Override
 	public byte[] serialize() throws Exception {
 		BulkMessage message = encodeBasicMessage();
 		message.setPluginFile(pluginFile);
 		message.setPluginInfo(pluginInfo);
+		if (taskId.length() > 0)
+			message.setTaskId(taskId);
 		return JsonCodec.encodeMessage(message);
 	}
 
@@ -43,6 +52,7 @@ public class PrepRespMessage extends AbstractMessage {
 		BulkMessage message = decodeBasicMessage(buffer);
 		this.pluginFile = message.getPluginFile();
 		this.pluginInfo = message.getPluginInfo();
+		this.taskId = message.getTaskId();
 	}
 
 	@Override

@@ -16,3 +16,9 @@
 8) Fazer camada de abstracao de servicos, removendo codigo repetido no recebimento de eventos.
 
 9) Fazer o p2p retornar os peers onde estao os servicos, gerando menos broadcasts.
+
+10) Revisar nome e conteudo das mensagens.
+
+11) Rever todos os broadcasts.
+
+12) Pensar em utilizar peer ids para pegar os host e enviar direto.

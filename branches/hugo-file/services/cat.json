@@ -1,0 +1,1 @@
+{"id": 123456, "name": "cat", "arguments":["%I1"], "input":["file"], "output":[], "info": "cat command", "path": "/bin/cat"}

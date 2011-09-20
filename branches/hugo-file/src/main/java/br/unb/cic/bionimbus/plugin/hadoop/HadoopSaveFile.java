@@ -32,6 +32,7 @@ public class HadoopSaveFile implements Callable<PluginFile> {
 			
 			pFile = new PluginFile();
 			pFile.setPath(file.getName());
+			pFile.setSize(file.length());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

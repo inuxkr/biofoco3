@@ -27,7 +27,6 @@ import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
-import br.unb.cic.bionimbus.plugin.PluginService;
 
 public class SchedService implements Service, P2PListener, Runnable {
 
@@ -76,7 +75,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		if (event.getType() != P2PEventType.MESSAGE)
+		if (!event.getType().equals(P2PEventType.MESSAGE))
 			return;
 
 		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
@@ -93,19 +92,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 		switch (P2PMessageType.of(msg.getType())) {
 		case CLOUDRESP:
 			CloudRespMessage cloudMsg = (CloudRespMessage) msg;
-			for (PluginInfo info : cloudMsg.values()) {
-				System.out.println("plugin = " + info.getId());
-				System.out.println("fsSize = " + info.getFsSize());
-				System.out.println("fsFreeSize = " + info.getFsFreeSize());
-				System.out.println("numNodes = " + info.getNumNodes());
-				System.out.println("numCores = " + info.getNumCores());
-				for (PluginService serv : info.getServices()) {
-					System.out.println("\tservice = " + serv.getName());
-				}
-				System.out.println();
-
+			for (PluginInfo info : cloudMsg.values()) 
 				cloudMap.put(info.getId(), info);
-			}
 			break;
 		case SCHEDREQ:
 			SchedReqMessage schedMsg = (SchedReqMessage) msg;
@@ -120,7 +108,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 			PluginInfo pluginInfo = getBestPluginForJob(availablePlugins, jobInfo);
 			SchedRespMessage msg = new SchedRespMessage(sender);
 			msg.setJobId(jobInfo.getId());
-			msg.setPluginId(pluginInfo.getId());
+			msg.setPluginInfo(pluginInfo);
 			p2p.sendMessage(receiver.getHost(), msg);		
 		} catch (SchedException ex) {
 			Message errMsg = new SchedErrorMessage(sender, jobInfo.getId(), ex.getMessage());

@@ -8,6 +8,8 @@ public class PluginFile {
 	
 	private String path;
 	
+	private long size;
+	
 	private String pluginId;
 
 	public String getId() {
@@ -24,6 +26,14 @@ public class PluginFile {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+	
+	public void setSize(long size) {
+		this.size = size;
+	}
+	
+	public long getSize() {
+		return size;
 	}
 
 	public String getPluginId() {

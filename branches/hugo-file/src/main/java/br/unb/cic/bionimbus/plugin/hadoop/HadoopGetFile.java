@@ -16,14 +16,21 @@ public class HadoopGetFile implements Callable<HadoopGetFile> {
 	
 	private final String serverPath;
 	
-	public HadoopGetFile(PluginFile pluginFile, PeerNode receiver, String serverPath) {
+	private final String taskId;
+	
+	public HadoopGetFile(PluginFile pluginFile, String taskId, PeerNode receiver, String serverPath) {
 		this.pluginFile = pluginFile;
 		this.receiver = receiver;
 		this.serverPath = serverPath;
+		this.taskId = taskId;
 	}
 	
 	public PluginFile getPluginFile() {
 		return pluginFile;
+	}
+	
+	public String getTaskId() {
+		return taskId;
 	}
 	
 	public PeerNode getReceiver() {

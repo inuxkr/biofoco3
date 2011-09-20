@@ -13,9 +13,7 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
-import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
-import br.unb.cic.bionimbus.p2p.messages.GetReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.GetRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.ListReqMessage;
@@ -42,16 +40,16 @@ public class Client implements P2PListener {
 		p2p.broadcast(message);
 	}
 
-	public void startJob(PeerNode node) {
+	public void startJob(PluginFile file) {
 
 		JobInfo job = new JobInfo();
 		job.setId(null);
-		job.addArg("--help");
-		job.setServiceId(1023296285);
-		job.setInputs(null);
+		job.setArgs("%I1");
+		job.setServiceId(123456);
+		job.addInput(file.getId(), file.getSize());
 
 		JobReqMessage msg = new JobReqMessage(p2p.getPeerNode(), job);
-		p2p.sendMessage(node.getHost(), msg);
+		p2p.broadcast(msg);
 
 	}
 
@@ -101,14 +99,14 @@ public class Client implements P2PListener {
 			
 			for (PluginFile file : listMsg.values()) {
 				System.out.println("id: " + file.getId() + "\tname: " + file.getPath());
-				p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), file.getId()));
+				startJob(file);
 				break;
 			}
 
 			break;
 		case GETRESP:
 			GetRespMessage getMsg = (GetRespMessage) msg;
-			p2p.sendMessage(getMsg.getPluginInfo().getHost(), new PrepReqMessage(p2p.getPeerNode(), getMsg.getPluginFile()));
+			p2p.sendMessage(getMsg.getPluginInfo().getHost(), new PrepReqMessage(p2p.getPeerNode(), getMsg.getPluginFile(), ""));
 			break;
 		case PREPRESP:
 			PrepRespMessage prepMsg = (PrepRespMessage) msg;
@@ -132,9 +130,9 @@ public class Client implements P2PListener {
 		}
 		System.out.println("I am not alone in the dark anymore!");
 
-		client.uploadFile("/home/hugo.saldanha/Downloads/debian-6.0.2.1-i386-netinst.iso");
+		client.uploadFile("/home/hugo.saldanha/Downloads/teste.txt");
 		
-		TimeUnit.MINUTES.sleep(1);
+		TimeUnit.SECONDS.sleep(40);
 		client.listFiles();
 	}
 }
