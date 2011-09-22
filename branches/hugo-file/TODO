@@ -5,7 +5,7 @@
 
 3) Fazer tratamento de erros de rede
 
-4) Fazer jobs que possuam arquivos de entrada e de saída
+4) Fazer plugin persistir arquivos salvos no seu storage e envia-los ao StorageService sempre que iniciado.
 
 5) Terminar parte de finalização de Jobs
 
@@ -22,3 +22,9 @@
 11) Rever todos os broadcasts.
 
 12) Pensar em utilizar peer ids para pegar os host e enviar direto.
+
+13) Fazer a limpeza dos arquivos de entrada depois de utilizados.
+
+14) Fazer evento de termino de envio de arquivo
+
+15) Evitar transferencias de arquivo entre o mesmo plugin.

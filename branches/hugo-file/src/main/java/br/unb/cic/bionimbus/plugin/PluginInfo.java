@@ -81,4 +81,28 @@ public class PluginInfo {
 				return service;
 		return null;
 	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (this == object)
+			return true;
+		
+		if (!(object instanceof PluginInfo)) {
+			return false;
+		}
+		
+		PluginInfo other = (PluginInfo) object;
+		
+		return this.id.equals(other.id);
+	}
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return id.toString();
+	}
 }
