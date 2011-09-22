@@ -12,14 +12,17 @@ public class StoreRespMessage extends AbstractMessage {
 	
 	private FileInfo fileInfo;
 	
+	private String taskId = "";
+	
 	public StoreRespMessage() {
 		super();
 	}
 	
-	public StoreRespMessage(PeerNode peer, PluginInfo pluginInfo, FileInfo fileInfo) {
+	public StoreRespMessage(PeerNode peer, PluginInfo pluginInfo, FileInfo fileInfo, String taskId) {
 		super(peer);
 		this.pluginInfo = pluginInfo;
 		this.fileInfo = fileInfo;
+		this.taskId = taskId;
 	}
 	
 	public PluginInfo getPluginInfo() {
@@ -28,6 +31,10 @@ public class StoreRespMessage extends AbstractMessage {
 	
 	public FileInfo getFileInfo() {
 		return fileInfo;
+	}
+	
+	public String getTaskId() {
+		return taskId;
 	}
 
 	@Override
@@ -40,6 +47,7 @@ public class StoreRespMessage extends AbstractMessage {
 		BulkMessage message = encodeBasicMessage();
 		message.setPluginInfo(pluginInfo);
 		message.setFileInfo(fileInfo);
+		message.setTaskId(taskId);
 		return JsonCodec.encodeMessage(message);
 	}
 
@@ -48,6 +56,7 @@ public class StoreRespMessage extends AbstractMessage {
 		BulkMessage message = decodeBasicMessage(buffer);
 		this.pluginInfo = message.getPluginInfo();
 		this.fileInfo = message.getFileInfo();
+		this.taskId = message.getTaskId();
 	}
 
 }

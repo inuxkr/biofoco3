@@ -44,9 +44,10 @@ public class Client implements P2PListener {
 
 		JobInfo job = new JobInfo();
 		job.setId(null);
-		job.setArgs("%I1");
+		job.setArgs("%I1 %O1");
 		job.setServiceId(123456);
 		job.addInput(file.getId(), file.getSize());
+		job.addOutput("output.txt");
 
 		JobReqMessage msg = new JobReqMessage(p2p.getPeerNode(), job);
 		p2p.broadcast(msg);
@@ -60,7 +61,7 @@ public class Client implements P2PListener {
 		info.setName(filePath);
 		info.setSize(file.length());
 
-		StoreReqMessage msg = new StoreReqMessage(p2p.getPeerNode(), info);
+		StoreReqMessage msg = new StoreReqMessage(p2p.getPeerNode(), info, "");
 		p2p.broadcast(msg);
 	}
 	

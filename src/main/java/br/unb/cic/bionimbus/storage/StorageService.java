@@ -99,7 +99,7 @@ public class StorageService implements Service, P2PListener, Runnable {
 			break;
 		case STOREREQ:
 			StoreReqMessage storeMsg = (StoreReqMessage) msg;
-			sendStoreResp(storeMsg.getFileInfo(), receiver);
+			sendStoreResp(storeMsg.getFileInfo(), storeMsg.getTaskId(), receiver);
 			break;
 		case STOREACK:
 			StoreAckMessage ackMsg = (StoreAckMessage) msg;
@@ -123,10 +123,10 @@ public class StorageService implements Service, P2PListener, Runnable {
 		}
 	}
 	
-	public void sendStoreResp(FileInfo info, PeerNode dest) {
+	public void sendStoreResp(FileInfo info, String taskId, PeerNode dest) {
 		for (PluginInfo plugin : cloudMap.values()) {
 			if (info.getSize() < plugin.getFsFreeSize()) {
-				StoreRespMessage msg = new StoreRespMessage(p2p.getPeerNode(), plugin, info);
+				StoreRespMessage msg = new StoreRespMessage(p2p.getPeerNode(), plugin, info, taskId);
 				p2p.sendMessage(dest.getHost(), msg);
 				return;
 			}

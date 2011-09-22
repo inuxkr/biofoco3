@@ -2,6 +2,7 @@ package br.unb.cic.bionimbus.plugin.hadoop;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -33,7 +34,14 @@ public class HadoopTask implements Callable<PluginTask> {
 		Set<String> inputs = task.getJobInfo().getInputs().keySet();
 		int i = 1;
 		for (String input : inputs) {
-			args = args.replaceFirst("%I" + i, path + "/" + plugin.getWorkingFiles().get(input).first);
+			args = args.replaceFirst("%I" + i, path + "/" + plugin.getInputFiles().get(input).first);
+			i++;
+		}
+
+		List<String> outputs = task.getJobInfo().getOutputs();
+		i = 1;
+		for (String output : outputs) {
+			args = args.replaceFirst("%O" + i, path + "/" + output);
 			i++;
 		}
 
