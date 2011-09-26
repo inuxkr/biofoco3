@@ -2,9 +2,13 @@ package br.unb.cic.bionimbus.plugin;
 
 import java.util.List;
 
+import br.unb.cic.bionimbus.p2p.Host;
+
 public class PluginInfo {
 	
 	private String id;
+	
+	private Host host;
 	
 	private Integer numCores;
 	
@@ -23,7 +27,14 @@ public class PluginInfo {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public Host getHost() {
+		return host;
+	}
 
+	public void setHost(Host host) {
+		this.host = host;
+	}
 	public Float getFsFreeSize() {
 		return fsFreeSize;
 	}
@@ -69,5 +80,29 @@ public class PluginInfo {
 			if (service.getId() == serviceId)
 				return service;
 		return null;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (this == object)
+			return true;
+		
+		if (!(object instanceof PluginInfo)) {
+			return false;
+		}
+		
+		PluginInfo other = (PluginInfo) object;
+		
+		return this.id.equals(other.id);
+	}
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return id.toString();
 	}
 }

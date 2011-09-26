@@ -10,14 +10,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 
 public class AsyncOpTest2 {
 	
 	private static int value1;
 	private static int value2;
 	
-	public static void main(String[] args) throws InterruptedException {
+	public void testAsyncOp() throws InterruptedException {
 		
 		
 		

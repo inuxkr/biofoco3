@@ -37,5 +37,9 @@ public class MessageServiceServer {
 	public MessageService getMessageService() {
 		return service;
 	}
+	
+	public String getPathDir() {
+		return service.getConfig().getServerPath();
+	}
 
 }

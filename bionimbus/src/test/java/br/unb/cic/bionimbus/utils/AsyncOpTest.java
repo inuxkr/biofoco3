@@ -6,16 +6,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.Sets;
+import junit.framework.TestCase;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
-import junit.framework.TestCase;
 
 
 public class AsyncOpTest extends TestCase {
 	
-	public static void main(String[] args) throws Exception {
+	public void testAsyncOp() throws Exception {
 		
 		ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
 		builder.setDaemon(true).setNameFormat("async");

@@ -1,8 +1,12 @@
 package br.unb.cic.bionimbus.plugin.hadoop;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -11,23 +15,35 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PEventType;
+import br.unb.cic.bionimbus.p2p.P2PFileEvent;
 import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
+import br.unb.cic.bionimbus.p2p.messages.GetReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.GetRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.PrepReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.PrepRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
+import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StoreRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
 import br.unb.cic.bionimbus.plugin.Plugin;
+import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
@@ -48,58 +64,77 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private PluginInfo myInfo = null;
 	
 	private String errorString = "Plugin is loading...";
+	
+	private final Map<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
 
-	private final Map<String, Pair<PluginTask, Future<PluginTask>>> taskMap = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
+	private final Map<String, Pair<PluginTask, Future<PluginTask>>> executingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
+	
+	private final Map<String, Pair<PluginTask, Integer>> endingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
+	
+	private final List<Future<PluginFile>> pendingSaves = new CopyOnWriteArrayList<Future<PluginFile>>();
+	
+	private final List<Future<HadoopGetFile>> pendingGets = new CopyOnWriteArrayList<Future<HadoopGetFile>>();
+	
+	private final Map<String, PluginFile> pluginFiles = new ConcurrentHashMap<String, PluginFile>();
+	
+	private final Map<String, Pair<String, Integer>> inputFiles = new ConcurrentHashMap<String, Pair<String,Integer>>();
 
 	private P2PService p2p;
+	
+	public Map<String, Pair<String, Integer>> getInputFiles() {
+		return inputFiles;
+	}
 
 	@Override
 	public void run() {
 		System.out.println("running Plugin loop...");
 		checkGetInfo();
-		checkFinishedTasks();	
-	}
-
-	private Message buildFinishedTaskMsg(PluginTask t, Future<PluginTask> f) {
-		Message msg;
-
-		try {
-			PluginTask task = f.get();
-
-			// pegar arquivos de saida e mandar para o storage service (sincrono
-			// ou assincrono?)
-			// salvar ID na task
-
-			msg = new EndMessage(task);
-		} catch (Exception e) {
-			msg = new TaskErrorMessage(id, t.getId(), e.getMessage());
-		}
-
-		return msg;
+		checkFinishedTasks();
+		checkPendingSaves();
+		checkPendingGets();
 	}
 
 	private void checkFinishedTasks() {
 		Future<PluginTask> fTask;
 		PluginTask task;
 
-		for (Pair<PluginTask, Future<PluginTask>> pair : taskMap.values()) {
-			task = pair.first;
+		for (Pair<PluginTask, Future<PluginTask>> pair : executingTasks.values()) {
 			fTask = pair.second;
 
 			if (fTask.isDone()) {
-				Message message = buildFinishedTaskMsg(task, fTask);
-				taskMap.remove(task.getId());
-				p2p.sendMessage(message);
+				try {
+					task = fTask.get();
+				} catch (Exception e) {
+					task = pair.first;
+					Message msg = new TaskErrorMessage(p2p.getPeerNode(), id, task.getId(), e.getMessage());
+					p2p.broadcast(msg);
+					continue;
+				}
+
+				executingTasks.remove(task.getId());
+
+				int count = 0;
+				for (String output : task.getJobInfo().getOutputs()) {
+					File file = new File(p2p.getConfig().getServerPath() + "/" + output);
+					FileInfo info = new FileInfo();
+					info.setName(p2p.getConfig().getServerPath() + "/" + output);
+					info.setSize(file.length());
+					StoreReqMessage msg = new StoreReqMessage(p2p.getPeerNode(), info, task.getId());
+					p2p.broadcast(msg);
+					count++;
+				}
+				
+				endingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, count));
 			}
 		}
 	}
 
 	private Message buildFinishedGetInfoMsg(PluginInfo info) {
 		if (info == null)
-			return new InfoErrorMessage(id, errorString);
+			return new InfoErrorMessage(p2p.getPeerNode(), id, errorString);
 
 		info.setId(id);
-		return new InfoRespMessage(info);
+		return new InfoRespMessage(p2p.getPeerNode(), info);
 	}
 
 	private void checkGetInfo() {
@@ -111,29 +146,91 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		if (fInfo.isDone()) {
 			try {
 				myInfo = fInfo.get();
-				fInfo = null;
+				myInfo.setHost(p2p.getPeerNode().getHost());
 			} catch (Exception e) {
 				errorString = e.getMessage();
+			}
+			fInfo = null;
+		}
+	}
+
+	private void checkTaskStatus(PeerNode receiver, String taskId) {
+		Pair<PluginTask, Future<PluginTask>> pair = executingTasks.get(taskId);
+		StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), pair.first);
+		p2p.sendMessage(receiver.getHost(), msg);
+	}
+	
+	private void checkPendingSaves() {
+		for (Future<PluginFile> f : pendingSaves) {
+			if (f.isDone()) {
+				try {
+					PluginFile file = f.get();
+					file.setPluginId(this.id);
+					pendingSaves.remove(f);
+					pluginFiles.put(file.getId(), file);
+					StoreAckMessage msg = new StoreAckMessage(p2p.getPeerNode(), file);
+					p2p.broadcast(msg);
+				} catch (Exception e) {
+					e.printStackTrace();
+					//TODO criar mensagem de erro?
+				}
+			}
+		}
+	}
+	
+	private void checkPendingGets() {
+		for (Future<HadoopGetFile> f : pendingGets) {
+			if (f.isDone()) {
+				try {
+					HadoopGetFile get = f.get();
+					pendingGets.remove(f);
+					Message msg = new PrepRespMessage(p2p.getPeerNode(), myInfo, get.getPluginFile(), get.getTaskId());
+					p2p.sendMessage(get.getReceiver().getHost(), msg);
+				} catch (Exception e) {
+					// TODO criar mensagem de erro?
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 
-	private void checkTaskStatus(String taskId) {
-		Pair<PluginTask, Future<PluginTask>> pair = taskMap.get(taskId);
-		StatusRespMessage msg = new StatusRespMessage(pair.first);
-		p2p.sendMessage(msg);
+	private void storeFile(P2PEvent event) {
+		P2PFileEvent fileEvent = (P2PFileEvent) event;
+		Map<String, String> parms = fileEvent.getParms();
+
+		if (parms.isEmpty()) {
+			System.out.println("recebi arquivo " + fileEvent.getFile().getPath());
+			Future<PluginFile> f = executorService.submit(new HadoopSaveFile(fileEvent.getFile().getPath()));
+			pendingSaves.add(f);
+			return;
+		}
+		
+		String fileId = parms.get("fileId");
+		String fileName = parms.get("fileName");
+		Pair<String, Integer> inputFile = inputFiles.get("fileId");
+		int count = 0;
+		if (inputFile != null)
+			count = inputFile.second;
+		count++;
+		inputFiles.put(fileId, new Pair<String, Integer>(fileName, count));
+			
+		
+		String taskId = parms.get("taskId");
+		Pair<PluginTask, Integer> pair = pendingTasks.get(taskId);
+		count = pair.second;
+		if (--count == 0) {
+			pendingTasks.remove(taskId);
+			startTask(pair.first);
+			return;
+		}
+		
+		Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
+		pendingTasks.put(taskId, newPair);
 	}
 
-	private void storeFile() {
-		// 1. Receber todo o arquivo
-		// 2. Salvar arquivo no Hadoop
-		// 3. Construir mensagem de sucesso (com caminho do arquivo) ou de erro
-		// 4. Enviar mensagem pelo P2P.
-	}
-
-	private void getFile() {
-		// 1. Baixar arquivo do Hadoop.
-		// 2. Enviar arquivo todo ou mensagem de erro pelo P2P.
+	private void getFileFromHadoop(PluginFile file, String taskId, PeerNode receiver) {
+		Future<HadoopGetFile> f = executorService.submit(new HadoopGetFile(file, taskId, receiver, p2p.getConfig().getServerPath()));
+		pendingGets.add(f);
 	}
 
 	@Override
@@ -162,47 +259,109 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		if (event.getType() != P2PEventType.MESSAGE)
+		if (event.getType().equals(P2PEventType.FILE)) {
+			storeFile(event);
+			return;
+		} else if (!event.getType().equals(P2PEventType.MESSAGE))
 			return;
 
 		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
 		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
+		
+		PeerNode receiver = null;
+		if (msg instanceof AbstractMessage) {
+			receiver = ((AbstractMessage) msg).getPeer();
+		}		
 
-		switch (P2PMessageType.values()[msg.getType()]) {
+		switch (P2PMessageType.of(msg.getType())) {
 		case INFOREQ:
 			Message infoMsg = buildFinishedGetInfoMsg(myInfo);
-			p2p.sendMessage(infoMsg);
+			p2p.sendMessage(receiver.getHost(), infoMsg);
 			break;
 		case STARTREQ:
 			JobInfo job = ((StartReqMessage)msg).getJobInfo();
-			StartRespMessage resp = new StartRespMessage(job.getId(), startTask(job));
-			p2p.sendMessage(resp);
+			StartRespMessage resp = new StartRespMessage(p2p.getPeerNode(), job.getId(), prepareTask(job));
+			p2p.sendMessage(receiver.getHost(), resp);
 			break;
 		case STATUSREQ:
 			StatusReqMessage reqMsg = (StatusReqMessage) msg;
-			checkTaskStatus(reqMsg.getTaskId());
+			checkTaskStatus(receiver, reqMsg.getTaskId());
 			break;
-		case STOREREQ:
-			storeFile();
+		case PREPREQ:
+			PrepReqMessage prepMsg = (PrepReqMessage) msg;
+			getFileFromHadoop(prepMsg.getPluginFile(), prepMsg.getTaskId(), receiver);
 			break;
-		case GETREQ:
-			getFile();
+		case GETRESP:
+			GetRespMessage getMsg = (GetRespMessage) msg;
+			p2p.sendMessage(getMsg.getPluginInfo().getHost(), new PrepReqMessage(p2p.getPeerNode(), getMsg.getPluginFile(), getMsg.getTaskId()));
+			break;
+		case PREPRESP:
+			PrepRespMessage respMsg = (PrepRespMessage) msg;
+			Map<String, String> parms = new HashMap<String, String>();
+			parms.put("taskId", respMsg.getTaskId());
+			parms.put("fileId", respMsg.getPluginFile().getId());
+			parms.put("fileName", respMsg.getPluginFile().getPath());
+			p2p.getFile(respMsg.getPluginInfo().getHost(), respMsg.getPluginFile().getPath(), parms);
+			break;
+		case STORERESP:
+			StoreRespMessage storeMsg = (StoreRespMessage) msg;
+			endTask(storeMsg.getTaskId(), storeMsg.getPluginInfo(), storeMsg.getFileInfo());
 			break;
 		}
 	}
 	
-	private PluginTask startTask(JobInfo job) {
+	private PluginTask prepareTask(JobInfo job) {
 		PluginService service = myInfo.getService(job.getServiceId());
 		if (service == null)
 			return null;
 
 		PluginTask task = new PluginTask();
-		Future<PluginTask> fTask = executorService.submit(new HadoopTask(job, service, task));
+		task.setJobInfo(job);
+		pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
+		for (String fileId : job.getInputs().keySet()) {
+			p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), fileId, task.getId()));
+		}
+		
+		return task;
+	}
+	
+	private PluginTask startTask(PluginTask task) {
+		PluginService service = myInfo.getService(task.getJobInfo().getServiceId());
+		if (service == null)
+			return null;
+
+		Future<PluginTask> fTask = executorService.submit(new HadoopTask(this, task, service, p2p.getConfig().getServerPath()));
 		Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, fTask);
-		taskMap.put(task.getId(), pair);
+		executingTasks.put(task.getId(), pair);
 
 		return task;
+	}
+	
+	private void endTask(String taskId, PluginInfo plugin, FileInfo file) {
+		if (taskId.length() <= 0)
+			return;
+
+		if (plugin.equals(myInfo)) {
+			System.out.println("recebi arquivo " + file.getName());
+			Future<PluginFile> f = executorService.submit(new HadoopSaveFile(file.getName()));
+			pendingSaves.add(f);
+		} else {
+			p2p.sendFile(plugin.getHost(), file.getName());
+		}
+
+		Pair<PluginTask, Integer> pair = endingTasks.get(taskId);
+		int count = pair.second;
+		count--;
+
+		if (count == 0) {
+			endingTasks.remove(taskId);
+			EndMessage endMsg = new EndMessage(p2p.getPeerNode(), pair.first);
+			p2p.broadcast(endMsg);
+		} else {
+			Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
+			endingTasks.put(taskId, newPair);
+		}
 	}
 }

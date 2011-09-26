@@ -2,11 +2,23 @@ package br.unb.cic.bionimbus.plugin;
 
 import java.util.UUID;
 
+import br.unb.cic.bionimbus.client.JobInfo;
+
 public class PluginTask {
 	
 	private PluginTaskState state = PluginTaskState.WAITING;
 	
 	private String id = UUID.randomUUID().toString();
+	
+	private JobInfo jobInfo;
+	
+	public JobInfo getJobInfo() {
+		return jobInfo;
+	}
+	
+	public void setJobInfo(JobInfo jobInfo) {
+		this.jobInfo = jobInfo;
+	}
 
 	public PluginTaskState getState() {
 		return state;

@@ -1,19 +1,20 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.utils.JsonCodec;
 
-public class StatusRespMessage implements Message {
+public class StatusRespMessage extends AbstractMessage {
 	
 	private PluginTask task;
 	
-	public StatusRespMessage(){
+	public StatusRespMessage() {
+		super();
 	}
 	
-	public StatusRespMessage(PluginTask task) {
+	public StatusRespMessage(PeerNode peer, PluginTask task) {
+		super(peer);
 		this.task = task;
 	}
 	
@@ -23,19 +24,24 @@ public class StatusRespMessage implements Message {
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		this.task = mapper.readValue(buffer, PluginTask.class);
+		
+		BulkMessage message = decodeBasicMessage(buffer);		
+		task = message.getTask();
+		
 	}
 
 	@Override
 	public byte[] serialize() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsBytes(task);
+		
+		BulkMessage message = encodeBasicMessage();
+		message.setTask(task);
+		
+		return JsonCodec.encodeMessage(message);
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.STATUSRESP.ordinal();
+		return P2PMessageType.STATUSRESP.code();
 	}
 
 }

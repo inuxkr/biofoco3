@@ -1,23 +1,21 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import java.io.IOException;
-
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.utils.JsonCodec;
 
-public class InfoRespMessage implements Message {
+public class InfoRespMessage extends AbstractMessage implements Message {
 
 	private PluginInfo pluginInfo;
 	
 	public InfoRespMessage() {
+		super();
 	}
-
-	public InfoRespMessage(PluginInfo pluginInfo) {
+	
+	public InfoRespMessage(PeerNode peer, PluginInfo pluginInfo) {
+		super(peer);
 		this.pluginInfo = pluginInfo;
 	}
 
@@ -27,20 +25,26 @@ public class InfoRespMessage implements Message {
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		this.pluginInfo = mapper.readValue(buffer, PluginInfo.class);
+		
+		BulkMessage message = decodeBasicMessage(buffer);
+		
+		pluginInfo = message.getPluginInfo();
 	}
 
 	@Override
-	public byte[] serialize() throws JsonGenerationException,
-			JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsBytes(getPluginInfo());
+	public byte[] serialize() throws Exception {
+
+		BulkMessage message = encodeBasicMessage();
+
+		message.setPluginInfo(pluginInfo);
+
+		return JsonCodec.encodeMessage(message);
+		
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.INFORESP.ordinal();
+		return P2PMessageType.INFORESP.code();
 	}
 
 }
