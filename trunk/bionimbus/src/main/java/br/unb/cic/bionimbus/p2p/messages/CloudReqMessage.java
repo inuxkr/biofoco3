@@ -1,26 +1,20 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 
-public class CloudReqMessage implements Message {
+public class CloudReqMessage extends AbstractMessage {
 	
 	public CloudReqMessage() {
+		super();
 	}
-
-	@Override
-	public void deserialize(byte[] buffer) throws Exception {
-	}
-
-	@Override
-	public byte[] serialize() throws Exception {
-		/* Empty message */
-		return null;
+	
+	public CloudReqMessage(PeerNode peer) {
+		super(peer);
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.CLOUDREQ.ordinal();
+		return P2PMessageType.CLOUDREQ.code();
 	}
-
 }

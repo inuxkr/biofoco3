@@ -5,20 +5,19 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PErrorType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
 
-public class SchedErrorMessage extends ErrorMessage implements Message {
+public class SchedErrorMessage extends ErrorMessage {
 	
 	private String jobId;
 	
 	public SchedErrorMessage() {
-		super(null);
-		this.jobId = null;
+		super();
 	}
-	
-	public SchedErrorMessage(String jobId, String error) {
-		super(error);
+		
+	public SchedErrorMessage(PeerNode peer, String jobId, String error) {
+		super(peer, error);
 		this.jobId = jobId;
 	}
 	

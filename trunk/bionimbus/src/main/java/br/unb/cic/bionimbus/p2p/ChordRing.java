@@ -1,14 +1,18 @@
 package br.unb.cic.bionimbus.p2p;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public final class ChordRing {
 
 	public static final int SHA1_BIT_SIZE = 160;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ChordRing.class);
 
 	private final int m;
 
@@ -20,13 +24,16 @@ public final class ChordRing {
 
 	public ChordRing(PeerNode thisNode) {
 		this(thisNode, SHA1_BIT_SIZE);
+		LOG.debug("Starting chord ring");
 	}
 
 	public ChordRing(PeerNode thisNode, int bitsize) {
+		
 		id = thisNode.getId();
 		peer = thisNode;
 		m  = bitsize;
 		finger = new PeerNode[m];
+		
 	}
 
 	public synchronized PeerNode successor(ID key) {
@@ -57,10 +64,6 @@ public final class ChordRing {
 		return finger[0];
 	}
 
-	public synchronized Collection<PeerNode> getRing() {
-		return Arrays.asList(finger);
-	}
-
 	public synchronized int size() {
 		int count = 0;
 		for (int i = 0; i < finger.length; i++){
@@ -71,7 +74,7 @@ public final class ChordRing {
 		return count;
 	}
 
-	public synchronized void insert(PeerNode peerNode) {
+	public synchronized void add(PeerNode peerNode) {
 
 		ID candidate = peerNode.getId();
 
@@ -87,6 +90,8 @@ public final class ChordRing {
 				break;
 			}
 		}
+		
+		System.out.println("chord ring: " + peers());
 	}
 
 	public synchronized void remove(PeerNode peerNode) {
@@ -99,12 +104,16 @@ public final class ChordRing {
 
 	public synchronized Collection<PeerNode> peers() {
 		final SortedSet<PeerNode> peers = new TreeSet<PeerNode>();
-		peers.addAll(Arrays.asList(finger));
+		for (PeerNode p : finger) {
+			if (p != null){
+				peers.add(p);
+			}
+		}
 		return peers;
 	}
 
 	public synchronized String printRawTable() {
-		return getRing().toString();
+		return peers().toString();
 	}
 
 	@Override
@@ -119,5 +128,4 @@ public final class ChordRing {
 		sb.append(ids.toString());
 		return sb.toString();
 	}
-
 }

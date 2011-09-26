@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>4.8</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -115,10 +115,39 @@
 						<manifestEntries>
 							<mode>development</mode>
 							<url>${pom.url}</url>
-						</manifestEntries>
-						<!-- <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
+						</manifestEntries>					
 					</archive>
 				</configuration>
+			</plugin>
+
+			<!-- Monta um tar.gz com -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>br.unb.cic.bionimbus.BioNimbus</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<descriptors>
+						<descriptor>src/main/assembly/jar.xml</descriptor>
+						<descriptor>src/main/assembly/tar.xml</descriptor>
+					</descriptors>
+					<finalName>bionimbus-${version}-bundle</finalName>
+					<appendAssemblyId>false</appendAssemblyId>					
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

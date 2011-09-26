@@ -10,8 +10,7 @@ import org.jboss.netty.channel.SimpleChannelHandler;
 public class MessageEncoder extends SimpleChannelHandler {
 
 	@Override
-	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e)
-			throws Exception {
+	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 		Message message = (Message) e.getMessage();
 
 		byte[] encoded = message.serialize();
@@ -19,7 +18,8 @@ public class MessageEncoder extends SimpleChannelHandler {
 		if (encoded != null)
 			length = encoded.length;
 
-		ChannelBuffer buffer = ChannelBuffers.buffer(8 + length);
+		ChannelBuffer buffer = ChannelBuffers.buffer(9 + length);
+		buffer.writeByte('X');
 		buffer.writeInt(length);
 		buffer.writeInt(message.getType());
 

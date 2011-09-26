@@ -39,13 +39,32 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 
 				while (st.hasMoreTokens()) {
 					String token = st.nextToken();
+					String[] split = token.split(" ");
+					String unit;
+					float value;
 					if (i == 7) {
-						info.setFsSize(Float.parseFloat(token.split(" ")[1]));
-					} else if (i == 23) {
-						info.setFsFreeSize(Float.parseFloat(token.split(" ")[1]));
+						value = Float.parseFloat(split[1]);
+						unit = split[2];
+						if (unit.equals("GB"))
+							value *= (1024*1024*1024);
+						else if (unit.equals("MB"))
+							value *= (1024*1024);
+						else if (unit.equals("MB"))
+							value *= 1024;
+						info.setFsSize(value);
+					} else if (i == 31) {
+						value = Float.parseFloat(split[1]);
+						unit = split[2];
+						if (unit.equals("GB"))
+							value *= (1024*1024*1024);
+						else if (unit.equals("MB"))
+							value *= (1024*1024);
+						else if (unit.equals("MB"))
+							value *= 1024;
+						info.setFsFreeSize(value);
 					}
 					i++;
-					if (i > 23)
+					if (i > 31)
 						break;
 				}
 			}

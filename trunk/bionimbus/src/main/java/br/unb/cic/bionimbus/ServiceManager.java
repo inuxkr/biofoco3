@@ -1,7 +1,6 @@
 package br.unb.cic.bionimbus;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import br.unb.cic.bionimbus.discovery.DiscoveryService;
@@ -12,10 +11,9 @@ import br.unb.cic.bionimbus.storage.StorageService;
 
 public class ServiceManager {
 
-	List<Service> services;
+	private final List<Service> services = new ArrayList<Service>();
 
 	public ServiceManager() {
-		services = new ArrayList<Service>();
 		new DiscoveryService(this);
 		new StorageService(this);
 		new SchedService(this);
@@ -26,10 +24,9 @@ public class ServiceManager {
 		services.add(service);
 	}
 
-	public void startAll(P2PService p2p) {
-		Iterator<Service> it = services.iterator();
-
-		while (it.hasNext())
-			it.next().start(p2p);
+	public void startAll(P2PService p2p) {		
+		for (Service service : services) {
+			service.start(p2p);
+		}
 	}
 }

@@ -19,13 +19,14 @@ import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
-import br.unb.cic.bionimbus.plugin.PluginService;
 
 public class SchedService implements Service, P2PListener, Runnable {
 
@@ -48,8 +49,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	@Override
 	public void run() {
 		System.out.println("running SchedService...");
-		Message msg = new CloudReqMessage();
-		p2p.sendMessage(msg);
+		Message msg = new CloudReqMessage(p2p.getPeerNode());
+		p2p.broadcast(msg); //TODO: isto é broadcast?
 	}
 
 	@Override
@@ -74,49 +75,44 @@ public class SchedService implements Service, P2PListener, Runnable {
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		if (event.getType() != P2PEventType.MESSAGE)
+		if (!event.getType().equals(P2PEventType.MESSAGE))
 			return;
 
 		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
 		Message msg = msgEvent.getMessage();
 		if (msg == null)
 			return;
+		
+		PeerNode sender = p2p.getPeerNode();
+		PeerNode receiver = null;
+		if (msg instanceof AbstractMessage) {
+			receiver = ((AbstractMessage) msg).getPeer();
+		}
 
-		switch (P2PMessageType.values()[msg.getType()]) {
+		switch (P2PMessageType.of(msg.getType())) {
 		case CLOUDRESP:
 			CloudRespMessage cloudMsg = (CloudRespMessage) msg;
-			for (PluginInfo info : cloudMsg.values()) {
-				System.out.println("plugin = " + info.getId());
-				System.out.println("fsSize = " + info.getFsSize());
-				System.out.println("fsFreeSize = " + info.getFsFreeSize());
-				System.out.println("numNodes = " + info.getNumNodes());
-				System.out.println("numCores = " + info.getNumCores());
-				for (PluginService serv : info.getServices()) {
-					System.out.println("\tservice = " + serv.getName());
-				}
-				System.out.println();
-
+			for (PluginInfo info : cloudMsg.values()) 
 				cloudMap.put(info.getId(), info);
-			}
 			break;
 		case SCHEDREQ:
 			SchedReqMessage schedMsg = (SchedReqMessage) msg;
-			scheduleJob(schedMsg.getJobInfo());
+			scheduleJob(sender, receiver, schedMsg.getJobInfo());
 			break;
 		}
 	}
 
-	private void scheduleJob(JobInfo jobInfo) {
+	private void scheduleJob(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
 		try {
 			List<PluginInfo> availablePlugins = filterByService(jobInfo.getServiceId());
 			PluginInfo pluginInfo = getBestPluginForJob(availablePlugins, jobInfo);
-			SchedRespMessage msg = new SchedRespMessage();
+			SchedRespMessage msg = new SchedRespMessage(sender);
 			msg.setJobId(jobInfo.getId());
-			msg.setPluginId(pluginInfo.getId());
-			p2p.sendMessage(msg);		
+			msg.setPluginInfo(pluginInfo);
+			p2p.sendMessage(receiver.getHost(), msg);		
 		} catch (SchedException ex) {
-			Message errMsg = new SchedErrorMessage(jobInfo.getId(), ex.getMessage());
-			p2p.sendMessage(errMsg);	
+			Message errMsg = new SchedErrorMessage(sender, jobInfo.getId(), ex.getMessage());
+			p2p.sendMessage(receiver.getHost(), errMsg);	
 		}
 	}
 	

@@ -19,9 +19,8 @@ public class MessageServiceServerPipelineFactory implements
 	@Override
 	public ChannelPipeline getPipeline() throws Exception {
 		ChannelPipeline pipeline = Channels.pipeline();
-		
-		pipeline.addLast("decoder", new MessageDecoder(factory));
-		pipeline.addLast("handler", new MessageServiceServerHandler(server));
+
+		pipeline.addLast("first", new MessageServiceServerDecoder(factory, server));
 		
 		return pipeline;
 	}

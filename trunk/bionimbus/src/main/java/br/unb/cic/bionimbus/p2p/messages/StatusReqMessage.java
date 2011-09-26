@@ -1,16 +1,19 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
-import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
+import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.utils.JsonCodec;
 
-public class StatusReqMessage implements Message {
+public class StatusReqMessage extends AbstractMessage {
 	
 	private String taskId;
 	
 	public StatusReqMessage() {
+		super();
 	}
 	
-	public StatusReqMessage(String taskId) {
+	public StatusReqMessage(PeerNode peer, String taskId) {
+		super(peer);
 		this.taskId = taskId;
 	}
 	
@@ -20,17 +23,23 @@ public class StatusReqMessage implements Message {
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
-		this.taskId = new String(buffer);
+
+		BulkMessage message = decodeBasicMessage(buffer);
+		taskId = message.getTaskId();
 	}
 
 	@Override
-	public byte[] serialize() {
-		return taskId.getBytes();
+	public byte[] serialize() throws Exception {
+		
+		BulkMessage message = encodeBasicMessage();
+		message.setTaskId(taskId);
+		
+		return JsonCodec.encodeMessage(message);
 	}
 
 	@Override
 	public int getType() {
-		return P2PMessageType.STATUSREQ.ordinal();
+		return P2PMessageType.STATUSREQ.code();
 	}
 
 }
