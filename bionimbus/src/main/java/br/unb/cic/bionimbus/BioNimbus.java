@@ -34,7 +34,7 @@ public class BioNimbus {
 
 	public static void main(String[] args) throws IOException {
 		
-		String configFile = System.getProperty("config.file", "conf/server.json");		
+		String configFile = System.getProperty("config.file", "exported-folders/conf/server.json");		
 		BioNimbusConfig config = BioNimbusConfigLoader.loadHostConfig(configFile);
 				
 		new BioNimbus(config);

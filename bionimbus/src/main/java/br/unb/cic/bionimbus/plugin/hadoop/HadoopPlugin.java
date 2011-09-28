@@ -193,14 +193,11 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			}
 		}
 	}
-
-	private void storeFile(P2PEvent event) {
-		P2PFileEvent fileEvent = (P2PFileEvent) event;
-		Map<String, String> parms = fileEvent.getParms();
-
+	
+	private void storeFile(File file, Map<String, String> parms) {
 		if (parms.isEmpty()) {
-			System.out.println("recebi arquivo " + fileEvent.getFile().getPath());
-			Future<PluginFile> f = executorService.submit(new HadoopSaveFile(fileEvent.getFile().getPath()));
+			System.out.println("recebi arquivo " + file.getPath());
+			Future<PluginFile> f = executorService.submit(new HadoopSaveFile(file.getPath()));
 			pendingSaves.add(f);
 			return;
 		}
@@ -226,6 +223,11 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		
 		Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
 		pendingTasks.put(taskId, newPair);
+	}
+
+	private void storeFile(P2PEvent event) {
+		P2PFileEvent fileEvent = (P2PFileEvent) event;
+		storeFile(fileEvent.getFile(), fileEvent.getParms());
 	}
 
 	private void getFileFromHadoop(PluginFile file, String taskId, PeerNode receiver) {
@@ -303,7 +305,12 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			parms.put("taskId", respMsg.getTaskId());
 			parms.put("fileId", respMsg.getPluginFile().getId());
 			parms.put("fileName", respMsg.getPluginFile().getPath());
-			p2p.getFile(respMsg.getPluginInfo().getHost(), respMsg.getPluginFile().getPath(), parms);
+
+			if (respMsg.getPluginInfo().equals(myInfo)) {
+				storeFile(new File(respMsg.getPluginFile().getPath()), parms);
+			} else {
+				p2p.getFile(respMsg.getPluginInfo().getHost(), respMsg.getPluginFile().getPath(), parms);
+			}
 			break;
 		case STORERESP:
 			StoreRespMessage storeMsg = (StoreRespMessage) msg;
