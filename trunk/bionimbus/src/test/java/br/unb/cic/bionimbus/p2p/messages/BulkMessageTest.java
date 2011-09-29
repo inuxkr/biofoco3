@@ -20,7 +20,7 @@ public class BulkMessageTest {
 		PluginInfo p = new PluginInfo();
 		p.setId("101");
 		
-		m.setValues(Arrays.asList(p));
+		m.setPluginList(Arrays.asList(p));
 		
 		ObjectMapper mapper = new ObjectMapper();
 		String raw = mapper.writeValueAsString(m);
@@ -28,7 +28,7 @@ public class BulkMessageTest {
 		
 		BulkMessage message = mapper.readValue(raw.getBytes(), BulkMessage.class);
 		
-		System.out.println(message.getValues().isEmpty());
+		System.out.println(message.getPluginList().isEmpty());
 		
 		
 	}
