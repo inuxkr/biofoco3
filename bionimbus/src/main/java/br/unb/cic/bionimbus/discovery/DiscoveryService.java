@@ -86,6 +86,8 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 		switch (P2PMessageType.of(msg.getType())) {
 		case INFORESP:
 			InfoRespMessage infoMsg = (InfoRespMessage) msg;
+			PluginInfo info = infoMsg.getPluginInfo();
+			info.setUptime(receiver.uptime());
 			infoMap.put(infoMsg.getPluginInfo().getId(), infoMsg.getPluginInfo());
 			break;
 		case CLOUDREQ:
