@@ -31,6 +31,7 @@ public final class ChordRing {
 		
 		id = thisNode.getId();
 		peer = thisNode;
+		peer.start();
 		m  = bitsize;
 		finger = new PeerNode[m];
 		
@@ -83,8 +84,10 @@ public final class ChordRing {
 			ID temp = id.add(ID.pow(i)).mod(m);
 
 			if (candidate.gte(temp)){
-				if (finger[i] == null)
+				if (finger[i] == null) {
 					finger[i] = peerNode;
+					peerNode.start();
+				}
 			}
 			else {
 				break;
