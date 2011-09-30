@@ -118,7 +118,7 @@ public class Client implements P2PListener {
 
 	public static void main(String[] args) throws Exception {
 
-		String configFile = System.getProperty("config.file", "exported-folders/conf/client.json");
+		String configFile = System.getProperty("config.file", "conf/client.json");
 		BioNimbusConfig config = BioNimbusConfigLoader.loadHostConfig(configFile);
 
 		P2PService p2p = new P2PService(config);
