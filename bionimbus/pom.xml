@@ -32,6 +32,29 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.3.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.jms</groupId>
+					<artifactId>jms</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jdmk</groupId>
+					<artifactId>jmxtools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jmx</groupId>
+					<artifactId>jmxri</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>r09</version>
@@ -115,7 +138,7 @@
 						<manifestEntries>
 							<mode>development</mode>
 							<url>${pom.url}</url>
-						</manifestEntries>					
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
@@ -137,7 +160,7 @@
 						<descriptor>src/main/assembly/tar.xml</descriptor>
 					</descriptors>
 					<finalName>bionimbus-${version}-bundle</finalName>
-					<appendAssemblyId>false</appendAssemblyId>					
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 				<executions>
 					<execution>
