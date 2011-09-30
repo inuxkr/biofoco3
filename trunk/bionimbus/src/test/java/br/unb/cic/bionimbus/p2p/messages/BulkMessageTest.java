@@ -10,9 +10,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 
+import org.junit.Test;
+
 public class BulkMessageTest {
 
-	public static void main(String[] args) throws JsonGenerationException, JsonMappingException, IOException {
+	@Test
+	public void testBulkMessage() throws JsonGenerationException, JsonMappingException, IOException {
 		BulkMessage m = new BulkMessage();
 		m.setPeerID("929202");
 		m.setHost(new Host("localhost", 9090));
