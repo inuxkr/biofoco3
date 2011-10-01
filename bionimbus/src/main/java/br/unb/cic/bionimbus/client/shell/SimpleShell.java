@@ -14,6 +14,7 @@ import br.unb.cic.bionimbus.client.shell.commands.DateTime;
 import br.unb.cic.bionimbus.client.shell.commands.Echo;
 import br.unb.cic.bionimbus.client.shell.commands.Help;
 import br.unb.cic.bionimbus.client.shell.commands.History;
+import br.unb.cic.bionimbus.client.shell.commands.ListFiles;
 import br.unb.cic.bionimbus.client.shell.commands.Quit;
 import br.unb.cic.bionimbus.client.shell.commands.ScriptRunner;
 import br.unb.cic.bionimbus.utils.Pair;
@@ -46,6 +47,7 @@ public final class SimpleShell {
 	public SimpleShell() {
 		commandMap.put("async", new AsyncCommand(this));
 		commandMap.put("script", new ScriptRunner(this));
+		commandMap.put(ListFiles.NAME, new ListFiles(this));
 	}
 	
 	public void registerCommand(Command command){
