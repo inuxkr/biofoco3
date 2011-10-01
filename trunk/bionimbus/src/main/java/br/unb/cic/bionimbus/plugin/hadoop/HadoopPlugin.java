@@ -37,7 +37,6 @@ import br.unb.cic.bionimbus.p2p.messages.PrepRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
-import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreRespMessage;
@@ -132,8 +131,6 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private Message buildFinishedGetInfoMsg(PluginInfo info) {
 		if (info == null)
 			return new InfoErrorMessage(p2p.getPeerNode(), id, errorString);
-
-		info.setId(id);
 		return new InfoRespMessage(p2p.getPeerNode(), info);
 	}
 
@@ -145,19 +142,22 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 		if (fInfo.isDone()) {
 			try {
-				myInfo = fInfo.get();
-				myInfo.setHost(p2p.getPeerNode().getHost());
+				PluginInfo newInfo = fInfo.get();
+				newInfo.setId(id);
+				newInfo.setHost(p2p.getPeerNode().getHost());
+				myInfo = newInfo;
 			} catch (Exception e) {
 				errorString = e.getMessage();
+				myInfo = null;
 			}
 			fInfo = null;
 		}
 	}
 
 	private void checkTaskStatus(PeerNode receiver, String taskId) {
-		Pair<PluginTask, Future<PluginTask>> pair = executingTasks.get(taskId);
-		StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), pair.first);
-		p2p.sendMessage(receiver.getHost(), msg);
+		//Pair<PluginTask, Future<PluginTask>> pair = executingTasks.get(taskId);
+		//StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), pair.first);
+		//p2p.sendMessage(receiver.getHost(), msg);
 	}
 	
 	private void checkPendingSaves() {
