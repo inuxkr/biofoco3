@@ -20,4 +20,10 @@ public class Quit implements Command {
 	public String getName() {
 		return NAME;
 	}
+
+	@Override
+	public void setOriginalParamLine(String param) {
+		// TODO Auto-generated method stub
+		
+	}
 }

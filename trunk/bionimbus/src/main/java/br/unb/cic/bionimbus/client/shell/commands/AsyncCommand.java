@@ -42,4 +42,10 @@ public class AsyncCommand implements Command {
 		return "example";
 	}
 
+	@Override
+	public void setOriginalParamLine(String param) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

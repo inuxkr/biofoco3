@@ -39,7 +39,7 @@ public final class SimpleShell {
 		commandMap.put(Quit.NAME, new Quit());
 		commandMap.put(Help.NAME, new Help(commandMap));
 		commandMap.put(History.NAME, history);
-		commandMap.put("echo", new Echo());
+		commandMap.put(Echo.NAME, new Echo());
 	}
 	
 	public SimpleShell() {
@@ -83,6 +83,8 @@ public final class SimpleShell {
 				System.out.println(String.format("%s: command not found", command.first));
 			} else {
 				try {
+					
+					commandMap.get(command.first).setOriginalParamLine(line); // para o caso de precisar
 					
 					// eval
 					String result = commandMap.get(command.first).execute(command.second);

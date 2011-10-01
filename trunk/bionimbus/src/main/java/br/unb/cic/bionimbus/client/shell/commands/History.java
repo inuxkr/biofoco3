@@ -2,9 +2,10 @@ package br.unb.cic.bionimbus.client.shell.commands;
 
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import br.unb.cic.bionimbus.client.shell.Command;
+
+import com.google.common.base.Joiner;
 
 public class History implements Command {
 
@@ -21,26 +22,15 @@ public class History implements Command {
 	}
 
 	@Override
-	public String execute(String... params) {
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for (Entry<Long, String> e: history.entrySet()){
-			if (sb.length() > 0)
-				sb.append('\n');
-			sb.append(e.getKey())
-			  .append(" ")
-			  .append(e.getValue());
-		}
-		return sb.toString();
+	public String execute(String... params) {		
+		return Joiner.on("\n").withKeyValueSeparator(" ").join(history);
 	}
 
 	public void add(String line) {
 		history.put(value++, line);
 		if (limit < history.keySet().size()){
 			history.remove(history.keySet().iterator().next());
-		}
-		
+		}		
 	}
 
 	@Override
@@ -57,6 +47,12 @@ public class History implements Command {
 		if (!history.containsKey(number))
 			return "!" + number;
 		return history.get(number);
+	}
+
+	@Override
+	public void setOriginalParamLine(String param) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

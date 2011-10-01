@@ -7,4 +7,8 @@ public interface Command {
 	public String usage();
 
 	public String getName();
+	
+	public void setOriginalParamLine(String param);
+		
+	
 }

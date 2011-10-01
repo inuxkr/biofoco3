@@ -4,24 +4,28 @@ import br.unb.cic.bionimbus.client.shell.Command;
 
 public class Echo implements Command {
 
+	public static final String NAME = "echo";
+	private String line;
+
 	@Override
 	public String execute(String... params) throws Exception {
-		StringBuilder sb = new StringBuilder();
-		for (String p : params) {
-			sb.append(p);
-			sb.append(" ");
-		}
-		return sb.toString();
+		int index = line.trim().indexOf(NAME) + NAME.length();
+		return line.substring(index).trim();
 	}
 
 	@Override
 	public String usage() {
-		return "echo";
+		return NAME;
 	}
 
 	@Override
 	public String getName() {
 		return "echo";
+	}
+
+	@Override
+	public void setOriginalParamLine(String param) {
+		this.line = param;
 	}
 
 }
