@@ -2,6 +2,8 @@ package br.unb.cic.bionimbus.client.shell.commands;
 
 import java.util.Map;
 
+import com.google.common.base.Joiner;
+
 import br.unb.cic.bionimbus.client.shell.Command;
 
 public class Help implements Command {
@@ -15,14 +17,7 @@ public class Help implements Command {
 
 	@Override
 	public String execute(String... params) {
-		
-		StringBuilder sb = new StringBuilder();
-		
-		for (Command c : commands.values()){
-			sb.append(c.usage()).append('\n');
-		}
-		
-		return sb.toString();
+		return Joiner.on("\n").join(commands.values());
 	}
 
 	@Override
@@ -32,6 +27,12 @@ public class Help implements Command {
 	
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public void setOriginalParamLine(String param) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
