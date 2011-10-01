@@ -15,6 +15,7 @@ import br.unb.cic.bionimbus.client.shell.commands.Echo;
 import br.unb.cic.bionimbus.client.shell.commands.Help;
 import br.unb.cic.bionimbus.client.shell.commands.History;
 import br.unb.cic.bionimbus.client.shell.commands.Quit;
+import br.unb.cic.bionimbus.client.shell.commands.ScriptRunner;
 import br.unb.cic.bionimbus.utils.Pair;
 
 /**
@@ -44,6 +45,7 @@ public final class SimpleShell {
 	
 	public SimpleShell() {
 		commandMap.put("async", new AsyncCommand(this));
+		commandMap.put("script", new ScriptRunner(this));
 	}
 	
 	public void registerCommand(Command command){
@@ -75,26 +77,32 @@ public final class SimpleShell {
 				line = history.get(number);
 			}
 			
+			executeCommand(line, true);
+		}
+	}
+
+	public void executeCommand(String line, boolean logAtHistory) {
+		
+		if (logAtHistory)
 			history.add(line.trim());
-			
-			Pair<String, String[]> command = parseLine(line);
-			
-			if (!commandMap.containsKey(command.first)) {
-				System.out.println(String.format("%s: command not found", command.first));
-			} else {
-				try {
-					
-					commandMap.get(command.first).setOriginalParamLine(line); // para o caso de precisar
-					
-					// eval
-					String result = commandMap.get(command.first).execute(command.second);
-					
-					// print
-					System.out.println(result);
-				}
-				catch (Exception e){
-					e.printStackTrace();
-				}
+		
+		Pair<String, String[]> command = parseLine(line);
+		
+		if (!commandMap.containsKey(command.first)) {
+			System.out.println(String.format("%s: command not found", command.first));
+		} else {
+			try {
+				
+				commandMap.get(command.first).setOriginalParamLine(line); // para o caso de precisar
+				
+				// eval
+				String result = commandMap.get(command.first).execute(command.second);
+				
+				// print
+				System.out.println(result);
+			}
+			catch (Exception e){
+				e.printStackTrace();
 			}
 		}
 	}
