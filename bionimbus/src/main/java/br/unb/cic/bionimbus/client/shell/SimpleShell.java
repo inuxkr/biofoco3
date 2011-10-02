@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import br.unb.cic.bionimbus.client.shell.commands.AsyncCommand;
+import br.unb.cic.bionimbus.client.shell.commands.Connect;
 import br.unb.cic.bionimbus.client.shell.commands.DateTime;
 import br.unb.cic.bionimbus.client.shell.commands.Echo;
 import br.unb.cic.bionimbus.client.shell.commands.Help;
@@ -17,6 +18,7 @@ import br.unb.cic.bionimbus.client.shell.commands.History;
 import br.unb.cic.bionimbus.client.shell.commands.ListFiles;
 import br.unb.cic.bionimbus.client.shell.commands.Quit;
 import br.unb.cic.bionimbus.client.shell.commands.ScriptRunner;
+import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.utils.Pair;
 
 /**
@@ -44,7 +46,11 @@ public final class SimpleShell {
 		commandMap.put(Echo.NAME, new Echo());
 	}
 	
+	private boolean connected = false;
+	private P2PService p2p = null;
+	
 	public SimpleShell() {
+		commandMap.put(Connect.NAME, new Connect(this));
 		commandMap.put("async", new AsyncCommand(this));
 		commandMap.put("script", new ScriptRunner(this));
 		commandMap.put(ListFiles.NAME, new ListFiles(this));
@@ -107,6 +113,22 @@ public final class SimpleShell {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void setConnected(boolean connected) {
+		this.connected = connected;
+	}
+	
+	public boolean isConnected() {
+		return connected;
+	}
+	
+	public void setP2P(P2PService p2p) {
+		this.p2p = p2p;
+	}
+	
+	public P2PService getP2P() {
+		return p2p;
 	}
 
 	private static Pair<String, String[]> parseLine(String line) {
