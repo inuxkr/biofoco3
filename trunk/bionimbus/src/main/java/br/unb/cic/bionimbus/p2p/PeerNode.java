@@ -5,6 +5,7 @@ public class PeerNode implements Comparable<PeerNode> {
 	private final ID id;
 	private Host host;
 	private long start;
+	private long latency;
 
 	public PeerNode(ID id) {
 		this.id = id;
@@ -63,5 +64,13 @@ public class PeerNode implements Comparable<PeerNode> {
 	/* in milisenconds */
 	public long uptime() {
 		return System.currentTimeMillis() - this.start;
+	}
+
+	public long getLatency() {
+		return latency;
+	}
+
+	public void setLatency(long latency) {
+		this.latency = latency;
 	}
 }
