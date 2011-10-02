@@ -16,6 +16,9 @@ public class ListFiles implements Command {
 	@Override
 	public String execute(String... params) throws Exception {
 		
+		if (!shell.isConnected())
+			throw new IllegalStateException("This command should be used with an active connection!");
+
 		shell.print("Listing files...");
 		
 		return "";
