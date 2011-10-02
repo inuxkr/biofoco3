@@ -137,11 +137,16 @@ public class P2PService implements MessageListener, FileListener {
 		
 		if (message instanceof PingReqMessage) {
 			PeerNode node = ((PingReqMessage) message).getPeerNode();
+			long timestamp = ((PingReqMessage) message).getTimestamp();
 			System.out.println("received req message from " + node.getHost().getPort());
 			chord.add(node);
-			sendMessage(node.getHost(), new PingRespMessage(peerNode));
+			sendMessage(node.getHost(), new PingRespMessage(peerNode, timestamp));
 		} else if (message instanceof PingRespMessage) {
 			PeerNode node = ((PingRespMessage) message).getPeerNode();
+			long timestamp = ((PingReqMessage) message).getTimestamp();
+			if (timestamp > 0) {
+				node.setLatency(System.currentTimeMillis() - timestamp);
+			}
 			System.out.println("received resp message " + node.getHost().getPort());
 			chord.add(node);
 		} else {
@@ -162,7 +167,12 @@ public class P2PService implements MessageListener, FileListener {
 		public void run() {
 			System.out.println("checking seed list");
 			for (Host host: seeds) {
-				sendMessage(host, new PingReqMessage(peerNode));
+				sendMessage(host, new PingReqMessage(peerNode, 0));
+			}
+			
+			System.out.println("checking peers list");
+			for (PeerNode peer : getPeers()) {
+				sendMessage(peer.getHost(), new PingReqMessage(peerNode, System.currentTimeMillis()));
 			}
 		}
 		
