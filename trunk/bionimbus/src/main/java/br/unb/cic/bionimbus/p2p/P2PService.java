@@ -143,7 +143,7 @@ public class P2PService implements MessageListener, FileListener {
 			sendMessage(node.getHost(), new PingRespMessage(peerNode, timestamp));
 		} else if (message instanceof PingRespMessage) {
 			PeerNode node = ((PingRespMessage) message).getPeerNode();
-			long timestamp = ((PingReqMessage) message).getTimestamp();
+			long timestamp = ((PingRespMessage) message).getTimestamp();
 			if (timestamp > 0) {
 				node.setLatency(System.currentTimeMillis() - timestamp);
 			}

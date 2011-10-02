@@ -16,6 +16,10 @@ public class PingRespMessage extends AbstractMessage {
 		super(peerNode);
 		this.timestamp = timestamp;
 	}
+	
+	public long getTimestamp() {
+		return timestamp;
+	}
 		
 	@Override
 	public int getType() {
