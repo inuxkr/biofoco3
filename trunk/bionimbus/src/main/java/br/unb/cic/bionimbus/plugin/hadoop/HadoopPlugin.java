@@ -112,18 +112,22 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 				executingTasks.remove(task.getId());
 
-				int count = 0;
-				for (String output : task.getJobInfo().getOutputs()) {
-					File file = new File(p2p.getConfig().getServerPath() + "/" + output);
-					FileInfo info = new FileInfo();
-					info.setName(p2p.getConfig().getServerPath() + "/" + output);
-					info.setSize(file.length());
-					StoreReqMessage msg = new StoreReqMessage(p2p.getPeerNode(), info, task.getId());
-					p2p.broadcast(msg);
-					count++;
+				if (task.getJobInfo().getOutputs().size() > 0) {
+					int count = 0;
+					for (String output : task.getJobInfo().getOutputs()) {
+						File file = new File(p2p.getConfig().getServerPath() + "/" + output);
+						FileInfo info = new FileInfo();
+						info.setName(p2p.getConfig().getServerPath() + "/" + output);
+						info.setSize(file.length());
+						StoreReqMessage msg = new StoreReqMessage(p2p.getPeerNode(), info, task.getId());
+						p2p.broadcast(msg);
+						count++;
+					}				
+					endingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, count));
+				} else {
+					EndMessage endMsg = new EndMessage(p2p.getPeerNode(), task);
+					p2p.broadcast(endMsg);
 				}
-				
-				endingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, count));
 			}
 		}
 	}
@@ -326,9 +330,13 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 		PluginTask task = new PluginTask();
 		task.setJobInfo(job);
-		pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
-		for (String fileId : job.getInputs().keySet()) {
-			p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), fileId, task.getId()));
+		if (job.getInputs().size() > 0) {
+			pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
+			for (String fileId : job.getInputs().keySet()) {
+				p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), fileId, task.getId()));
+			}
+		} else {
+			task = startTask(task);
 		}
 		
 		return task;
