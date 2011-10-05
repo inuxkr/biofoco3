@@ -18,6 +18,7 @@ import br.unb.cic.bionimbus.client.shell.commands.History;
 import br.unb.cic.bionimbus.client.shell.commands.ListFiles;
 import br.unb.cic.bionimbus.client.shell.commands.Quit;
 import br.unb.cic.bionimbus.client.shell.commands.ScriptRunner;
+import br.unb.cic.bionimbus.client.shell.commands.Upload;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.utils.Pair;
 
@@ -54,6 +55,7 @@ public final class SimpleShell {
 		commandMap.put("async", new AsyncCommand(this));
 		commandMap.put("script", new ScriptRunner(this));
 		commandMap.put(ListFiles.NAME, new ListFiles(this));
+		commandMap.put(Upload.NAME, new Upload(this));
 	}
 	
 	public void registerCommand(Command command){
