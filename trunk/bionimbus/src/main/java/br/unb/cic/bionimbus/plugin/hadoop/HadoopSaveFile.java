@@ -19,9 +19,13 @@ public class HadoopSaveFile implements Callable<PluginFile> {
 	public PluginFile call() throws Exception {
 		File file = new File(filePath);
 		Process p = null;
-		PluginFile pFile = null;
+		PluginFile pFile;
 		
 		try {
+			pFile = new PluginFile();
+			pFile.setPath(file.getName());
+			pFile.setSize(file.length());
+
 			p = Runtime.getRuntime().exec("hadoop fs -moveFromLocal " + filePath + " " + file.getName());
 			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line;
@@ -29,12 +33,9 @@ public class HadoopSaveFile implements Callable<PluginFile> {
 				System.out.println(line);
 			}
 			br.close();
-			
-			pFile = new PluginFile();
-			pFile.setPath(file.getName());
-			pFile.setSize(file.length());
 		} catch (Exception e) {
 			e.printStackTrace();
+			pFile = null;
 		}
 		
 		
