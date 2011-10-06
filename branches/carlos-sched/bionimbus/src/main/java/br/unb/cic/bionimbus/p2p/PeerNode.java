@@ -1,10 +1,11 @@
 package br.unb.cic.bionimbus.p2p;
 
-
 public class PeerNode implements Comparable<PeerNode> {
 
 	private final ID id;
 	private Host host;
+	private long start;
+	private long latency;
 
 	public PeerNode(ID id) {
 		this.id = id;
@@ -26,7 +27,7 @@ public class PeerNode implements Comparable<PeerNode> {
 
 	@Override
 	public boolean equals(Object object) {
-		if (this == object){
+		if (this == object) {
 			return true;
 		}
 		if (!(object instanceof PeerNode)) {
@@ -43,7 +44,7 @@ public class PeerNode implements Comparable<PeerNode> {
 		return this.id.compareTo(o.id);
 	}
 
-	//TODO: RPC call
+	// TODO: RPC call
 	public PeerNode retrieveSuccessor(ID key) {
 		throw new UnsupportedOperationException();
 	}
@@ -51,9 +52,25 @@ public class PeerNode implements Comparable<PeerNode> {
 	public void setHost(Host host) {
 		this.host = host;
 	}
-	
+
 	public Host getHost() {
 		return host;
 	}
 
+	public void start() {
+		this.start = System.currentTimeMillis();
+	}
+
+	/* in milisenconds */
+	public long uptime() {
+		return System.currentTimeMillis() - this.start;
+	}
+
+	public long getLatency() {
+		return latency;
+	}
+
+	public void setLatency(long latency) {
+		this.latency = latency;
+	}
 }

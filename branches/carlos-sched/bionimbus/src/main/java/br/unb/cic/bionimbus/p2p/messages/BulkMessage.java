@@ -15,6 +15,9 @@ public class BulkMessage {
 
 	private String peerID;
 	private Host host;
+
+	@JsonIgnore
+	private long timestamp;
 	
 	@JsonIgnore
 	private Collection<PluginInfo> pluginList;
@@ -66,6 +69,14 @@ public class BulkMessage {
 	
 	public Host getHost() {
 		return host;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public void setPluginList(Collection<PluginInfo> pluginList) {
