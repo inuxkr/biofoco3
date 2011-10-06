@@ -10,6 +10,10 @@ public class PluginInfo {
 	
 	private Host host;
 	
+	private long uptime;
+	
+	private long latency;
+	
 	private Integer numCores;
 	
 	private Integer numNodes;
@@ -35,6 +39,23 @@ public class PluginInfo {
 	public void setHost(Host host) {
 		this.host = host;
 	}
+
+	public long getUptime() {
+		return uptime;
+	}
+
+	public void setUptime(long uptime) {
+		this.uptime = uptime;
+	}
+
+	public long getLatency() {
+		return latency;
+	}
+
+	public void setLatency(long latency) {
+		this.latency = latency;
+	}
+
 	public Float getFsFreeSize() {
 		return fsFreeSize;
 	}
