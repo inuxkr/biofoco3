@@ -19,9 +19,8 @@ public class AHPPolicy extends SchedPolicy {
 	
 	@Override
 	public PluginInfo schedule(JobInfo jobInfo) throws SchedException {
-		
-		
-		return null;
+		List<PluginInfo> plugins = filterByService(jobInfo.getServiceId());
+		return getBestService(plugins);
 	}
 	
 	public static float comparePluginInfo(PluginInfo a, PluginInfo b, String attribute) throws SchedException {
@@ -93,10 +92,28 @@ public class AHPPolicy extends SchedPolicy {
 		return maxIndex;
 	}
 	
+	public static List<Double> multiplyVectors(List<Double> a, List<Double> b) throws SchedException {
+		List<Double> result = new ArrayList<Double>();
+		
+		if (a.size() != b.size()) throw new SchedException("Vetores sendo multiplicados possuem tamanhos diferentes");
+		for (int i = 0; i < a.size(); ++i) {
+			result.add(a.get(i) * b.get(i));
+		}
+		return result;
+	}
+	
 	public static List<PluginInfo> getServiceOrderedByPriority(List<PluginInfo> pluginInfos) throws SchedException {
 		List<PluginInfo> plugins = new ArrayList<PluginInfo>();
-		Matrix m = generateComparisonMatrix(pluginInfos, "latency");
-		List<Double> priorities = getPrioritiesOnMatrix(m);
+		Matrix mLatency = generateComparisonMatrix(pluginInfos, "latency");
+		Matrix mUptime = generateComparisonMatrix(pluginInfos, "uptime");
+		List<Double> prioritiesLatency = getPrioritiesOnMatrix(mLatency);
+		List<Double> prioritiesUptime = getPrioritiesOnMatrix(mUptime);
+		List<Double> priorities = multiplyVectors(prioritiesLatency, prioritiesUptime);
+		
+		// DEBUG
+		for (int i = 0; i < priorities.size(); ++i) {
+			System.out.println(prioritiesLatency.get(i) + " " + prioritiesUptime.get(i) + " " + priorities.get(i));
+		}
 		
 		while (!priorities.isEmpty()) {
 			int index = getMaxNumberIndex(priorities);
@@ -105,6 +122,11 @@ public class AHPPolicy extends SchedPolicy {
 			priorities.remove(index);
 		}
 		return plugins;
+	}
+	
+	public static PluginInfo getBestService(List<PluginInfo> pluginInfos) throws SchedException {
+		if (pluginInfos.isEmpty()) return null;
+		return getServiceOrderedByPriority(pluginInfos).get(pluginInfos.size());
 	}
 	
 	private List<PluginInfo> filterByService(long serviceId) throws SchedException {
