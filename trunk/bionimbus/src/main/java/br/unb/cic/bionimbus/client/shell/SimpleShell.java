@@ -138,13 +138,12 @@ public final class SimpleShell {
 
 	private static Pair<String, String[]> parseLine(String line) {
 		
-		final List<String> params = new ArrayList<String>();
-		
-		LineParser parser = new LineParser();
-		
+		LineParser parser = new LineParser();		
 		List<String> tokens = parser.parse(line);
 		
-		String command = tokens.get(0);
+		final String command = tokens.get(0);
+		final List<String> params = new ArrayList<String>();
+		
 		if (tokens.size() > 1){
 			params.addAll(tokens.subList(1, tokens.size()));
 		}
