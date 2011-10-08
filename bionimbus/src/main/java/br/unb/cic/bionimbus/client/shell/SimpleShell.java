@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import br.unb.cic.bionimbus.client.shell.commands.AsyncCommand;
 import br.unb.cic.bionimbus.client.shell.commands.Connect;
@@ -140,20 +139,16 @@ public final class SimpleShell {
 	private static Pair<String, String[]> parseLine(String line) {
 		
 		final List<String> params = new ArrayList<String>();
-		boolean first = true;
-		String command = null;
 		
-		StringTokenizer st = new StringTokenizer(line);
-		while (st.hasMoreTokens()) {			
+		LineParser parser = new LineParser();
 		
-			String s = st.nextToken().trim();
-			if (first) {
-				command = s;
-				first = false;
-			}
-			else 
-				params.add(s);
+		List<String> tokens = parser.parse(line);
+		
+		String command = tokens.get(0);
+		if (tokens.size() > 1){
+			params.addAll(tokens.subList(1, tokens.size()));
 		}
+		
 		return Pair.of(command, params.toArray(new String[0]));
 	}
 
