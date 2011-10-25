@@ -26,30 +26,30 @@ public class JobStart implements Command {
 
 		P2PService p2p = shell.getP2P();
 		SyncCommunication comm = new SyncCommunication(p2p);
+		int i = 0;
 
 		shell.print("Starting job...");
 
 		JobInfo job = new JobInfo();
 		job.setId(null);
 		job.setServiceId(Long.parseLong(params[0]));
+		i++;
 
-		if (params.length > 1) {
-			job.setArgs(params[1]);
-			if (params.length > 2) {
-				int i = 2;
-				if (params[i].equals("-i")) {
+		while (i < params.length) {
+			if (i == 1) {
+				job.setArgs(params[i]);
+				i++;
+			} else if (params[i].equals("-i")) {
+				i++;
+				while (i < params.length && !params[i].equals("-o")) {
+					job.addInput(params[i], Long.valueOf(0));
 					i++;
-					while (i < params.length && !params[i].equals("-o")) {
-						job.addInput(params[i], Long.valueOf(0));
-						i++;
-					}
 				}
-				if (params[i].equals("-o")) {
+			} else if (params[i].equals("-o")) {
+				i++;
+				while (i < params.length) {
+					job.addOutput(params[i]);
 					i++;
-					while (i < params.length) {
-						job.addOutput(params[i]);
-						i++;
-					}
 				}
 			}
 		}

@@ -94,7 +94,7 @@ public final class ChordRing {
 			}
 		}
 		
-		System.out.println("chord ring: " + peers());
+		//System.out.println("chord ring: " + peers());
 	}
 
 	public synchronized void remove(PeerNode peerNode) {
