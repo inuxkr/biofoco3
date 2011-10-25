@@ -131,7 +131,7 @@ public class Client implements P2PListener {
 		}
 		System.out.println("I am not alone in the dark anymore!");
 
-		client.uploadFile("/home/hugo.saldanha/Downloads/teste.txt");
+		client.uploadFile("teste.txt");
 		
 		TimeUnit.SECONDS.sleep(120);
 		client.listFiles();
