@@ -22,21 +22,31 @@ import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
+import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
+import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.sched.SchedException;
+import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 
 public class MonitorService implements Service, P2PListener, Runnable {
 
+	private SchedPolicy schedPolicy;
+	
+	private final ConcurrentHashMap<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
+	
 	private final ScheduledExecutorService schedExecService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("MonitorService-%d").build());
 	
 	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
@@ -49,12 +59,21 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		manager.register(this);
 	}
 
+	public SchedPolicy getPolicy() {
+		if (schedPolicy == null) {
+			schedPolicy = SchedPolicy.getInstance(cloudMap);
+		}
+		return schedPolicy;
+	}
+	
 	@Override
 	public void run() {
 		System.out.println("running MonitorService...");
 		
 		checkPendingJobs();
 		checkRunningJobs();
+		Message msg = new CloudReqMessage(p2p.getPeerNode());
+		p2p.broadcast(msg); //TODO: isto é broadcast?
 	}
 
 	@Override
@@ -62,7 +81,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		this.p2p = p2p;
 		if (p2p != null)
 			p2p.addListener(this);
-		schedExecService.scheduleAtFixedRate(this, 0, 2, TimeUnit.MINUTES);
+		schedExecService.scheduleAtFixedRate(this, 0, 1, TimeUnit.MINUTES);
 	}
 
 	@Override
@@ -124,6 +143,15 @@ public class MonitorService implements Service, P2PListener, Runnable {
 			StatusRespMessage status = (StatusRespMessage) msg;
 			updateJobStatus(status.getPluginTask());
 			break;
+		case CLOUDRESP:
+			CloudRespMessage cloudMsg = (CloudRespMessage) msg;
+			for (PluginInfo info : cloudMsg.values()) 
+				cloudMap.put(info.getId(), info);
+			break;
+		case SCHEDREQ:
+			SchedReqMessage schedReqMsg = (SchedReqMessage) msg;
+			scheduleJob(sender, receiver, schedReqMsg.getJobInfo());
+			break;
 		case END:
 			EndMessage end = (EndMessage) msg;
 			finalizeJob(end.getTask());
@@ -137,6 +165,19 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		}
 	}
 	
+	private void scheduleJob(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
+		try {
+			PluginInfo pluginInfo = getPolicy().schedule(jobInfo);
+			SchedRespMessage msg = new SchedRespMessage(sender);
+			msg.setJobId(jobInfo.getId());
+			msg.setPluginInfo(pluginInfo);
+			p2p.sendMessage(receiver.getHost(), msg);		
+		} catch (SchedException ex) {
+			Message errMsg = new SchedErrorMessage(sender, jobInfo.getId(), ex.getMessage());
+			p2p.sendMessage(receiver.getHost(), errMsg);	
+		}
+	}
+
 	private void sendSchedReq(PeerNode sender, JobInfo jobInfo) {
 		jobInfo.setId(UUID.randomUUID().toString());
 		pendingJobs.put(jobInfo.getId(), jobInfo);
