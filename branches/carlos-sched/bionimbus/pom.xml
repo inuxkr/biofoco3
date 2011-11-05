@@ -9,6 +9,10 @@
 	<url>http://maven.apache.org</url>
 	<repositories>
 		<repository>
+			<id>java numerics</id>
+			<url>http://mbari-maven-repository.googlecode.com/svn/repository</url>
+		</repository>
+		<repository>
 			<id>java.net</id>
 			<url>http://download.java.net/maven/2</url>
 		</repository>
