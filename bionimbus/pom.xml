@@ -9,6 +9,10 @@
 	<url>http://maven.apache.org</url>
 	<repositories>
 		<repository>
+			<id>java numerics</id>
+			<url>http://mbari-maven-repository.googlecode.com/svn/repository</url>
+		</repository>	
+		<repository>
 			<id>java.net</id>
 			<url>http://download.java.net/maven/2</url>
 		</repository>
@@ -31,6 +35,11 @@
 			<version>4.8</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>jama</groupId>
+			<artifactId>jama</artifactId>
+			<version>1.0.2</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
