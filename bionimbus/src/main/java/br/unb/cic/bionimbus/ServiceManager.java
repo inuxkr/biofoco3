@@ -17,7 +17,7 @@ public class ServiceManager {
 		new DiscoveryService(this);
 		new StorageService(this);
 		new SchedService(this);
-		new MonitorService(this);
+		//new MonitorService(this);
 	}
 
 	public void register(Service service) {

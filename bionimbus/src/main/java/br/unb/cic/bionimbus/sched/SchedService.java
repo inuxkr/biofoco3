@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.sched;
 
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,6 +13,7 @@ import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
+import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
 import br.unb.cic.bionimbus.p2p.P2PEventType;
 import br.unb.cic.bionimbus.p2p.P2PListener;
@@ -21,11 +24,21 @@ import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.EndMessage;
+import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
+import br.unb.cic.bionimbus.utils.Pair;
 
 public class SchedService implements Service, P2PListener, Runnable {
 
@@ -37,6 +50,10 @@ public class SchedService implements Service, P2PListener, Runnable {
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("SchedService-%d").build());
 
+	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
+	
+	private final Map<String, Pair<JobInfo, PluginTask>> runningJobs = new ConcurrentHashMap<String, Pair<JobInfo, PluginTask>>();
+	
 	private P2PService p2p = null;
 
 	public SchedService(ServiceManager manager) {
@@ -53,6 +70,9 @@ public class SchedService implements Service, P2PListener, Runnable {
 	@Override
 	public void run() {
 		System.out.println("running SchedService...");
+		
+		checkPendingJobs();
+		checkRunningJobs();
 		Message msg = new CloudReqMessage(p2p.getPeerNode());
 		p2p.broadcast(msg); //TODO: isto é broadcast?
 	}
@@ -77,6 +97,18 @@ public class SchedService implements Service, P2PListener, Runnable {
 
 	}
 
+	private void checkPendingJobs() {
+		// TODO aqui temos que checar os jobs que estão aguardando o escalonamento.
+		// precisamos esperar um timeout ate' fazer nova requisicao.
+	}
+	
+	private void checkRunningJobs() {
+		PeerNode peer = p2p.getPeerNode();
+		for (String taskId : runningJobs.keySet()) {
+			sendStatusReq(peer, taskId);
+		}
+	}
+	
 	@Override
 	public void onEvent(P2PEvent event) {
 		if (!event.getType().equals(P2PEventType.MESSAGE))
@@ -103,9 +135,72 @@ public class SchedService implements Service, P2PListener, Runnable {
 			SchedReqMessage schedMsg = (SchedReqMessage) msg;
 			scheduleJob(sender, receiver, schedMsg.getJobInfo());
 			break;
+		case JOBREQ:
+			JobReqMessage jobMsg = (JobReqMessage) msg;
+			sendSchedReq(sender, jobMsg.getJobInfo());
+			break;
+		case SCHEDRESP:
+			SchedRespMessage schedRespMsg = (SchedRespMessage) msg;
+			JobInfo schedJob = pendingJobs.get(schedRespMsg.getJobId());
+			sendStartReq(sender, schedRespMsg.getPluginInfo().getHost(), schedJob);
+			break;
+		case STARTRESP:
+			StartRespMessage respMsg = (StartRespMessage) msg;
+			sendJobResp(sender, receiver, respMsg.getJobId(), respMsg.getPluginTask());
+			break;
+		case STATUSRESP:
+			StatusRespMessage status = (StatusRespMessage) msg;
+			updateJobStatus(status.getPluginTask());
+			break;
+		case END:
+			EndMessage end = (EndMessage) msg;
+			finalizeJob(end.getTask());
+			break;
+		case ERROR:
+			ErrorMessage errMsg = (ErrorMessage) msg;
+			System.out.println("SCHED ERROR: type="
+					+ errMsg.getErrorType().toString() + ";msg="
+					+ errMsg.getError());
+			break;
 		}
 	}
 
+	private void sendSchedReq(PeerNode sender, JobInfo jobInfo) {
+		jobInfo.setId(UUID.randomUUID().toString());
+		pendingJobs.put(jobInfo.getId(), jobInfo);
+		SchedReqMessage newMsg = new SchedReqMessage(sender, jobInfo);
+		p2p.broadcast(newMsg);
+	}
+	
+	private void sendStartReq(PeerNode sender, Host dest, JobInfo jobInfo) {
+		StartReqMessage startMsg = new StartReqMessage(sender, jobInfo);
+		p2p.sendMessage(dest, startMsg);
+	}
+	
+	private void sendStatusReq(PeerNode sender, String taskId) {
+		StatusReqMessage msg = new StatusReqMessage(sender, taskId);
+		p2p.broadcast(msg); //TODO: isto é realmente um broadcast?
+	}
+	
+	private void updateJobStatus(PluginTask task) {
+		Pair<JobInfo, PluginTask> pair = runningJobs.get(task.getId());
+		JobInfo job = pair.first;
+		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(job, task));
+	}
+	
+	private void sendJobResp(PeerNode sender, PeerNode receiver, String jobId, PluginTask task) {
+		JobInfo jobInfo = pendingJobs.remove(jobId);
+		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
+		JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
+		p2p.broadcast(jobRespMsg); // mandar direto pro cliente
+	}
+	
+	private void finalizeJob(PluginTask task) {
+		Pair<JobInfo, PluginTask> pair = runningJobs.remove(task.getId());
+		JobInfo job = pair.first;
+		//p2p.sendMessage(new EndJobMessage(job));
+	}
+	
 	private void scheduleJob(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
 		try {
 			PluginInfo pluginInfo = getPolicy().schedule(jobInfo);
