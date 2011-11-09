@@ -48,9 +48,9 @@ public class BasicSchedPolicy extends SchedPolicy {
 	}
 
 	@Override
-	public PluginInfo schedule(JobInfo jobInfo) throws SchedException {
-		List<PluginInfo> availablePlugins = filterByService(jobInfo.getServiceId());
-		PluginInfo pluginInfo = getBestPluginForJob(availablePlugins, jobInfo);		
+	public PluginInfo schedule(JobInfo... jobInfos) throws SchedException {
+		List<PluginInfo> availablePlugins = filterByService(jobInfos[0].getServiceId());
+		PluginInfo pluginInfo = getBestPluginForJob(availablePlugins, jobInfos[0]);		
 		
 		return pluginInfo;
 	}
