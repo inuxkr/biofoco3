@@ -13,14 +13,22 @@ public class AHPPolicy extends SchedPolicy {
 
         private List<JobInfo> jobs;
         
+        private List<PluginInfo> usedResources;
+        
         public void addJob(JobInfo jobInfo) throws SchedException {
                 jobs.add(jobInfo);
         }
         
+        public PluginInfo scheduleJob(JobInfo jobInfo) throws SchedException {
+        	List<PluginInfo> plugins = filterByService(jobInfo.getServiceId(), filterByUsed());
+            return getBestService(plugins);
+        }
+        
         @Override
-        public PluginInfo schedule(JobInfo jobInfo) throws SchedException {
-                List<PluginInfo> plugins = filterByService(jobInfo.getServiceId());
-                return getBestService(plugins);
+        public PluginInfo schedule(JobInfo... jobInfos) throws SchedException {
+        	PluginInfo resource = this.scheduleJob(jobInfos[0]);
+        	usedResources.add(resource);
+       		return resource;
         }
         
         public static float comparePluginInfo(PluginInfo a, PluginInfo b, String attribute) throws SchedException {
@@ -129,9 +137,9 @@ public class AHPPolicy extends SchedPolicy {
                 return getServiceOrderedByPriority(pluginInfos).get(pluginInfos.size());
         }
         
-        private List<PluginInfo> filterByService(long serviceId) throws SchedException {
+        private List<PluginInfo> filterByService(long serviceId, List<PluginInfo> plgs) throws SchedException {
                 ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>();
-                for (PluginInfo pluginInfo : getCloudMap().values()) {
+                for (PluginInfo pluginInfo : plgs) {
                         if (pluginInfo.getService(serviceId) != null)
                                 plugins.add(pluginInfo);
                 }
@@ -141,6 +149,20 @@ public class AHPPolicy extends SchedPolicy {
                 }
                 
                 return plugins;
+        }
+        
+        private List<PluginInfo> filterByUsed() throws SchedException {
+        	ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>();
+        	for (PluginInfo pluginInfo : getCloudMap().values()) {
+                if (!usedResources.contains(pluginInfo))
+                        plugins.add(pluginInfo);
+        	}
+        
+        	if (plugins.size() == 0) {
+                return new ArrayList<PluginInfo>(getCloudMap().values());
+        	}
+        
+        	return plugins;
         }
         
         public Matrix inducedMatrix(Matrix matrix, double n) {
