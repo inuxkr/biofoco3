@@ -18,6 +18,8 @@ public class PluginInfo {
 	
 	private Integer numNodes;
 	
+	private Integer numOccupied;
+	
 	private Float fsSize;
 	
 	private Float fsFreeSize;
@@ -86,6 +88,14 @@ public class PluginInfo {
 
 	public void setFsSize(Float fsSize) {
 		this.fsSize = fsSize;
+	}
+	
+	public Integer getNumOccupied() {
+		return numOccupied;
+	}
+
+	public void setNumOccupied(Integer numOccupied) {
+		this.numOccupied = numOccupied;
 	}
 
 	public List<PluginService> getServices() {
