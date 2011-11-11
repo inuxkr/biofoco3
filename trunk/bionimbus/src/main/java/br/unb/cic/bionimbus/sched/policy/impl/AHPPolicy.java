@@ -42,6 +42,12 @@ public class AHPPolicy extends SchedPolicy {
                 } else if (attribute.equals("uptime")) {
                         valueA = a.getUptime();
                         valueB = b.getUptime();
+                } else if (attribute.equals("occupied")) {
+                    valueA = b.getNumOccupied();
+                    valueB = a.getNumOccupied();
+                } else if (attribute.equals("cores")) {
+                    valueA = a.getNumCores();
+                    valueB = b.getNumCores();    
                 } else {
                         throw new SchedException("Atributo não encontrado.");
                 }
@@ -114,10 +120,17 @@ public class AHPPolicy extends SchedPolicy {
                 List<PluginInfo> plugins = new ArrayList<PluginInfo>();
                 Matrix mLatency = generateComparisonMatrix(pluginInfos, "latency");
                 Matrix mUptime = generateComparisonMatrix(pluginInfos, "uptime");
+                Matrix mOccupied = generateComparisonMatrix(pluginInfos, "occupied");
+                Matrix mCores = generateComparisonMatrix(pluginInfos, "cores");
                 List<Double> prioritiesLatency = getPrioritiesOnMatrix(mLatency);
                 List<Double> prioritiesUptime = getPrioritiesOnMatrix(mUptime);
-                List<Double> priorities = multiplyVectors(prioritiesLatency, prioritiesUptime);
-                
+                List<Double> prioritiesOccupied = getPrioritiesOnMatrix(mOccupied);
+                List<Double> prioritiesCores = getPrioritiesOnMatrix(mCores);
+                List<Double> priorities1 = multiplyVectors(prioritiesLatency, prioritiesUptime);
+                List<Double> priorities2 = multiplyVectors(priorities1, prioritiesOccupied);
+                List<Double> priorities3 = multiplyVectors(priorities2, prioritiesCores);
+                List<Double> priorities = priorities3;
+
                 // DEBUG
                 for (int i = 0; i < priorities.size(); ++i) {
                         System.out.println(prioritiesLatency.get(i) + " " + prioritiesUptime.get(i) + " " + priorities.get(i));
