@@ -49,7 +49,7 @@ public class PluginFile {
 		if (this == object)
 			return true;
 		
-		if (!(object instanceof PluginTask)) {
+		if (!(object instanceof PluginFile)) {
 			return false;
 		}
 		
