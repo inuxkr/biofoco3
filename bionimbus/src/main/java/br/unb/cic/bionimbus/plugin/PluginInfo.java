@@ -14,6 +14,8 @@ public class PluginInfo {
 	
 	private long latency;
 	
+	private long timestamp;
+	
 	private Integer numCores;
 	
 	private Integer numNodes;
@@ -56,6 +58,14 @@ public class PluginInfo {
 
 	public void setLatency(long latency) {
 		this.latency = latency;
+	}
+	
+	public long getTimestamp() {
+		return timestamp;
+	}
+	
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public Float getFsFreeSize() {
