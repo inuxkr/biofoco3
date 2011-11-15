@@ -26,6 +26,8 @@ import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 
 public class DiscoveryService implements Service, P2PListener, Runnable {
+	
+	private static final int PERIOD_SECS = 30;
 
 	private final Map<String, PluginInfo> infoMap = new ConcurrentHashMap<String, PluginInfo>();
 
@@ -43,6 +45,13 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 		System.out.println("running DiscoveryService...");
 		Message msg = new InfoReqMessage(p2p.getPeerNode());
 		p2p.broadcast(msg);
+
+		long now = System.currentTimeMillis();
+		for (PluginInfo plugin : infoMap.values()) {
+			if (now - plugin.getTimestamp() > 3*PERIOD_SECS) {
+				infoMap.remove(plugin.getId());
+			}
+		}
 	}
 
 	@Override
@@ -50,7 +59,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 		this.p2p = p2p;
 		if (p2p != null)
 			p2p.addListener(this);
-		schedExecService.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+		schedExecService.scheduleAtFixedRate(this, 0, PERIOD_SECS, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -89,6 +98,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 			PluginInfo info = infoMsg.getPluginInfo();
 			info.setUptime(receiver.uptime());
 			info.setLatency(receiver.getLatency());
+			info.setTimestamp(System.currentTimeMillis());
 			infoMap.put(infoMsg.getPluginInfo().getId(), infoMsg.getPluginInfo());
 			break;
 		case CLOUDREQ:
