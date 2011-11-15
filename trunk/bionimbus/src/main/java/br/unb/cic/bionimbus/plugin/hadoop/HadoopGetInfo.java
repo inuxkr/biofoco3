@@ -91,6 +91,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 				String[] tokens = s.substring(index).split("<");
 				info.setNumNodes(Integer.parseInt(tokens[0]));
 				info.setNumCores(Integer.parseInt(tokens[11].substring(tokens[11].indexOf('>') + 1)));
+				info.setNumOccupied(Integer.parseInt(tokens[3].substring(tokens[3].indexOf('>') + 1)));
 			}
 		}
 
