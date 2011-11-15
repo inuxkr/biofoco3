@@ -77,7 +77,7 @@ public class StorageService implements Service, P2PListener, Runnable {
 
 	@Override
 	public void onEvent(P2PEvent event) {
-		if (event.getType() != P2PEventType.MESSAGE)
+		if (!event.getType().equals(P2PEventType.MESSAGE))
 			return;
 
 		P2PMessageEvent msgEvent = (P2PMessageEvent) event;
