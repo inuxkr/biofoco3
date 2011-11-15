@@ -2,6 +2,7 @@ package br.unb.cic.bionimbus.sched.policy.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import Jama.Matrix;
 import br.unb.cic.bionimbus.client.JobInfo;
@@ -11,9 +12,9 @@ import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 
 public class AHPPolicy extends SchedPolicy {
 
-        private List<JobInfo> jobs;
+        private final List<JobInfo> jobs = new CopyOnWriteArrayList<JobInfo>();
         
-        private List<PluginInfo> usedResources;
+        private final List<PluginInfo> usedResources = new CopyOnWriteArrayList<PluginInfo>();
         
         public void addJob(JobInfo jobInfo) throws SchedException {
                 jobs.add(jobInfo);
