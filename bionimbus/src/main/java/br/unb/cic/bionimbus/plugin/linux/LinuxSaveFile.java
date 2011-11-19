@@ -18,7 +18,7 @@ public class LinuxSaveFile implements Callable<PluginFile> {
 		PluginFile pFile = new PluginFile();
 		pFile.setPath(file.getName());
 		pFile.setSize(file.length());
-		file.renameTo(new File(LinuxGetInfo.PATH + File.pathSeparator + file.getName()));
+		file.renameTo(new File(LinuxGetInfo.PATH + File.separator + file.getName()));
 		return pFile;
 	}
 }
