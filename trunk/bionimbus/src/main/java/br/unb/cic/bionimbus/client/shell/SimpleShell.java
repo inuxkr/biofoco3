@@ -14,6 +14,7 @@ import br.unb.cic.bionimbus.client.shell.commands.DateTime;
 import br.unb.cic.bionimbus.client.shell.commands.Echo;
 import br.unb.cic.bionimbus.client.shell.commands.Help;
 import br.unb.cic.bionimbus.client.shell.commands.History;
+import br.unb.cic.bionimbus.client.shell.commands.JobCancel;
 import br.unb.cic.bionimbus.client.shell.commands.JobStart;
 import br.unb.cic.bionimbus.client.shell.commands.ListFiles;
 import br.unb.cic.bionimbus.client.shell.commands.ListServices;
@@ -59,6 +60,7 @@ public final class SimpleShell {
 		commandMap.put(Upload.NAME, new Upload(this));
 		commandMap.put(ListServices.NAME, new ListServices(this));
 		commandMap.put(JobStart.NAME, new JobStart(this));
+		commandMap.put(JobCancel.NAME, new JobCancel(this));
 	}
 	
 	public void registerCommand(Command command){

@@ -14,6 +14,7 @@ public class CancelRespMessage extends AbstractMessage {
 	}
 	
 	public CancelRespMessage(PeerNode peer, PluginTask pluginTask) {
+		super(peer);
 		this.pluginTask = pluginTask;
 	}
 	
