@@ -120,7 +120,7 @@ public abstract class P2PAbstractListener implements P2PListener {
 		} else if (message instanceof JobRespMessage) {
 			recvJobResp(peer.getHost(), ((JobRespMessage) message).getJobInfo());
 		} else if (message instanceof ErrorMessage) {
-			recvError(peer.getHost(), ((ErrorMessage) message).getError());
+			recvError(null, ((ErrorMessage) message).getError());
 		} else if (message instanceof PingReqMessage) {
 			recvPingReq(peer.getHost(), ((PingReqMessage) message).getTimestamp());
 		} else if (message instanceof PingRespMessage) {
