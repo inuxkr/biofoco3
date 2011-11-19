@@ -22,10 +22,14 @@ import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
+import br.unb.cic.bionimbus.p2p.messages.CancelReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.CancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobCancelReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobCancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
@@ -53,6 +57,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
 	
 	private final Map<String, Pair<JobInfo, PluginTask>> runningJobs = new ConcurrentHashMap<String, Pair<JobInfo, PluginTask>>();
+	
+	private final Map<String, Pair<String, Host>> cancelingJobs = new ConcurrentHashMap<String, Pair<String, Host>>();
 	
 	private P2PService p2p = null;
 
@@ -142,6 +148,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 		case SCHEDRESP:
 			SchedRespMessage schedRespMsg = (SchedRespMessage) msg;
 			JobInfo schedJob = pendingJobs.get(schedRespMsg.getJobId());
+			if (schedJob == null)
+				return;
 			sendStartReq(sender, schedRespMsg.getPluginInfo().getHost(), schedJob);
 			break;
 		case STARTRESP:
@@ -151,6 +159,16 @@ public class SchedService implements Service, P2PListener, Runnable {
 		case STATUSRESP:
 			StatusRespMessage status = (StatusRespMessage) msg;
 			updateJobStatus(status.getPluginTask());
+			break;
+		case JOBCANCELREQ:
+			JobCancelReqMessage cancel = (JobCancelReqMessage) msg;
+			cancelJob(cancel.getPeerNode().getHost(), cancel.getJobId());
+			break;
+		case CANCELRESP:
+			CancelRespMessage cancelResp = (CancelRespMessage) msg;
+			finalizeJob(cancelResp.getPluginTask());
+			Pair<String, Host> pair = cancelingJobs.get(cancelResp.getPluginTask().getId());
+			p2p.sendMessage(pair.second, new JobCancelRespMessage(p2p.getPeerNode(), pair.first));
 			break;
 		case END:
 			EndMessage end = (EndMessage) msg;
@@ -212,5 +230,22 @@ public class SchedService implements Service, P2PListener, Runnable {
 			Message errMsg = new SchedErrorMessage(sender, jobInfo.getId(), ex.getMessage());
 			p2p.sendMessage(receiver.getHost(), errMsg);	
 		}
+	}
+
+	private void cancelJob(Host origin, String jobId) {
+		if (pendingJobs.containsKey(jobId)) {
+			pendingJobs.remove(jobId);
+			return;
+		}
+
+		for (Pair<JobInfo, PluginTask> pair : runningJobs.values()) {
+			if (pair.first.getId().equals(jobId)) {
+				cancelingJobs.put(pair.second.getId(), new Pair<String, Host>(jobId, origin));
+				CancelReqMessage msg = new CancelReqMessage(p2p.getPeerNode(), pair.second.getId());
+				p2p.broadcast(msg);
+				return;
+			}
+		}
+		
 	}
 }
