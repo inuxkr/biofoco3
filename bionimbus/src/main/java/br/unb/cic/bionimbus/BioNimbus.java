@@ -15,16 +15,14 @@ public class BioNimbus {
 
 	public BioNimbus(BioNimbusConfig config) {
 
-		if (!config.isClient()) {
-			plugin = PluginFactory.getPlugin(config.getInfra());
-			plugin.start();
-		}
-
 		p2p = new P2PService(config);
 		p2p.start();
 
-		if (!config.isClient())
+		if (!config.isClient()) {
+			plugin = PluginFactory.getPlugin(config.getInfra(), p2p);
+			plugin.start();
 			plugin.setP2P(p2p);
+		}
 
 		if (p2p.isMaster()) {
 			ServiceManager manager = new ServiceManager();
