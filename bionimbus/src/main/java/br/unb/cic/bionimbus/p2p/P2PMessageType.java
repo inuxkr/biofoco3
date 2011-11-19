@@ -27,7 +27,11 @@ public enum P2PMessageType {
 	LISTREQ(0x18),
 	LISTRESP(0x19),
 	PREPREQ(0x1A),
-	PREPRESP(0x1B);
+	PREPRESP(0x1B),
+	CANCELREQ(0x1C),
+	CANCELRESP(0x1D),
+	JOBCANCELREQ(0x1E),
+	JOBCANCELRESP(0x1F);
 	
 	private final int code;
 	

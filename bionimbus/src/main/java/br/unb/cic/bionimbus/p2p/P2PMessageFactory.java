@@ -2,6 +2,8 @@ package br.unb.cic.bionimbus.p2p;
 
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.messaging.MessageFactory;
+import br.unb.cic.bionimbus.p2p.messages.CancelReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.CancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
@@ -11,6 +13,8 @@ import br.unb.cic.bionimbus.p2p.messages.GetRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobCancelReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobCancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.ListReqMessage;
@@ -64,6 +68,12 @@ public class P2PMessageFactory extends MessageFactory {
 		case STATUSRESP:
 			message = new StatusRespMessage();
 			break;
+		case CANCELREQ:
+			message = new CancelReqMessage();
+			break;
+		case CANCELRESP:
+			message = new CancelRespMessage();
+			break;
 		case STOREREQ:
 			message = new StoreReqMessage();
 			break;
@@ -108,6 +118,12 @@ public class P2PMessageFactory extends MessageFactory {
 			break;
 		case JOBRESP:
 			message = new JobRespMessage();
+			break;
+		case JOBCANCELREQ:
+			message = new JobCancelReqMessage();
+			break;
+		case JOBCANCELRESP:
+			message = new JobCancelRespMessage();
 			break;
 		case ERROR:
 			message = buildErrorMessage(buffer);

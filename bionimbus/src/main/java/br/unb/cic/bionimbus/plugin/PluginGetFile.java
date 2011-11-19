@@ -1,6 +1,6 @@
 package br.unb.cic.bionimbus.plugin;
 
-import br.unb.cic.bionimbus.p2p.PeerNode;
+import br.unb.cic.bionimbus.p2p.Host;
 
 public class PluginGetFile {
 	
@@ -8,7 +8,7 @@ public class PluginGetFile {
 	
 	private String taskId;
 	
-	private PeerNode peer;
+	private Host peer;
 
 	public PluginFile getPluginFile() {
 		return pluginFile;
@@ -26,11 +26,11 @@ public class PluginGetFile {
 		this.taskId = taskId;
 	}
 
-	public PeerNode getPeer() {
+	public Host getPeer() {
 		return peer;
 	}
 
-	public void setPeer(PeerNode peer) {
+	public void setPeer(Host peer) {
 		this.peer = peer;
 	}
 
