@@ -39,6 +39,7 @@ import br.unb.cic.bionimbus.p2p.messages.PrepRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreRespMessage;
@@ -48,6 +49,7 @@ import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.plugin.PluginTaskState;
 import br.unb.cic.bionimbus.utils.Pair;
 
 public class HadoopPlugin implements Plugin, P2PListener, Runnable {
@@ -161,9 +163,22 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	}
 
 	private void checkTaskStatus(PeerNode receiver, String taskId) {
-		//Pair<PluginTask, Future<PluginTask>> pair = executingTasks.get(taskId);
-		//StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), pair.first);
-		//p2p.sendMessage(receiver.getHost(), msg);
+		PluginTask task = null;
+
+		if (pendingTasks.containsKey(taskId)) {
+			task = pendingTasks.get(taskId).first;
+			task.setState(PluginTaskState.WAITING);
+		} else if (executingTasks.containsKey(taskId)) {
+			task = executingTasks.get(taskId).first;
+		} else if (endingTasks.containsKey(taskId)) {
+			task = endingTasks.get(taskId).first;
+			task.setState(PluginTaskState.DONE);
+		}
+
+		if (task != null) {
+			StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), task);
+			p2p.sendMessage(receiver.getHost(), msg);
+		}
 	}
 	
 	private void checkPendingSaves() {

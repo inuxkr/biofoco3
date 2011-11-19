@@ -317,10 +317,23 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 
 	@Override
 	protected void recvStatusReq(Host origin, String taskId) {
-		//P2PService p2p = getP2P();
-		//Pair<PluginTask, Future<PluginTask>> pair = executingTasks.get(taskId);
-		//StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), pair.first);
-		//p2p.sendMessage(origin, msg);
+		P2PService p2p = getP2P();
+		PluginTask task = null;
+
+		if (pendingTasks.containsKey(taskId)) {
+			task = pendingTasks.get(taskId).first;
+			task.setState(PluginTaskState.WAITING);
+		} else if (executingTasks.containsKey(taskId)) {
+			task = executingTasks.get(taskId).first;
+		} else if (endingTasks.containsKey(taskId)) {
+			task = endingTasks.get(taskId).first;
+			task.setState(PluginTaskState.DONE);
+		}
+
+		if (task != null) {
+			StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), task);
+			p2p.sendMessage(origin, msg);
+		}
 	}
 
 	@Override
