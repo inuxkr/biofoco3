@@ -21,6 +21,7 @@ import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PAbstractListener;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.p2p.messages.CancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.GetReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
@@ -63,6 +64,10 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 	public AbstractPlugin(P2PService p2p) {
 		super(p2p);
 	}
+
+	public Map<String, Pair<String, Integer>> getInputFiles() {
+		return inputFiles;
+	}
 	
 	protected abstract Future<PluginInfo> startGetInfo();
 	
@@ -84,7 +89,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 		this.futureInfo = futureInfo;
 	}
 	
-	private PluginInfo getMyInfo() {
+	protected PluginInfo getMyInfo() {
 		return myInfo;
 	}
 	
@@ -223,7 +228,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 				PluginGetFile get = f.get();
 				pendingGets.remove(f);
 				Message msg = new PrepRespMessage(p2p.getPeerNode(), getMyInfo(), get.getPluginFile(), get.getTaskId());
-				p2p.sendMessage(get.getPeer().getHost(), msg);
+				p2p.sendMessage(get.getPeer(), msg);
 			} catch (Exception e) {
 				e.printStackTrace();
 				// TODO criar mensagem de erro?
@@ -417,4 +422,31 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 		}
 	}
 
+	@Override
+	protected void recvCancelReq(Host origin, String taskId) {
+		P2PService p2p = getP2P();
+		PluginTask task = null;
+
+		if (executingTasks.containsKey(taskId)) {
+			Pair<PluginTask, Future<PluginTask>> pair = executingTasks.remove(taskId);
+			task = pair.first;
+			pair.second.cancel(true);
+		} else if (pendingTasks.containsKey(taskId)) {
+			task = pendingTasks.remove(taskId).first;			
+		} else if (endingTasks.containsKey(taskId)) {
+			task = endingTasks.remove(taskId).first;
+		}
+		
+		CancelRespMessage msg = new CancelRespMessage(p2p.getPeerNode(), task);
+		p2p.sendMessage(origin, msg);
+	}
+	
+	@Override
+	protected void recvCancelResp(Host origin, PluginTask task) { }
+
+	@Override
+	protected void recvJobCancelReq(Host origin, String jobId) { };
+
+	@Override
+	protected void recvJobCancelResp(Host origin, String jobId) { };
 }

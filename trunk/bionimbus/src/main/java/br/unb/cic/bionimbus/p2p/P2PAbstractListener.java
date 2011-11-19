@@ -8,6 +8,8 @@ import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
+import br.unb.cic.bionimbus.p2p.messages.CancelReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.CancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
@@ -16,6 +18,8 @@ import br.unb.cic.bionimbus.p2p.messages.GetReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.GetRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobCancelReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.JobCancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.ListReqMessage;
@@ -131,6 +135,14 @@ public abstract class P2PAbstractListener implements P2PListener {
 		} else if (message instanceof PrepRespMessage) {
 			recvPrepResp(peer.getHost(), ((PrepRespMessage) message).getPluginInfo(),
 					((PrepRespMessage) message).getPluginFile(), ((PrepRespMessage) message).getTaskId());
+		} else if (message instanceof CancelReqMessage) {
+			recvCancelReq(peer.getHost(), ((CancelReqMessage) message).getTaskId());
+		} else if (message instanceof CancelRespMessage) {
+			recvCancelResp(peer.getHost(), ((CancelRespMessage) message).getPluginTask());
+		} else if (message instanceof JobCancelReqMessage) {
+			recvJobCancelReq(peer.getHost(), ((JobCancelReqMessage) message).getJobId());
+		} else if (message instanceof JobCancelRespMessage) {
+			recvJobCancelResp(peer.getHost(), ((JobCancelRespMessage) message).getJobId());
 		}
 	}
 
@@ -185,4 +197,12 @@ public abstract class P2PAbstractListener implements P2PListener {
 	protected abstract void recvPrepReq(Host origin, PluginFile file, String taskId);
 
 	protected abstract void recvPrepResp(Host origin, PluginInfo plugin, PluginFile file, String taskId);
+	
+	protected abstract void recvCancelReq(Host origin, String taskId);
+	
+	protected abstract void recvCancelResp(Host origin, PluginTask task);
+
+	protected abstract void recvJobCancelReq(Host origin, String jobId);
+
+	protected abstract void recvJobCancelResp(Host origin, String jobId);
 }

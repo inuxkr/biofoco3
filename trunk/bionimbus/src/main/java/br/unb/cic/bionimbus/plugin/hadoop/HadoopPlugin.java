@@ -27,6 +27,8 @@ import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
+import br.unb.cic.bionimbus.p2p.messages.CancelReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.CancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.EndMessage;
 import br.unb.cic.bionimbus.p2p.messages.GetReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.GetRespMessage;
@@ -218,6 +220,9 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		
 		String taskId = parms.get("taskId");
 		Pair<PluginTask, Integer> pair = pendingTasks.get(taskId);
+		if (pair == null)
+			return;
+
 		count = pair.second;
 		if (--count == 0) {
 			pendingTasks.remove(taskId);
@@ -320,6 +325,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			StoreRespMessage storeMsg = (StoreRespMessage) msg;
 			endTask(storeMsg.getTaskId(), storeMsg.getPluginInfo(), storeMsg.getFileInfo());
 			break;
+		case CANCELREQ:
+			CancelReqMessage cancelMsg = (CancelReqMessage) msg;
+			cancelTask(receiver, cancelMsg.getTaskId());
+			break;
 		}
 	}
 	
@@ -358,6 +367,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		if (taskId.length() <= 0)
 			return;
 
+		Pair<PluginTask, Integer> pair = endingTasks.get(taskId);
+		if (pair == null)
+			return;
+
 		if (plugin.equals(myInfo)) {
 			System.out.println("recebi arquivo " + file.getName());
 			Future<PluginFile> f = executorService.submit(new HadoopSaveFile(file.getName()));
@@ -366,7 +379,6 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			p2p.sendFile(plugin.getHost(), file.getName());
 		}
 
-		Pair<PluginTask, Integer> pair = endingTasks.get(taskId);
 		int count = pair.second;
 		count--;
 
@@ -378,5 +390,22 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
 			endingTasks.put(taskId, newPair);
 		}
+	}
+	
+	private void cancelTask(PeerNode receiver, String taskId) {
+		PluginTask task = null;
+
+		if (executingTasks.containsKey(taskId)) {
+			Pair<PluginTask, Future<PluginTask>> pair = executingTasks.remove(taskId);
+			task = pair.first;
+			pair.second.cancel(true);
+		} else if (pendingTasks.containsKey(taskId)) {
+			task = pendingTasks.remove(taskId).first;			
+		} else if (endingTasks.containsKey(taskId)) {
+			task = endingTasks.remove(taskId).first;
+		}
+		
+		CancelRespMessage msg = new CancelRespMessage(p2p.getPeerNode(), task);
+		p2p.sendMessage(receiver.getHost(), msg);
 	}
 }
