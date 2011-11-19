@@ -48,7 +48,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 
 		long now = System.currentTimeMillis();
 		for (PluginInfo plugin : infoMap.values()) {
-			if (now - plugin.getTimestamp() > 3*PERIOD_SECS) {
+			if (now - plugin.getTimestamp() > 3*PERIOD_SECS*1000) {
 				infoMap.remove(plugin.getId());
 			}
 		}
@@ -98,7 +98,7 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 			info.setUptime(receiver.uptime());
 			info.setLatency(receiver.getLatency());
 			info.setTimestamp(System.currentTimeMillis());
-			infoMap.put(infoMsg.getPluginInfo().getId(), infoMsg.getPluginInfo());
+			infoMap.put(info.getId(), info);
 			break;
 		case CLOUDREQ:
 			CloudRespMessage cloudMsg = new CloudRespMessage(sender, infoMap.values());
