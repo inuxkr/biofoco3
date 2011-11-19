@@ -22,8 +22,8 @@ public class LinuxGetFile implements Callable<PluginGetFile> {
 	}
 	
 	public PluginGetFile call() throws Exception {
-		File file = new File(LinuxGetInfo.PATH + File.pathSeparator + getFile.getPluginFile().getPath());
-		file.renameTo(new File(serverPath + File.pathSeparator + getFile.getPluginFile().getPath()));
+		File file = new File(LinuxGetInfo.PATH + File.separator + getFile.getPluginFile().getPath());
+		file.renameTo(new File(serverPath + File.separator + getFile.getPluginFile().getPath()));
 		return getFile;
 	}
 
