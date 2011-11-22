@@ -14,8 +14,6 @@ public class JobInfo {
 
 	private String args = "";
 	
-	private long fileSize;
-
 	private Map<String, Long> inputs = new HashMap<String, Long>();
 
 	private List<String> outputs = new ArrayList<String>();
@@ -68,13 +66,5 @@ public class JobInfo {
 
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	public long getFileSize() {
-		return fileSize;
-	}
-
-	public void setFileSize(long fileSize) {
-		this.fileSize = fileSize;
 	}
 }
