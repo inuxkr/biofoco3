@@ -36,11 +36,14 @@ import br.unb.cic.bionimbus.p2p.messages.JobCancelReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobCancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
+import br.unb.cic.bionimbus.p2p.messages.ListReqMessage;
+import br.unb.cic.bionimbus.p2p.messages.ListRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
+import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
@@ -147,6 +150,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 				jobInfo.setId(UUID.randomUUID().toString());
 				pendingJobs.put(jobInfo.getId(), jobInfo);
 			}
+			updateJobsFileSize(sender);
 			scheduleJobs(sender, receiver, jobMsg.values());
 			break;
 		case STARTRESP:
@@ -167,6 +171,9 @@ public class SchedService implements Service, P2PListener, Runnable {
 			Pair<String, Host> pair = cancelingJobs.get(cancelResp.getPluginTask().getId());
 			p2p.sendMessage(pair.second, new JobCancelRespMessage(p2p.getPeerNode(), pair.first));
 			break;
+		case LISTRESP:
+			ListRespMessage listResp = (ListRespMessage) msg;
+			fillJobFileSize(listResp.values());
 		case END:
 			EndMessage end = (EndMessage) msg;
 			finalizeJob(end.getTask());
@@ -178,6 +185,33 @@ public class SchedService implements Service, P2PListener, Runnable {
 					+ errMsg.getError());
 			break;
 		}
+	}
+	
+	private void fillJobFileSize(Collection<PluginFile> pluginFiles) {
+		for (JobInfo job : pendingJobs.values()) {
+			job.setFileSize(0L);
+			LOG.debug(job.getId() + " has " + job.getInputs().size() + " files.");
+			for (String fileId : job.getInputs().keySet()) {
+				PluginFile file = getFileById(fileId, pluginFiles);
+				if (file == null) 
+					LOG.debug("File " + fileId + " returned null.");
+				else 
+					LOG.debug(file.getId() + " : " + file.getSize() + " bytes");
+
+				if (file != null)
+					job.setFileSize(job.getFileSize() + file.getSize());
+			}
+			LOG.debug("Job total file size: " + job.getFileSize());
+		}
+	}
+	
+	private PluginFile getFileById(String fileId, Collection<PluginFile> pluginFiles) {
+		for (PluginFile file : pluginFiles) {
+			if (file.getId().equals(fileId)) {
+				return file;
+			}
+		}
+		return null;
 	}
 	
 	private void sendStartReq(PeerNode sender, Host dest, JobInfo jobInfo) {
@@ -196,7 +230,13 @@ public class SchedService implements Service, P2PListener, Runnable {
 		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(job, task));
 	}
 	
+	private void updateJobsFileSize(PeerNode sender) {
+		ListReqMessage listReqMsg = new ListReqMessage(sender);
+		p2p.broadcast(listReqMsg);
+	}
+	
 	private void sendJobResp(PeerNode sender, PeerNode receiver, String jobId, PluginTask task) {
+		LOG.info("Job " + jobId + " movido para a lista de jobs rodando.");
 		JobInfo jobInfo = pendingJobs.remove(jobId);
 		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
 		JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
@@ -204,7 +244,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void finalizeJob(PluginTask task) {
-		/*Pair<JobInfo, PluginTask> pair = */ runningJobs.remove(task.getId());
+		runningJobs.remove(task.getId());
+		/*Pair<JobInfo, PluginTask> pair = */ 
 		//JobInfo job = pair.first;
 		//p2p.sendMessage(new EndJobMessage(job));
 	}
@@ -214,7 +255,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 		JobInfo[] jobInfos = new JobInfo[jobList.size()];
 		jobList.toArray(jobInfos);
 		LOG.info("--- Inicio de escalonamento ---");
-
 		try {
 			HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(jobInfos);
 
