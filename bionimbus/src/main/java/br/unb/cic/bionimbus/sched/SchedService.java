@@ -37,8 +37,6 @@ import br.unb.cic.bionimbus.p2p.messages.JobCancelRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
-import br.unb.cic.bionimbus.p2p.messages.SchedReqMessage;
-import br.unb.cic.bionimbus.p2p.messages.SchedRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
@@ -143,10 +141,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 			for (PluginInfo info : cloudMsg.values()) 
 				cloudMap.put(info.getId(), info);
 			break;
-		case SCHEDREQ:
-			SchedReqMessage schedMsg = (SchedReqMessage) msg;
-			scheduleJobs(sender, receiver, schedMsg.values());
-			break;
 		case JOBREQ:
 			JobReqMessage jobMsg = (JobReqMessage) msg;
 			for (JobInfo jobInfo : jobMsg.values()) {
@@ -154,13 +148,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 				pendingJobs.put(jobInfo.getId(), jobInfo);
 			}
 			scheduleJobs(sender, receiver, jobMsg.values());
-			break;
-		case SCHEDRESP:
-			SchedRespMessage schedRespMsg = (SchedRespMessage) msg;
-			JobInfo schedJob = pendingJobs.get(schedRespMsg.getJobId());
-			if (schedJob == null)
-				return;
-			sendStartReq(sender, schedRespMsg.getPluginInfo().getHost(), schedJob);
 			break;
 		case STARTRESP:
 			StartRespMessage respMsg = (StartRespMessage) msg;
@@ -192,15 +179,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 			break;
 		}
 	}
-
-	/*private void sendSchedReq(PeerNode sender, Collection<JobInfo> jobList) {
-		for (JobInfo jobInfo : jobList) {
-			jobInfo.setId(UUID.randomUUID().toString());
-			pendingJobs.put(jobInfo.getId(), jobInfo);
-		}
-		SchedReqMessage newMsg = new SchedReqMessage(sender, jobList);
-		p2p.broadcast(newMsg);
-	}*/
 	
 	private void sendStartReq(PeerNode sender, Host dest, JobInfo jobInfo) {
 		StartReqMessage startMsg = new StartReqMessage(sender, jobInfo);
@@ -235,30 +213,20 @@ public class SchedService implements Service, P2PListener, Runnable {
 		StringBuilder jobInfosStr = new StringBuilder();
 		JobInfo[] jobInfos = new JobInfo[jobList.size()];
 		jobList.toArray(jobInfos);
-		LOG.info("Inicio de escalonamento: " + jobInfos.toString());
+		LOG.info("--- Inicio de escalonamento ---");
 
 		try {
 			HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(jobInfos);
 
-			// Concatena em uma string todos os IDs dos jobs enviados
-			for (JobInfo jobInfo : jobInfos) {
-				jobInfosStr.append(jobInfo.getId());
-				jobInfosStr.append(",");
-			}
-			
 			// Inicia o escalonamento
-			
 			for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
 				JobInfo jobInfo = entry.getKey();
 				PluginInfo pluginInfo = entry.getValue();
-
-				SchedRespMessage msg = new SchedRespMessage(sender);
-				msg.setJobId(jobInfo.getId());
-				msg.setPluginInfo(pluginInfo);
-				p2p.sendMessage(receiver.getHost(), msg);		
+				LOG.info(jobInfo.getId() + " -> " + pluginInfo.getId());
+				sendStartReq(sender, pluginInfo.getHost(), jobInfo);
 			}
 			
-			LOG.info("Fim de escalonamento: " + jobInfos.toString());
+			LOG.info("--- Fim de escalonamento ---");
 			
 		} catch (SchedException ex) {
 			Message errMsg = new SchedErrorMessage(sender, jobInfosStr.toString(), ex.getMessage());
