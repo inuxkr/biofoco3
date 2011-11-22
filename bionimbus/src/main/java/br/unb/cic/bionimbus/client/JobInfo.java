@@ -20,6 +20,8 @@ public class JobInfo {
 
 	private List<String> outputs = new ArrayList<String>();
 
+	private long timestamp;
+
 	public String getId() {
 		return id;
 	}
@@ -59,7 +61,15 @@ public class JobInfo {
 	public void addOutput(String name) {
 		outputs.add(name);
 	}
-	
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
 	public long getFileSize() {
 		return fileSize;
 	}
