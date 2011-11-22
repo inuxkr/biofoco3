@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.storage;
 
+import java.io.File;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -7,6 +9,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
@@ -39,7 +44,7 @@ public class StorageService implements Service, P2PListener, Runnable {
 	
 	private final Map<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
 	
-	private final Map<String, PluginFile> savedFiles = new ConcurrentHashMap<String, PluginFile>();
+	private Map<String, PluginFile> savedFiles = new ConcurrentHashMap<String, PluginFile>();
 
 	private P2PService p2p = null;
 
@@ -56,6 +61,17 @@ public class StorageService implements Service, P2PListener, Runnable {
 
 	@Override
 	public void start(P2PService p2p) {
+		File file = new File("persistent-storage.json");
+		if (file.exists()) {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				Map<String, PluginFile> map = mapper.readValue(new File("persistent-storage.json"), new TypeReference<Map<String, PluginFile>>(){});
+				savedFiles = new ConcurrentHashMap<String, PluginFile>(map);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		this.p2p = p2p;
 		if (p2p != null)
 			p2p.addListener(this);
@@ -104,6 +120,12 @@ public class StorageService implements Service, P2PListener, Runnable {
 		case STOREACK:
 			StoreAckMessage ackMsg = (StoreAckMessage) msg;
 			savedFiles.put(ackMsg.getPluginFile().getId(), ackMsg.getPluginFile());
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.writeValue(new File("persistent-storage.json"), savedFiles);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			break;
 		case LISTREQ:
 			p2p.sendMessage(receiver.getHost(), new ListRespMessage(p2p.getPeerNode(), savedFiles.values()));

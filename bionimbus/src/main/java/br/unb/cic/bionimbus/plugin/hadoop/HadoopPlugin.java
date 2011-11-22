@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
@@ -54,7 +56,7 @@ import br.unb.cic.bionimbus.utils.Pair;
 
 public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
-	private final String id = UUID.randomUUID().toString();
+	private String id = UUID.randomUUID().toString();
 	
 	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("HadoopPlugin-%d").build());
 
@@ -67,6 +69,8 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private PluginInfo myInfo = null;
 	
 	private String errorString = "Plugin is loading...";
+
+	private int myCount = 0;
 	
 	private final Map<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
 
@@ -83,6 +87,19 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private final Map<String, Pair<String, Integer>> inputFiles = new ConcurrentHashMap<String, Pair<String,Integer>>();
 
 	private P2PService p2p;
+
+	public HadoopPlugin() {
+		File infoFile = new File("plugininfo.json");
+		if (infoFile.exists()) {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				myInfo = mapper.readValue(infoFile, PluginInfo.class);
+				id = myInfo.getId();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public Map<String, Pair<String, Integer>> getInputFiles() {
 		return inputFiles;
@@ -143,6 +160,11 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	}
 
 	private void checkGetInfo() {
+		myCount++;
+		if (myCount < 10)
+			return;
+		myCount = 0;
+
 		if (fInfo == null) {
 			fInfo = executorService.submit(new HadoopGetInfo());
 			return;
@@ -154,7 +176,10 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 				newInfo.setId(id);
 				newInfo.setHost(p2p.getPeerNode().getHost());
 				myInfo = newInfo;
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.writeValue(new File("plugininfo.json"), myInfo);
 			} catch (Exception e) {
+				e.printStackTrace();
 				errorString = e.getMessage();
 				myInfo = null;
 			}
@@ -262,7 +287,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	@Override
 	public void start() {
 		System.out.println("starting Hadoop plugin...");
-		schedExecutorService.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+		schedExecutorService.scheduleAtFixedRate(this, 0, 3, TimeUnit.SECONDS);
 	}
 
 	@Override

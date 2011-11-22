@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
@@ -37,13 +39,15 @@ import br.unb.cic.bionimbus.utils.Pair;
 
 public abstract class AbstractPlugin extends P2PAbstractListener implements Plugin, Runnable {
 	
-	private final String id = UUID.randomUUID().toString();
+	private String id = UUID.randomUUID().toString();
 	
 	private Future<PluginInfo> futureInfo = null;
 	
 	private PluginInfo myInfo = null;
 	
 	private String errorString = "Plugin is loading...";
+
+	private int myCount = 0;
 	
 	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("bionimbus-plugin-%d").build());
 	
@@ -63,6 +67,17 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 	
 	public AbstractPlugin(P2PService p2p) {
 		super(p2p);
+
+		File infoFile = new File("plugininfo.json");
+		if (infoFile.exists()) {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				myInfo = mapper.readValue(infoFile, PluginInfo.class);
+				id = myInfo.getId();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public Map<String, Pair<String, Integer>> getInputFiles() {
@@ -95,6 +110,13 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 	
 	private void setMyInfo(PluginInfo info) {
 		myInfo = info;
+
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.writeValue(new File("plugininfo.json"), myInfo);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private String getErrorString() {
@@ -113,7 +135,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 	
 	@Override
 	public void start() {
-		schedExecutorService.scheduleAtFixedRate(this, 0, 30, TimeUnit.SECONDS);
+		schedExecutorService.scheduleAtFixedRate(this, 0, 3, TimeUnit.SECONDS);
 	}
 	
 	@Override
@@ -131,6 +153,11 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 	}
 	
 	private void checkGetInfo() {
+		myCount++;
+		if (myCount < 10)
+			return;
+		myCount = 0;
+
 		Future<PluginInfo> futureInfo = getFutureInfo();
 		if (futureInfo == null) {
 			setFutureInfo(startGetInfo());
@@ -144,7 +171,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 			PluginInfo newInfo = futureInfo.get();
 			newInfo.setId(id);
 			newInfo.setHost(getP2P().getPeerNode().getHost());
-			myInfo = newInfo;
+			setMyInfo(newInfo);
 		} catch (Exception e) {
 			setErrorString(e.getMessage());
 			setMyInfo(null);
