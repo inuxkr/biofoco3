@@ -34,8 +34,9 @@ public class LinuxGetInfo implements Callable<PluginInfo> {
 	}
 
 	private void getDiskInfo() {
+		File path = new File(PATH);
 		for (File root : File.listRoots()) {
-			if (PATH.contains(root.getAbsolutePath())) {
+			if (path.getAbsolutePath().contains(root.getAbsolutePath())) {
 				pluginInfo.setFsFreeSize((float)root.getFreeSpace());
 				pluginInfo.setFsSize((float)root.getTotalSpace());
 				return;
