@@ -25,7 +25,8 @@ public class LinuxGetFile implements Callable<PluginGetFile> {
 	}
 
 	public PluginGetFile call() throws Exception {
-		FileUtils.copyFile(new File(LinuxGetInfo.PATH + File.separator + getFile.getPluginFile().getPath()),
+		String absolutePath = new File(LinuxGetInfo.PATH).getAbsolutePath();
+		FileUtils.copyFile(new File(absolutePath + File.separator + getFile.getPluginFile().getPath()),
 				new File(serverPath + File.separator + getFile.getPluginFile().getPath()));
 		return getFile;
 	}
