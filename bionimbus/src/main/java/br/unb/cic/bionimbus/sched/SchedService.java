@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.sched;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -231,22 +232,40 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void scheduleJobs(PeerNode sender, PeerNode receiver, Collection<JobInfo> jobList) {
-		JobInfo[] jobArray = (JobInfo[]) jobList.toArray();
-		JobInfo jobInfo = jobArray[0];
+		StringBuilder jobInfosStr = new StringBuilder();
+		JobInfo[] jobInfos = new JobInfo[jobList.size()];
+		jobList.toArray(jobInfos);
+		LOG.info("Inicio de escalonamento: " + jobInfos.toString());
+
 		try {
-			LOG.info("Inicio de escalonamento: " + jobInfo.getId());
-			PluginInfo pluginInfo = getPolicy().schedule(jobInfo);
-			LOG.info("Fim de escalonamento: " + jobInfo.getId());
-			SchedRespMessage msg = new SchedRespMessage(sender);
-			msg.setJobId(jobInfo.getId());
-			msg.setPluginInfo(pluginInfo);
-			p2p.sendMessage(receiver.getHost(), msg);		
+			HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(jobInfos);
+
+			// Concatena em uma string todos os IDs dos jobs enviados
+			for (JobInfo jobInfo : jobInfos) {
+				jobInfosStr.append(jobInfo.getId());
+				jobInfosStr.append(",");
+			}
+			
+			// Inicia o escalonamento
+			
+			for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
+				JobInfo jobInfo = entry.getKey();
+				PluginInfo pluginInfo = entry.getValue();
+
+				SchedRespMessage msg = new SchedRespMessage(sender);
+				msg.setJobId(jobInfo.getId());
+				msg.setPluginInfo(pluginInfo);
+				p2p.sendMessage(receiver.getHost(), msg);		
+			}
+			
+			LOG.info("Fim de escalonamento: " + jobInfos.toString());
+			
 		} catch (SchedException ex) {
-			Message errMsg = new SchedErrorMessage(sender, jobInfo.getId(), ex.getMessage());
+			Message errMsg = new SchedErrorMessage(sender, jobInfosStr.toString(), ex.getMessage());
 			p2p.sendMessage(receiver.getHost(), errMsg);	
 		}
 	}
-
+	
 	private void cancelJob(Host origin, String jobId) {
 		if (pendingJobs.containsKey(jobId)) {
 			pendingJobs.remove(jobId);

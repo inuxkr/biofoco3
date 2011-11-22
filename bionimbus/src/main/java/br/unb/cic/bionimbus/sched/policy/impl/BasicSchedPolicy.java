@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.sched.policy.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import br.unb.cic.bionimbus.client.JobInfo;
@@ -48,10 +49,19 @@ public class BasicSchedPolicy extends SchedPolicy {
 	}
 
 	@Override
-	public PluginInfo schedule(JobInfo... jobInfos) throws SchedException {
-		List<PluginInfo> availablePlugins = filterByService(jobInfos[0].getServiceId());
-		PluginInfo pluginInfo = getBestPluginForJob(availablePlugins, jobInfos[0]);		
-		
-		return pluginInfo;
-	}
+    public HashMap<JobInfo, PluginInfo> schedule(JobInfo... jobInfos) throws SchedException {
+    	HashMap<JobInfo, PluginInfo> schedMap = new HashMap<JobInfo, PluginInfo>();
+    	
+    	for (JobInfo jobInfo : jobInfos) {
+    		PluginInfo resource = this.scheduleJob(jobInfo);
+    		schedMap.put(jobInfo, resource);
+    	}
+    	
+   		return schedMap;
+    }
+
+    public PluginInfo scheduleJob(JobInfo jobInfo) throws SchedException {
+    	List<PluginInfo> availablePlugins = filterByService(jobInfo.getServiceId());
+		return getBestPluginForJob(availablePlugins, jobInfo);
+    }
 }
