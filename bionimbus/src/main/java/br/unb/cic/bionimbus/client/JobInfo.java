@@ -13,6 +13,8 @@ public class JobInfo {
 	private long serviceId;
 
 	private String args = "";
+	
+	private long fileSize;
 
 	private Map<String, Long> inputs = new HashMap<String, Long>();
 
@@ -56,5 +58,13 @@ public class JobInfo {
 
 	public void addOutput(String name) {
 		outputs.add(name);
+	}
+	
+	public long getFileSize() {
+		return fileSize;
+	}
+
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
 	}
 }

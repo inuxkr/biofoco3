@@ -40,13 +40,14 @@ public class AHPPolicy extends SchedPolicy {
                 double valueB = 0.0;
                 
                 if (attribute.equals("latency")) {
-                        // Tem que ser inverso ja que no caso de latency quanto menor melhor!
-                        valueA = b.getLatency();
-                        valueB = a.getLatency();
+                    // Tem que ser inverso ja que no caso de latency quanto menor melhor!
+                    valueA = b.getLatency();
+                    valueB = a.getLatency();
                 } else if (attribute.equals("uptime")) {
                         valueA = a.getUptime();
                         valueB = b.getUptime();
                 } else if (attribute.equals("occupied")) {
+                	// Tem que ser inverso já que no caso de cores ocupados quanto menor melhor!
                     valueA = b.getNumOccupied();
                     valueB = a.getNumOccupied();
                 } else if (attribute.equals("cores")) {
