@@ -37,7 +37,9 @@ public class SyncCommunication implements P2PListener {
 	public synchronized Message getResp() throws InterruptedException {
 		while (respMsg == null)
 			wait();
-		return respMsg;
+		Message msg = respMsg;
+		respMsg = null;
+		return msg;
 	}
 
 	public void sendReq(Message reqMsg, P2PMessageType respType) {
