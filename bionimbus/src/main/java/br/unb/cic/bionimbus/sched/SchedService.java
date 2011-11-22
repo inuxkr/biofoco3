@@ -189,19 +189,17 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private void fillJobFileSize(Collection<PluginFile> pluginFiles) {
 		for (JobInfo job : pendingJobs.values()) {
-			job.setFileSize(0L);
 			LOG.debug(job.getId() + " has " + job.getInputs().size() + " files.");
 			for (String fileId : job.getInputs().keySet()) {
 				PluginFile file = getFileById(fileId, pluginFiles);
-				if (file == null) 
-					LOG.debug("File " + fileId + " returned null.");
-				else 
-					LOG.debug(file.getId() + " : " + file.getSize() + " bytes");
 
-				if (file != null)
-					job.setFileSize(job.getFileSize() + file.getSize());
+				if (file != null) {
+					LOG.debug(file.getId() + " : " + file.getSize() + " bytes");
+					job.addInput(file.getId(), file.getSize());
+				} else {
+					LOG.debug("File returned null.");
+				}
 			}
-			LOG.debug("Job total file size: " + job.getFileSize());
 		}
 	}
 	
