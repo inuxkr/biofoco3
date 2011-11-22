@@ -389,13 +389,13 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 	protected void recvCloudResp(Host origin, Collection<PluginInfo> plugins) {	}
 
 	@Override
-	protected void recvSchedReq(Host origin, JobInfo job) { }
+	protected void recvSchedReq(Host origin, Collection<JobInfo> jobList) { }
 
 	@Override
 	protected void recvSchedResp(Host origin, String jobId, PluginInfo plugin) { }
 
 	@Override
-	protected void recvJobReq(Host origin, JobInfo job) { }
+	protected void recvJobReq(Host origin, Collection<JobInfo> jobList) { }
 
 	@Override
 	protected void recvJobResp(Host origin, JobInfo job) { }

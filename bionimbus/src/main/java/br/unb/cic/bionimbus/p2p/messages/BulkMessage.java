@@ -26,6 +26,9 @@ public class BulkMessage {
 	private Collection<PluginFile> fileList;
 	
 	@JsonIgnore
+	private Collection<JobInfo> jobList;
+	
+	@JsonIgnore
 	private PluginTask task;
 	
 	@JsonIgnore
@@ -93,6 +96,14 @@ public class BulkMessage {
 	
 	public Collection<PluginFile> getFileList() {
 		return fileList;
+	}
+
+	public void setJobList(Collection<JobInfo> jobList) {
+		this.jobList = jobList;
+	}
+
+	public Collection<JobInfo> getJobList() {
+		return jobList;
 	}
 
 	public void setTask(PluginTask task) {
