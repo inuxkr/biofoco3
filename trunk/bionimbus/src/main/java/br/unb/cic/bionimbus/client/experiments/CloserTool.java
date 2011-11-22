@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +88,7 @@ public class CloserTool {
 
 		P2PService p2p = new P2PService(config);
 		p2p.start();
+		TimeUnit.SECONDS.sleep(40);
 		SyncCommunication comm = new SyncCommunication(p2p);
 
 		File file1 = new File(file.getAbsolutePath() + ".1");
@@ -103,6 +105,7 @@ public class CloserTool {
 
 		P2PService p2p = new P2PService(config);
 		p2p.start();
+		TimeUnit.SECONDS.sleep(40);
 		SyncCommunication comm = new SyncCommunication(p2p);
 
 		ArrayList<JobInfo> jobList = new ArrayList<JobInfo>();
@@ -111,11 +114,17 @@ public class CloserTool {
 			job.setId(null);
 			job.setServiceId(1001);
 			job.setArgs("%O1 e_coli %I1");
-			job.addInput(idFull, Long.valueOf(0));
+			if ((i % 3) == 0)
+				job.addInput(idFull, Long.valueOf(0));
+			else if ((i % 3) == 1)
+				job.addInput(idMedium, Long.valueOf(0));
+			else if ((i %3 ) == 2)
+				job.addInput(idSmall, Long.valueOf(0));
 			job.addOutput("output-" + i + ".txt");
 			jobList.add(job);
 		}
 
+		LOG.info("Enviando " + jobList.size() + " jobs.");
 		comm.sendReq(new JobReqMessage(p2p.getPeerNode(), jobList), P2PMessageType.JOBRESP);
 		JobRespMessage resp = (JobRespMessage) comm.getResp();
 		LOG.info("Job " + resp.getJobInfo().getId() + " started succesfully");
