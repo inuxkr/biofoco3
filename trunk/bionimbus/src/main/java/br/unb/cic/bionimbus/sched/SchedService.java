@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.sched;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,6 +9,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
@@ -45,8 +48,8 @@ import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 
 public class SchedService implements Service, P2PListener, Runnable {
-
-	private SchedPolicy schedPolicy;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(SchedService.class);
 	
 	private final ConcurrentHashMap<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
 
@@ -62,6 +65,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private P2PService p2p = null;
 
+	private SchedPolicy schedPolicy;
+
 	public SchedService(ServiceManager manager) {
 		manager.register(this);
 	}
@@ -75,7 +80,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("running SchedService...");
+		LOG.debug("running SchedService...");
 		
 		checkPendingJobs();
 		checkRunningJobs();
@@ -139,11 +144,15 @@ public class SchedService implements Service, P2PListener, Runnable {
 			break;
 		case SCHEDREQ:
 			SchedReqMessage schedMsg = (SchedReqMessage) msg;
-			scheduleJob(sender, receiver, schedMsg.getJobInfo());
+			scheduleJobs(sender, receiver, schedMsg.values());
 			break;
 		case JOBREQ:
 			JobReqMessage jobMsg = (JobReqMessage) msg;
-			sendSchedReq(sender, jobMsg.getJobInfo());
+			for (JobInfo jobInfo : jobMsg.values()) {
+				jobInfo.setId(UUID.randomUUID().toString());
+				pendingJobs.put(jobInfo.getId(), jobInfo);
+			}
+			scheduleJobs(sender, receiver, jobMsg.values());
 			break;
 		case SCHEDRESP:
 			SchedRespMessage schedRespMsg = (SchedRespMessage) msg;
@@ -176,19 +185,21 @@ public class SchedService implements Service, P2PListener, Runnable {
 			break;
 		case ERROR:
 			ErrorMessage errMsg = (ErrorMessage) msg;
-			System.out.println("SCHED ERROR: type="
+			LOG.warn("SCHED ERROR: type="
 					+ errMsg.getErrorType().toString() + ";msg="
 					+ errMsg.getError());
 			break;
 		}
 	}
 
-	private void sendSchedReq(PeerNode sender, JobInfo jobInfo) {
-		jobInfo.setId(UUID.randomUUID().toString());
-		pendingJobs.put(jobInfo.getId(), jobInfo);
-		SchedReqMessage newMsg = new SchedReqMessage(sender, jobInfo);
+	/*private void sendSchedReq(PeerNode sender, Collection<JobInfo> jobList) {
+		for (JobInfo jobInfo : jobList) {
+			jobInfo.setId(UUID.randomUUID().toString());
+			pendingJobs.put(jobInfo.getId(), jobInfo);
+		}
+		SchedReqMessage newMsg = new SchedReqMessage(sender, jobList);
 		p2p.broadcast(newMsg);
-	}
+	}*/
 	
 	private void sendStartReq(PeerNode sender, Host dest, JobInfo jobInfo) {
 		StartReqMessage startMsg = new StartReqMessage(sender, jobInfo);
@@ -214,14 +225,18 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void finalizeJob(PluginTask task) {
-		Pair<JobInfo, PluginTask> pair = runningJobs.remove(task.getId());
-		JobInfo job = pair.first;
+		/*Pair<JobInfo, PluginTask> pair = */ runningJobs.remove(task.getId());
+		//JobInfo job = pair.first;
 		//p2p.sendMessage(new EndJobMessage(job));
 	}
 	
-	private void scheduleJob(PeerNode sender, PeerNode receiver, JobInfo jobInfo) {
+	private void scheduleJobs(PeerNode sender, PeerNode receiver, Collection<JobInfo> jobList) {
+		JobInfo[] jobArray = (JobInfo[]) jobList.toArray();
+		JobInfo jobInfo = jobArray[0];
 		try {
+			LOG.info("Inicio de escalonamento: " + jobInfo.getId());
 			PluginInfo pluginInfo = getPolicy().schedule(jobInfo);
+			LOG.info("Fim de escalonamento: " + jobInfo.getId());
 			SchedRespMessage msg = new SchedRespMessage(sender);
 			msg.setJobId(jobInfo.getId());
 			msg.setPluginInfo(pluginInfo);

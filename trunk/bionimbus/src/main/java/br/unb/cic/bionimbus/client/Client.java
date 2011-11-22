@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.client;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
@@ -49,7 +50,9 @@ public class Client implements P2PListener {
 		job.addInput(file.getId(), file.getSize());
 		job.addOutput("output.txt");
 
-		JobReqMessage msg = new JobReqMessage(p2p.getPeerNode(), job);
+		ArrayList<JobInfo> jobList = new ArrayList<JobInfo>();
+		jobList.add(job);
+		JobReqMessage msg = new JobReqMessage(p2p.getPeerNode(), jobList);
 		p2p.broadcast(msg);
 
 	}

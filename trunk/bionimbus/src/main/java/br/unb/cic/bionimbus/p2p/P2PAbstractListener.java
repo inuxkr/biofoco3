@@ -111,12 +111,12 @@ public abstract class P2PAbstractListener implements P2PListener {
 		} else if (message instanceof CloudRespMessage) {
 			recvCloudResp(peer.getHost(), ((CloudRespMessage) message).values());
 		} else if (message instanceof SchedReqMessage) {
-			recvSchedReq(peer.getHost(), ((SchedReqMessage) message).getJobInfo());
+			recvSchedReq(peer.getHost(), ((SchedReqMessage) message).values());
 		} else if (message instanceof SchedRespMessage) {
 			recvSchedResp(peer.getHost(), ((SchedRespMessage) message).getJobId(),
 					((SchedRespMessage) message).getPluginInfo());
 		} else if (message instanceof JobReqMessage) {
-			recvJobReq(peer.getHost(), ((JobReqMessage) message).getJobInfo());
+			recvJobReq(peer.getHost(), ((JobReqMessage) message).values());
 		} else if (message instanceof JobRespMessage) {
 			recvJobResp(peer.getHost(), ((JobRespMessage) message).getJobInfo());
 		} else if (message instanceof ErrorMessage) {
@@ -176,11 +176,11 @@ public abstract class P2PAbstractListener implements P2PListener {
 
 	protected abstract void recvCloudResp(Host origin, Collection<PluginInfo> plugins);
 
-	protected abstract void recvSchedReq(Host origin, JobInfo job);
+	protected abstract void recvSchedReq(Host origin, Collection<JobInfo> job);
 
 	protected abstract void recvSchedResp(Host origin, String jobId, PluginInfo plugin);
 
-	protected abstract void recvJobReq(Host origin, JobInfo job);
+	protected abstract void recvJobReq(Host origin, Collection<JobInfo> job);
 
 	protected abstract void recvJobResp(Host origin, JobInfo job);
 

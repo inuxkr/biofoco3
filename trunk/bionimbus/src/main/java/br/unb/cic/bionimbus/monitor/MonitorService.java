@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.monitor;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -109,7 +110,7 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		switch (P2PMessageType.of(msg.getType())) {
 		case JOBREQ:
 			JobReqMessage jobMsg = (JobReqMessage) msg;
-			sendSchedReq(sender, jobMsg.getJobInfo());
+			sendSchedReq(sender, jobMsg.values());
 			break;
 		case SCHEDRESP:
 			SchedRespMessage schedMsg = (SchedRespMessage) msg;
@@ -137,10 +138,12 @@ public class MonitorService implements Service, P2PListener, Runnable {
 		}
 	}
 	
-	private void sendSchedReq(PeerNode sender, JobInfo jobInfo) {
-		jobInfo.setId(UUID.randomUUID().toString());
-		pendingJobs.put(jobInfo.getId(), jobInfo);
-		SchedReqMessage newMsg = new SchedReqMessage(sender, jobInfo);
+	private void sendSchedReq(PeerNode sender, Collection<JobInfo> jobList) {
+		for (JobInfo jobInfo : jobList) {
+			jobInfo.setId(UUID.randomUUID().toString());
+			pendingJobs.put(jobInfo.getId(), jobInfo);
+		}
+		SchedReqMessage newMsg = new SchedReqMessage(sender, jobList);
 		p2p.broadcast(newMsg);
 	}
 	

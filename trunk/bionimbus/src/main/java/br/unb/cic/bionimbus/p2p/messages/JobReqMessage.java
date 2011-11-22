@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
+import java.util.Collection;
+
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.PeerNode;
@@ -7,26 +9,26 @@ import br.unb.cic.bionimbus.utils.JsonCodec;
 
 public class JobReqMessage extends AbstractMessage {
 	
-	private JobInfo jobInfo;
+	private Collection<JobInfo> values;
 	
 	public JobReqMessage() {
 		super();
 	}
 		
-	public JobReqMessage(PeerNode peer, JobInfo jobInfo) {
+	public JobReqMessage(PeerNode peer, Collection<JobInfo> values) {
 		super(peer);
-		this.jobInfo = jobInfo;
+		this.values = values;
 	}
 	
-	public JobInfo getJobInfo() {
-		return jobInfo;
+	public Collection<JobInfo> values() {
+		return values;
 	}
 
 	@Override
 	public void deserialize(byte[] buffer) throws Exception {
 
 		BulkMessage message = decodeBasicMessage(buffer);
-		jobInfo = message.getJobInfo();		
+		values = message.getJobList();		
 	}
 	
 	@Override
@@ -34,7 +36,7 @@ public class JobReqMessage extends AbstractMessage {
 		
 		BulkMessage message = encodeBasicMessage();
 		
-		message.setJobInfo(jobInfo);
+		message.setJobList(values);
 		
 		return JsonCodec.encodeMessage(message);
 		

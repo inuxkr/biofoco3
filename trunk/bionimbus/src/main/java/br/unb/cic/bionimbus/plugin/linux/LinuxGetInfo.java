@@ -14,7 +14,7 @@ public class LinuxGetInfo implements Callable<PluginInfo> {
 
 	private static final String SERVICE_DIR = "services";
 	
-	public static final String PATH = "/tmp";
+	public static final String PATH = "files";
 
 	private final PluginInfo pluginInfo = new PluginInfo();
 

@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.client.shell.commands;
 
+import java.util.ArrayList;
+
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.client.shell.Command;
 import br.unb.cic.bionimbus.client.shell.SimpleShell;
@@ -53,8 +55,10 @@ public class JobStart implements Command {
 				}
 			}
 		}
-		
-		comm.sendReq(new JobReqMessage(p2p.getPeerNode(), job), P2PMessageType.JOBRESP);
+
+		ArrayList<JobInfo> jobList = new ArrayList<JobInfo>();
+		jobList.add(job);
+		comm.sendReq(new JobReqMessage(p2p.getPeerNode(), jobList), P2PMessageType.JOBRESP);
 		JobRespMessage resp = (JobRespMessage) comm.getResp();
 		
 		return "Job " + resp.getJobInfo().getId() + " started succesfully";

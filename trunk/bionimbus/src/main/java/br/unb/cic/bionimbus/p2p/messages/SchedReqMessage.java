@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.p2p.messages;
 
+import java.util.Collection;
+
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.p2p.P2PMessageType;
 import br.unb.cic.bionimbus.p2p.PeerNode;
@@ -7,26 +9,26 @@ import br.unb.cic.bionimbus.utils.JsonCodec;
 
 public class SchedReqMessage extends AbstractMessage {
 	
-	private JobInfo jobInfo;
+	private Collection<JobInfo> jobList;
 	
 	public SchedReqMessage() {
 		super();
 	}
 		
-	public SchedReqMessage(PeerNode peer, JobInfo jobInfo) {
+	public SchedReqMessage(PeerNode peer, Collection<JobInfo> jobList) {
 		super(peer);
-		this.jobInfo = jobInfo;
+		this.jobList = jobList;
 	}
 	
-	public JobInfo getJobInfo() {
-		return jobInfo;
+	public Collection<JobInfo> values() {
+		return jobList;
 	}
 
 	@Override
 	public byte[] serialize() throws Exception {
 		
 		BulkMessage message = encodeBasicMessage();
-		message.setJobInfo(jobInfo);
+		message.setJobList(jobList);
 		
 		return JsonCodec.encodeMessage(message);
 	}
@@ -36,7 +38,7 @@ public class SchedReqMessage extends AbstractMessage {
 		
 		BulkMessage message = decodeBasicMessage(buffer);
 		
-		jobInfo = message.getJobInfo();
+		jobList = message.getJobList();
 		
 	}
 
