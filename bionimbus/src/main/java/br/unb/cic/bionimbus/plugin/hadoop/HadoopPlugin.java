@@ -107,7 +107,6 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("running Plugin loop...");
 		checkGetInfo();
 		checkFinishedTasks();
 		checkPendingSaves();
