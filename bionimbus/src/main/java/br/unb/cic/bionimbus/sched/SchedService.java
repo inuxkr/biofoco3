@@ -148,6 +148,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 			JobReqMessage jobMsg = (JobReqMessage) msg;
 			for (JobInfo jobInfo : jobMsg.values()) {
 				jobInfo.setId(UUID.randomUUID().toString());
+				jobInfo.setTimestamp(System.currentTimeMillis());
 				pendingJobs.put(jobInfo.getId(), jobInfo);
 			}
 			updateJobsFileSize(sender);
@@ -242,9 +243,9 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void finalizeJob(PluginTask task) {
-		runningJobs.remove(task.getId());
-		/*Pair<JobInfo, PluginTask> pair = */ 
-		//JobInfo job = pair.first;
+		Pair<JobInfo, PluginTask> pair = runningJobs.remove(task.getId());
+		JobInfo job = pair.first;
+		LOG.info("Job " + job.getId() + " executado em " + ((float)(System.currentTimeMillis() - job.getTimestamp()) / 1000) + " segundos");
 		//p2p.sendMessage(new EndJobMessage(job));
 	}
 	
