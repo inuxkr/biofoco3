@@ -40,12 +40,15 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 				while (st.hasMoreTokens()) {
 					String token = st.nextToken();
 					String[] split = token.split(" ");
-					String unit;
 					float value;
+					String unit;
 					if (i == 7) {
 						value = Float.parseFloat(split[1]);
 						unit = split[2];
-						if (unit.equals("GB"))
+						if (unit.equals("TB")) {
+							float k = 1024.0f;
+							value *= (k*k*k*k);
+						} else if (unit.equals("GB"))
 							value *= (1024*1024*1024);
 						else if (unit.equals("MB"))
 							value *= (1024*1024);
@@ -55,7 +58,10 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 					} else if (i == 31) {
 						value = Float.parseFloat(split[1]);
 						unit = split[2];
-						if (unit.equals("GB"))
+						if (unit.equals("TB")) {
+							float k = 1024.0f;
+							value *= (k*k*k*k);
+						} else if (unit.equals("GB"))
 							value *= (1024*1024*1024);
 						else if (unit.equals("MB"))
 							value *= (1024*1024);
