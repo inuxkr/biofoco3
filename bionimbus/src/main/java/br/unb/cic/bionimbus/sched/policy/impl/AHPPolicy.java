@@ -1,13 +1,10 @@
 package br.unb.cic.bionimbus.sched.policy.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import Jama.Matrix;
 import br.unb.cic.bionimbus.client.JobInfo;
@@ -17,11 +14,7 @@ import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 
 public class AHPPolicy extends SchedPolicy {
 
-        //private final List<JobInfo> jobs = new CopyOnWriteArrayList<JobInfo>();
-        
         private final List<PluginInfo> usedResources = new CopyOnWriteArrayList<PluginInfo>();
-        
-    	private static final Logger LOG = LoggerFactory.getLogger(AHPPolicy.class);
         
         public PluginInfo scheduleJob(JobInfo jobInfo) throws SchedException {
         	List<PluginInfo> plugins = filterByService(jobInfo.getServiceId(), filterByUsed());
@@ -29,9 +22,8 @@ public class AHPPolicy extends SchedPolicy {
         }
         
         @Override
-        public HashMap<JobInfo, PluginInfo> schedule(JobInfo... jobInfos) throws SchedException {
+        public HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) throws SchedException {
         	HashMap<JobInfo, PluginInfo> schedMap = new HashMap<JobInfo, PluginInfo>();
-        	logJobInfo(jobInfos);
         	for (JobInfo jobInfo : jobInfos) {
         		PluginInfo resource = this.scheduleJob(jobInfo);
         		schedMap.put(jobInfo, resource);
@@ -39,22 +31,6 @@ public class AHPPolicy extends SchedPolicy {
         	}
         	
        		return schedMap;
-        }
-        
-        private void logJobInfo(JobInfo... jobInfos) {
-        	for (JobInfo job: jobInfos) {
-        		LOG.debug("Job " + job.getId() + " information:");
-        		logJobInputs(job.getInputs());
-        		LOG.debug("ServiceId: " + job.getServiceId());
-        	}
-        }
-        
-        private void logJobInputs(Map<String, Long> inputs) {
-        	LOG.debug("    Inputs:");
-        	for (String key : inputs.keySet()) {
-        		LOG.debug("    ID: " + key);
-        		LOG.debug("    Size: " + inputs.get(key));
-        	}
         }
         
         public static float comparePluginInfo(PluginInfo a, PluginInfo b, String attribute) throws SchedException {
@@ -158,11 +134,6 @@ public class AHPPolicy extends SchedPolicy {
                 List<Double> priorities3 = multiplyVectors(priorities2, prioritiesCores);
                 List<Double> priorities = priorities3;
 
-                // DEBUG
-                for (int i = 0; i < priorities.size(); ++i) {
-                        System.out.println(prioritiesLatency.get(i) + " " + prioritiesUptime.get(i) + " " + priorities.get(i));
-                }
-                
                 while (!priorities.isEmpty()) {
                         int index = getMaxNumberIndex(priorities);
                         plugins.add(pluginInfos.get(index));

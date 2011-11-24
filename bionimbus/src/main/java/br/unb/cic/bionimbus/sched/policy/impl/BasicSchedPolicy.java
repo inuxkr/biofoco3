@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.sched.policy.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class BasicSchedPolicy extends SchedPolicy {
 	}
 
 	@Override
-    public HashMap<JobInfo, PluginInfo> schedule(JobInfo... jobInfos) throws SchedException {
+    public HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) throws SchedException {
     	HashMap<JobInfo, PluginInfo> schedMap = new HashMap<JobInfo, PluginInfo>();
     	
     	for (JobInfo jobInfo : jobInfos) {
