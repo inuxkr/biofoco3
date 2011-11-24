@@ -61,6 +61,10 @@ public class JobStart implements Command {
 		comm.sendReq(new JobReqMessage(p2p.getPeerNode(), jobList), P2PMessageType.JOBRESP);
 		JobRespMessage resp = (JobRespMessage) comm.getResp();
 		
+		if (resp.getJobInfo() == null) {
+			return "Unavailable service for job.";
+		}
+		
 		return "Job " + resp.getJobInfo().getId() + " started succesfully";
 	}
 
