@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.sched.policy;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,5 +27,5 @@ public abstract class SchedPolicy {
 		return policy;
 	}
 	
-	public abstract HashMap<JobInfo, PluginInfo> schedule(JobInfo... jobInfo) throws SchedException;
+	public abstract HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) throws SchedException;
 }

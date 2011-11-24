@@ -58,6 +58,10 @@ public class SchedService implements Service, P2PListener, Runnable {
 	private final ScheduledExecutorService schedExecService = Executors
 			.newScheduledThreadPool(1, new BasicThreadFactory.Builder()
 					.namingPattern("SchedService-%d").build());
+	
+//	private final ExecutorService executorService = Executors
+//			.newCachedThreadPool(new BasicThreadFactory.Builder()
+//					.namingPattern("SchedService-sched-%d").build());
 
 	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
 	
@@ -87,7 +91,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		checkPendingJobs();
 		checkRunningJobs();
 		Message msg = new CloudReqMessage(p2p.getPeerNode());
-		p2p.broadcast(msg); //TODO: isto é broadcast?
+		p2p.broadcast(msg);
 	}
 
 	@Override
@@ -152,7 +156,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 				pendingJobs.put(jobInfo.getId(), jobInfo);
 			}
 			updateJobsFileSize(sender);
-			scheduleJobs(sender, receiver, jobMsg.values());
 			break;
 		case STARTRESP:
 			StartRespMessage respMsg = (StartRespMessage) msg;
@@ -175,6 +178,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 		case LISTRESP:
 			ListRespMessage listResp = (ListRespMessage) msg;
 			fillJobFileSize(listResp.values());
+			scheduleJobs(sender, receiver);
+			break;
 		case END:
 			EndMessage end = (EndMessage) msg;
 			finalizeJob(end.getTask());
@@ -190,12 +195,10 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private void fillJobFileSize(Collection<PluginFile> pluginFiles) {
 		for (JobInfo job : pendingJobs.values()) {
-			LOG.debug(job.getId() + " has " + job.getInputs().size() + " files.");
 			for (String fileId : job.getInputs().keySet()) {
 				PluginFile file = getFileById(fileId, pluginFiles);
 
 				if (file != null) {
-					LOG.debug(file.getId() + " : " + file.getSize() + " bytes");
 					job.addInput(file.getId(), file.getSize());
 				} else {
 					LOG.debug("File returned null.");
@@ -239,7 +242,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		JobInfo jobInfo = pendingJobs.remove(jobId);
 		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
 		JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
-		p2p.broadcast(jobRespMsg); // mandar direto pro cliente
+		p2p.broadcast(jobRespMsg);
 	}
 	
 	private void finalizeJob(PluginTask task) {
@@ -249,19 +252,20 @@ public class SchedService implements Service, P2PListener, Runnable {
 		//p2p.sendMessage(new EndJobMessage(job));
 	}
 	
-	private void scheduleJobs(PeerNode sender, PeerNode receiver, Collection<JobInfo> jobList) {
+	private void scheduleJobs(PeerNode sender, PeerNode receiver) {
 		StringBuilder jobInfosStr = new StringBuilder();
-		JobInfo[] jobInfos = new JobInfo[jobList.size()];
-		jobList.toArray(jobInfos);
 		LOG.info("--- Inicio de escalonamento ---");
 		try {
-			HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(jobInfos);
+			
+			// será que pode ter algum problema mandar o pending jobs direto?
+			// Estou com medo de acabar mandando o mesmo job executar 2 ou mais vezes
+			HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(pendingJobs.values());
 
 			// Inicia o escalonamento
 			for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
 				JobInfo jobInfo = entry.getKey();
 				PluginInfo pluginInfo = entry.getValue();
-				LOG.info(jobInfo.getId() + " -> " + pluginInfo.getId());
+				LOG.info(jobInfo.getId() + " scheduled to " + pluginInfo.getId());
 				sendStartReq(sender, pluginInfo.getHost(), jobInfo);
 			}
 			
@@ -269,7 +273,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 			
 		} catch (SchedException ex) {
 			Message errMsg = new SchedErrorMessage(sender, jobInfosStr.toString(), ex.getMessage());
-			p2p.sendMessage(receiver.getHost(), errMsg);	
+			p2p.sendMessage(receiver.getHost(), errMsg);
 		}
 	}
 	
