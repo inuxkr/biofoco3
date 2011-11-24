@@ -38,7 +38,6 @@ import br.unb.cic.bionimbus.p2p.messages.JobReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.JobRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.ListReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.ListRespMessage;
-import br.unb.cic.bionimbus.p2p.messages.SchedErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusReqMessage;
@@ -153,6 +152,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 			for (JobInfo jobInfo : jobMsg.values()) {
 				jobInfo.setId(UUID.randomUUID().toString());
 				jobInfo.setTimestamp(System.currentTimeMillis());
+				LOG.debug("Wild job " + jobInfo.getId() + " appears.");
 				pendingJobs.put(jobInfo.getId(), jobInfo);
 			}
 			updateJobsFileSize(sender);
@@ -238,11 +238,18 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void sendJobResp(PeerNode sender, PeerNode receiver, String jobId, PluginTask task) {
-		LOG.info("Job " + jobId + " movido para a lista de jobs rodando.");
-		JobInfo jobInfo = pendingJobs.remove(jobId);
-		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
-		JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
-		p2p.broadcast(jobRespMsg);
+		if (task == null) {
+			LOG.debug("Job " + jobId + " não possui serviço rodando.");
+			JobRespMessage jobRespMsg = new JobRespMessage(sender, null);
+			p2p.broadcast(jobRespMsg);
+		} else {
+			LOG.info("Job " + jobId + " movido para a lista de jobs rodando.");
+			JobInfo jobInfo = pendingJobs.remove(jobId);
+			runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
+			JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
+			p2p.broadcast(jobRespMsg);
+			scheduleJobs(sender, receiver);
+		}
 	}
 	
 	private void finalizeJob(PluginTask task) {
@@ -253,28 +260,22 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void scheduleJobs(PeerNode sender, PeerNode receiver) {
-		StringBuilder jobInfosStr = new StringBuilder();
+		if (pendingJobs.size() == 0) return;
 		LOG.info("--- Inicio de escalonamento ---");
-		try {
+		HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(pendingJobs.values());
+		for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
+			JobInfo jobInfo = entry.getKey();
+			PluginInfo pluginInfo = entry.getValue();
 			
-			// será que pode ter algum problema mandar o pending jobs direto?
-			// Estou com medo de acabar mandando o mesmo job executar 2 ou mais vezes
-			HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(pendingJobs.values());
-
-			// Inicia o escalonamento
-			for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
-				JobInfo jobInfo = entry.getKey();
-				PluginInfo pluginInfo = entry.getValue();
+			if (pluginInfo == null) {
+				sendJobResp(sender, receiver, jobInfo.getId(), null);
+			} else {
 				LOG.info(jobInfo.getId() + " scheduled to " + pluginInfo.getId());
 				sendStartReq(sender, pluginInfo.getHost(), jobInfo);
 			}
-			
-			LOG.info("--- Fim de escalonamento ---");
-			
-		} catch (SchedException ex) {
-			Message errMsg = new SchedErrorMessage(sender, jobInfosStr.toString(), ex.getMessage());
-			p2p.sendMessage(receiver.getHost(), errMsg);
 		}
+		LOG.info("--- Fim de escalonamento ---");
+			
 	}
 	
 	private void cancelJob(Host origin, String jobId) {
