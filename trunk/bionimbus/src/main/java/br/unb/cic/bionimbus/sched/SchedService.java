@@ -45,6 +45,7 @@ import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.plugin.PluginTaskState;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 
@@ -226,10 +227,31 @@ public class SchedService implements Service, P2PListener, Runnable {
 		p2p.broadcast(msg); //TODO: isto é realmente um broadcast?
 	}
 	
+	private JobInfo getJobInfoFromPair(Pair<JobInfo, PluginTask> pair) {
+		JobInfo ret = null;
+				
+		if (pair.second != null) {
+			ret = pair.second.getJobInfo();
+		}
+			
+		if (pair.first != null) {
+			ret = pair.first;
+		}
+		
+		return ret;
+	}
+	
 	private void updateJobStatus(PluginTask task) {
 		Pair<JobInfo, PluginTask> pair = runningJobs.get(task.getId());
 		JobInfo job = pair.first;
-		runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(job, task));
+		
+		if (pair.second.getState().equals(PluginTaskState.WAITING)) {
+			runningJobs.remove(task.getId());
+			cancelJob(p2p.getPeerNode().getHost(), getJobInfoFromPair(pair).getId());
+			pendingJobs.put(getJobInfoFromPair(pair).getId(), getJobInfoFromPair(pair));
+		} else {
+			runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(job, task));
+		}
 	}
 	
 	private void updateJobsFileSize(PeerNode sender) {
@@ -254,9 +276,13 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private void finalizeJob(PluginTask task) {
 		Pair<JobInfo, PluginTask> pair = runningJobs.remove(task.getId());
-		JobInfo job = pair.first;
-		LOG.info("Job " + job.getId() + " executado em " + ((float)(System.currentTimeMillis() - job.getTimestamp()) / 1000) + " segundos");
-		//p2p.sendMessage(new EndJobMessage(job));
+		
+		if (pair != null) {
+			JobInfo job = getJobInfoFromPair(pair);
+		
+			LOG.info("Job " + job.getId() + " executado em " + ((float)(System.currentTimeMillis() - job.getTimestamp()) / 1000) + " segundos");
+			//p2p.sendMessage(new EndJobMessage(job));
+		}
 	}
 	
 	private void scheduleJobs(PeerNode sender, PeerNode receiver) {
