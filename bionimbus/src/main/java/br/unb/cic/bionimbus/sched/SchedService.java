@@ -245,7 +245,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		Pair<JobInfo, PluginTask> pair = runningJobs.get(task.getId());
 		JobInfo job = pair.first;
 		
-		if (pair.second.getState().equals(PluginTaskState.WAITING)) {
+		if (task.getState().equals(PluginTaskState.WAITING)) {
 			runningJobs.remove(task.getId());
 			cancelJob(p2p.getPeerNode().getHost(), getJobInfoFromPair(pair).getId());
 			pendingJobs.put(getJobInfoFromPair(pair).getId(), getJobInfoFromPair(pair));
