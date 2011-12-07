@@ -12,9 +12,9 @@ import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 
 public class RRPolicy extends SchedPolicy {
 
-        private List<JobInfo> jobs;
+        private List<JobInfo> jobs = new ArrayList<JobInfo>();
         
-        private List<PluginInfo> usedResources;
+        private List<PluginInfo> usedResources = new ArrayList<PluginInfo>();
         
         public void addJob(JobInfo jobInfo) throws SchedException {
                 jobs.add(jobInfo);
@@ -36,6 +36,7 @@ public class RRPolicy extends SchedPolicy {
         		PluginInfo resource = this.scheduleJob(jobInfo);
         		schedMap.put(jobInfo, resource);
         		usedResources.add(resource);
+			break;
         	}
         	
        		return schedMap;
@@ -54,12 +55,13 @@ public class RRPolicy extends SchedPolicy {
         private List<PluginInfo> filterByUsed() {
         	ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>();
         	for (PluginInfo pluginInfo : getCloudMap().values()) {
-                if (!usedResources.contains(pluginInfo))
-                        plugins.add(pluginInfo);
+			if (!usedResources.contains(pluginInfo))
+				plugins.add(pluginInfo);
         	}
         
         	if (plugins.size() == 0) {
-                return new ArrayList<PluginInfo>(getCloudMap().values());
+			usedResources.clear();
+			return new ArrayList<PluginInfo>(getCloudMap().values());
         	}
         
         	return plugins;
