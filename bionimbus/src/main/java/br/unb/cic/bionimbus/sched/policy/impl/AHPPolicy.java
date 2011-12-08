@@ -89,13 +89,19 @@ public class AHPPolicy extends SchedPolicy {
 					+ " não encontrado para escalonamento.");
 		}
 
-		LOG.debug(attribute + ": " + valueA + " , " + valueB);
+		System.out.println(attribute + ": " + valueA + " , " + valueB);
 
+		double result;
 		if (valueA == 0.0 && valueB == 0.0) {
-			return 1;
+			result = 1;
+		} else if (valueA == 0.0) {
+			return 9;
+		} else if (valueB == 0.0) {
+			return (float) 1 / 9;
+		} else {
+			result = valueA / valueB;
 		}
 		
-		double result = valueA / valueB;
 		if (result == 0.0) {
 			return 1;
 		} else if (result < 1.0) {
@@ -103,7 +109,7 @@ public class AHPPolicy extends SchedPolicy {
 		} else if (result > 9) {
 			return 9;
 		} else {
-			return Math.round(valueA / valueB);
+			return Math.round(result);
 		}
 	}
 
@@ -214,5 +220,16 @@ public class AHPPolicy extends SchedPolicy {
 
 	public Matrix inducedMatrix(Matrix matrix, double n) {
 		return matrix.arrayTimes(matrix).minus(matrix.times(n));
+	}
+	
+	public static void main(String [] args) {
+		AHPPolicy ahp = new AHPPolicy();
+		PluginInfo p1 = new PluginInfo();
+		p1.setNumOccupied(5);
+		PluginInfo p2 = new PluginInfo();
+		p2.setNumOccupied(1);
+		
+		System.out.println(ahp.comparePluginInfo(p2, p1, "occupied"));
+		System.out.println(ahp.comparePluginInfo(p1, p2, "occupied"));
 	}
 }
