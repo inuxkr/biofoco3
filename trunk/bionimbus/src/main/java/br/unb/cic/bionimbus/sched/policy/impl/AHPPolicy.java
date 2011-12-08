@@ -5,18 +5,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import Jama.Matrix;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
-import br.unb.cic.bionimbus.utils.MatrixUtils;
 
 public class AHPPolicy extends SchedPolicy {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AHPPolicy.class);
+    private List<PluginInfo> usedResources = new ArrayList<PluginInfo>();
 	
 	@Override
 	public HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) {
@@ -65,8 +61,8 @@ public class AHPPolicy extends SchedPolicy {
 
 	public static float comparePluginInfo(PluginInfo a, PluginInfo b,
 			String attribute) {
-		double valueA = 0.0;
-		double valueB = 0.0;
+		float valueA = 0.0f;
+		float valueB = 0.0f;
 
 		if (attribute.equals("latency")) {
 			// Tem que ser inverso ja que no caso de latency quanto menor
@@ -76,28 +72,38 @@ public class AHPPolicy extends SchedPolicy {
 		} else if (attribute.equals("uptime")) {
 			valueA = a.getUptime();
 			valueB = b.getUptime();
-		} else if (attribute.equals("occupied")) {
-			// Tem que ser inverso já que no caso de cores ocupados quanto menor
-			// melhor!
-			valueA = b.getNumOccupied();
-			valueB = a.getNumOccupied();
-		} else if (attribute.equals("cores")) {
-			valueA = a.getNumCores();
-			valueB = b.getNumCores();
+		} else if (attribute.equals("processor")) {
+			if (b.getNumOccupied() == 0 && a.getNumOccupied() == 0) {
+				valueA = (float) 1.0 / b.getNumCores();
+				valueB = (float) 1.0 / a.getNumCores(); 
+			} else {
+				valueA = (float) b.getNumOccupied() / b.getNumCores();
+				valueB = (float) a.getNumOccupied() / a.getNumCores();
+			}
 		} else {
 			throw new RuntimeException("Atributo " + attribute
 					+ " não encontrado para escalonamento.");
 		}
 
-		System.out.println(attribute + ": " + valueA + " , " + valueB);
-
+		if (valueA == 0.0 && valueB == 0.0) {
+			return 1.0f;
+		}
+		
+		if (valueB == 0.0) {
+			return Float.MAX_VALUE;
+		}
+		
+		return valueA / valueB;
+		
+		//System.out.println(attribute + ": " + valueA + " , " + valueB);
+		/*
 		double result;
 		if (valueA == 0.0 && valueB == 0.0) {
-			result = 1;
+			return 1;
 		} else if (valueA == 0.0) {
-			return 9;
+			return 1;
 		} else if (valueB == 0.0) {
-			return (float) 1 / 9;
+			return 9;
 		} else {
 			result = valueA / valueB;
 		}
@@ -105,12 +111,14 @@ public class AHPPolicy extends SchedPolicy {
 		if (result == 0.0) {
 			return 1;
 		} else if (result < 1.0) {
-			return (float) 1 / Math.round(valueB / valueA);
+			return (float) 1 / Math.round(Math.ceil(valueB / valueA));
 		} else if (result > 9) {
 			return 9;
 		} else {
-			return Math.round(result);
+			//return Math.ceil
+			return Math.round(Math.ceil(result));
 		}
+		*/
 	}
 
 	public static Matrix generateComparisonMatrix(List<PluginInfo> pluginInfos,
@@ -126,8 +134,6 @@ public class AHPPolicy extends SchedPolicy {
 			}
 		}
 		
-		LOG.debug("Comparisson matrix for " + attribute);
-		LOG.debug(MatrixUtils.printMatrix(m));
 		return m;
 	}
 
@@ -148,6 +154,7 @@ public class AHPPolicy extends SchedPolicy {
 			}
 			priorities.add(pSum / sum);
 		}
+		
 		return priorities;
 	}
 
@@ -161,7 +168,7 @@ public class AHPPolicy extends SchedPolicy {
 		}
 		return maxIndex;
 	}
-
+	
 	public static List<Double> multiplyVectors(List<Double> a, List<Double> b) {
 		List<Double> result = new ArrayList<Double>();
 
@@ -174,24 +181,40 @@ public class AHPPolicy extends SchedPolicy {
 		return result;
 	}
 
-	public static List<PluginInfo> getServiceOrderedByPriority(
+	private static boolean allCoresOccupied(List<PluginInfo> pluginInfos) {
+		for (PluginInfo pluginInfo : pluginInfos) {
+			if (pluginInfo.getNumCores() > pluginInfo.getNumOccupied()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	 private List<PluginInfo> filterByUsed() {
+     	ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>();
+     	for (PluginInfo pluginInfo : getCloudMap().values()) {
+			if (!usedResources.contains(pluginInfo))
+				plugins.add(pluginInfo);
+     	}
+     
+     	if (plugins.size() == 0) {
+			usedResources.clear();
+			return new ArrayList<PluginInfo>(getCloudMap().values());
+     	}
+     
+     	return plugins;
+     }
+	
+	public List<PluginInfo> getServiceOrderedByPriority(
 			List<PluginInfo> pluginInfos) {
+		
 		List<PluginInfo> plugins = new ArrayList<PluginInfo>();
 		Matrix mLatency = generateComparisonMatrix(pluginInfos, "latency");
-		Matrix mUptime = generateComparisonMatrix(pluginInfos, "uptime");
-		Matrix mOccupied = generateComparisonMatrix(pluginInfos, "occupied");
-		Matrix mCores = generateComparisonMatrix(pluginInfos, "cores");
+		Matrix mProcessor = generateComparisonMatrix(pluginInfos, "processor");
 		List<Double> prioritiesLatency = getPrioritiesOnMatrix(mLatency);
-		List<Double> prioritiesUptime = getPrioritiesOnMatrix(mUptime);
-		List<Double> prioritiesOccupied = getPrioritiesOnMatrix(mOccupied);
-		List<Double> prioritiesCores = getPrioritiesOnMatrix(mCores);
-		List<Double> priorities1 = multiplyVectors(prioritiesLatency,
-				prioritiesUptime);
-		List<Double> priorities2 = multiplyVectors(priorities1,
-				prioritiesOccupied);
-		List<Double> priorities3 = multiplyVectors(priorities2, prioritiesCores);
-		List<Double> priorities = priorities3;
-
+		List<Double> prioritiesProcessor = getPrioritiesOnMatrix(mProcessor);
+		List<Double> priorities = multiplyVectors(prioritiesLatency, prioritiesProcessor);
+		
 		while (!priorities.isEmpty()) {
 			int index = getMaxNumberIndex(priorities);
 			plugins.add(pluginInfos.get(index));
@@ -201,10 +224,18 @@ public class AHPPolicy extends SchedPolicy {
 		return plugins;
 	}
 
-	public static PluginInfo getBestService(List<PluginInfo> pluginInfos) {
+	public PluginInfo getBestService(List<PluginInfo> pluginInfos) {
 		if (pluginInfos.isEmpty())
 			return null;
-		return getServiceOrderedByPriority(pluginInfos).get(pluginInfos.size());
+		
+		PluginInfo resource;
+		if (allCoresOccupied(pluginInfos)) {
+			resource = filterByUsed().get(0);
+		} else {
+			resource = getServiceOrderedByPriority(pluginInfos).get(pluginInfos.size());
+		}
+		usedResources.add(resource);
+		return resource;
 	}
 
 	private List<PluginInfo> filterByService(long serviceId,
@@ -220,16 +251,5 @@ public class AHPPolicy extends SchedPolicy {
 
 	public Matrix inducedMatrix(Matrix matrix, double n) {
 		return matrix.arrayTimes(matrix).minus(matrix.times(n));
-	}
-	
-	public static void main(String [] args) {
-		AHPPolicy ahp = new AHPPolicy();
-		PluginInfo p1 = new PluginInfo();
-		p1.setNumOccupied(5);
-		PluginInfo p2 = new PluginInfo();
-		p2.setNumOccupied(1);
-		
-		System.out.println(ahp.comparePluginInfo(p2, p1, "occupied"));
-		System.out.println(ahp.comparePluginInfo(p1, p2, "occupied"));
 	}
 }
