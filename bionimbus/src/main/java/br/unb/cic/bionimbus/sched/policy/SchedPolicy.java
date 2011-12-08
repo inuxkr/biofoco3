@@ -12,7 +12,7 @@ import br.unb.cic.bionimbus.sched.policy.impl.AHPPolicy;
 public abstract class SchedPolicy {
 	private ConcurrentHashMap<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
 
-	protected void setCloudMap(ConcurrentHashMap<String, PluginInfo> cloudMap) {
+	public void setCloudMap(ConcurrentHashMap<String, PluginInfo> cloudMap) {
 		this.cloudMap = cloudMap;
 	}
 	
@@ -21,7 +21,7 @@ public abstract class SchedPolicy {
 	}
 	
 	public static SchedPolicy getInstance(ConcurrentHashMap<String, PluginInfo> cloudMap) {
-		AHPPolicy policy = new AHPPolicy();
+		SchedPolicy policy = new AHPPolicy();
 		policy.setCloudMap(cloudMap);
 		return policy;
 	}
