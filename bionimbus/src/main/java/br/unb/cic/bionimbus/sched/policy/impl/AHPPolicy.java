@@ -215,6 +215,8 @@ public class AHPPolicy extends SchedPolicy {
 		List<Double> prioritiesProcessor = getPrioritiesOnMatrix(mProcessor);
 		List<Double> priorities = multiplyVectors(prioritiesLatency, prioritiesProcessor);
 		
+		System.out.println(priorities);
+		
 		while (!priorities.isEmpty()) {
 			int index = getMaxNumberIndex(priorities);
 			plugins.add(pluginInfos.get(index));
