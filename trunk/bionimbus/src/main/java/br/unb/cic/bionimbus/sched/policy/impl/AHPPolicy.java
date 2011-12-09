@@ -16,6 +16,10 @@ public class AHPPolicy extends SchedPolicy {
 	
 	@Override
 	public HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) {
+		for (PluginInfo p: this.getCloudMap().values()) {
+			System.out.println(p.getId() + " " + p.getNumOccupied());
+		}
+		
 		HashMap<JobInfo, PluginInfo> jobMap = new HashMap<JobInfo, PluginInfo>();
 		JobInfo biggerJob = getBiggerJob(new ArrayList<JobInfo>(jobInfos));
 		jobMap.put(biggerJob, this.scheduleJob(biggerJob));
@@ -154,6 +158,8 @@ public class AHPPolicy extends SchedPolicy {
 			}
 			priorities.add(pSum / sum);
 		}
+		
+		System.out.println("Priorities: "  + priorities);
 		
 		return priorities;
 	}
