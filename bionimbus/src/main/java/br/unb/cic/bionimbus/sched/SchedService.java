@@ -81,6 +81,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		if (schedPolicy == null) {
 			schedPolicy = SchedPolicy.getInstance(cloudMap);
 		}
+		schedPolicy.setCloudMap(cloudMap);
 		return schedPolicy;
 	}
 
@@ -99,7 +100,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		this.p2p = p2p;
 		if (p2p != null)
 			p2p.addListener(this);
-		schedExecService.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS);
+		schedExecService.scheduleAtFixedRate(this, 0, 15, TimeUnit.SECONDS);
 	}
 
 	@Override
