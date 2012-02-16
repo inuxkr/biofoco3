@@ -47,7 +47,8 @@ public abstract class P2PAbstractListener implements P2PListener {
 
 	public P2PAbstractListener(P2PService p2p) {
 		this.p2p = p2p;
-		p2p.addListener(this);
+		if (p2p != null)
+			p2p.addListener(this);
 	}
 
 	protected P2PService getP2P() {
