@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.p2p.plugin.proxy;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -128,6 +130,11 @@ public class RemotePlugin extends AbstractPlugin {
 		executor.execute(future);
 		return future;
 	}
+	
+//	public void transfer(String file, String remotePath) throws IOException {
+//		FileServer server = new FileServer();
+//		
+//	}
 
 	@Override
 	protected Future<PluginTask> startTask(PluginTask task) {
