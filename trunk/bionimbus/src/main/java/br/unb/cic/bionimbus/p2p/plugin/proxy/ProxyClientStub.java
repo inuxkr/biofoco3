@@ -2,6 +2,7 @@ package br.unb.cic.bionimbus.p2p.plugin.proxy;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.linux.LinuxGetInfo;
 
@@ -82,7 +84,39 @@ public class ProxyClientStub implements Proxy {
 			PluginInfo info = new LinuxGetInfo().call();
 			ObjectMapper mapper = new ObjectMapper();
 
-			return mapper.writeValueAsString(info);
+			return "INFO#" + mapper.writeValueAsString(info);
+		}
+
+		if (command.startsWith("SAVE-FILE")) {
+
+			String[] split = command.split(":");
+			String filePath = split[1];
+
+			File file = new File(filePath);
+
+			PluginFile pFile = new PluginFile();
+			pFile.setPath(file.getName());
+			pFile.setSize(file.length());
+			String absolutePath = new File(LinuxGetInfo.PATH).getAbsolutePath();
+			file.renameTo(new File(absolutePath + File.separator
+					+ file.getName()));
+
+			ObjectMapper mapper = new ObjectMapper();
+			return "SAVE-FILE#" + mapper.writeValueAsString(pFile);
+		}
+		
+		if (command.startsWith("GET-FILE")) {
+
+//			String absolutePath = new File(LinuxGetInfo.PATH).getAbsolutePath();
+//			FileUtils.copyFile(new File(absolutePath + File.separator
+//					+ getFile.getPluginFile().getPath()), new File(serverPath
+//					+ File.separator + getFile.getPluginFile().getPath()));
+//			return getFile;
+		}
+		
+		if (command.startsWith("RUN-TASK")) {
+			// return executor.submit(new PluginTaskRunner(this, task, service,
+			// getP2P().getConfig().getServerPath()));
 		}
 
 		return "NO DEFINED";
