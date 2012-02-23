@@ -5,10 +5,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +29,7 @@ class ProxyServerStub implements Proxy {
 	private volatile boolean clientConnection = false;
 
 	private final Queue<String> outgoingQueue = new ConcurrentLinkedQueue<String>();
-	private final BlockingQueue<String> incomingQueue = new LinkedBlockingQueue<String>();
+	private final Map<String, BlockingQueue<String>> incomingQueue = new HashMap<String, BlockingQueue<String>>();
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProxyServerStub.class);
 
@@ -38,6 +42,11 @@ class ProxyServerStub implements Proxy {
 	public ProxyServerStub(ExecutorService executor, int port) {
 		this.port = port;
 		this.executorService = executor;
+		
+		for (String command : Arrays.asList("SAVE-FILE", "INFO", "GET-FILE", "RUN-TASK")) {
+			incomingQueue.put(command, new LinkedBlockingQueue<String>());
+		}
+		
 	}
 
 	public void request(String command) {
@@ -117,9 +126,12 @@ class ProxyServerStub implements Proxy {
 
 					DataInputStream input = new DataInputStream(client.getInputStream());
 					
-					String response = input.readUTF();
-					System.out.println("Dados recebidos do cliente: " + response);
-					incomingQueue.add(response);
+					String result = input.readUTF();					
+					System.out.println("Dados recebidos do cliente: " + result);
+					String[] splits = result.split("#");
+					command = splits[0];
+					String response = splits[1];
+					incomingQueue.get(command).add(response);
 
 				} while ((command = outgoingQueue.poll()) != null);
 				
@@ -149,8 +161,9 @@ class ProxyServerStub implements Proxy {
 		return clientConnection;
 	}
 
-	public String response(String string) throws InterruptedException {
-		return incomingQueue.take();
+	public String response(String command) throws InterruptedException {
+		System.out.println("Getting response for command " + command);
+		return incomingQueue.get(command).take();
 	}
 
 }

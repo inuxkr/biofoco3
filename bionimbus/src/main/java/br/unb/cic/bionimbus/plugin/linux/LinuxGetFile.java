@@ -15,8 +15,7 @@ public class LinuxGetFile implements Callable<PluginGetFile> {
 
 	private final String serverPath;
 
-	public LinuxGetFile(PluginFile pluginFile, String taskId, Host receiver,
-			String serverPath) {
+	public LinuxGetFile(PluginFile pluginFile, String taskId, Host receiver, String serverPath) {
 		getFile = new PluginGetFile();
 		getFile.setPeer(receiver);
 		getFile.setPluginFile(pluginFile);
