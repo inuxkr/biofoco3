@@ -1,5 +1,8 @@
 package br.unb.cic.bionimbus.p2p.plugin.proxy;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -16,6 +19,7 @@ import br.unb.cic.bionimbus.plugin.PluginGetFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.utils.Hashifier;
 
 public class RemotePlugin extends AbstractPlugin {
 
@@ -26,6 +30,8 @@ public class RemotePlugin extends AbstractPlugin {
 	private final String id;
 
 	private final ExecutorService executor;
+
+	private RolloverPort rollover;
 
 	public RemotePlugin(P2PService p2p, ExecutorService executor) {
 
@@ -38,6 +44,8 @@ public class RemotePlugin extends AbstractPlugin {
 
 		server = new ProxyServerStub(executor);
 		server.start();
+		
+		rollover = new RolloverPort(8080, 8181);
 	}
 
 	@Override
@@ -85,12 +93,39 @@ public class RemotePlugin extends AbstractPlugin {
 							}
 						}
 
-						server.request("SAVE-FILE" + ":" + filename);
+//						server.request("SAVE-FILE" + "#" + Hashifier.hashContent(new File(filename)) + "#" + filename);
+						
+						server.request("SAVE-FILE" + "#" + filename);
+						
+						executor.submit(new Runnable() {
+
+							@Override
+							public void run() {					
+																
+								try {																						
+//									int port = rollover.next();
+									int port = 8181;
+									System.out.println("Allocating port " + port + " to transfer file");
+									
+									System.out.println("Transfering file ...");
+									FileTransferServer server = new FileTransferServer(port, filename);
+									server.send();							
+									System.out.println("Finished file " + filename);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (NoSuchAlgorithmException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}								
+							}
+								
+						});
+						
 						String response = server.response("SAVE-FILE");
 
 						ObjectMapper mapper = new ObjectMapper();
-						PluginFile info = mapper.readValue(response,
-								PluginFile.class);
+						PluginFile info = mapper.readValue(response, PluginFile.class);
 
 						return info;
 
@@ -103,7 +138,7 @@ public class RemotePlugin extends AbstractPlugin {
 	@Override
 	protected Future<PluginGetFile> getFile(final Host origin,
 			final PluginFile pluginFile, final String taskId,
-			final String savePath) {
+			final String filename) {
 
 		FutureTask<PluginGetFile> future = new FutureTask<PluginGetFile>(
 				new Callable<PluginGetFile>() {
@@ -115,12 +150,37 @@ public class RemotePlugin extends AbstractPlugin {
 						getFile.setPluginFile(pluginFile);
 						getFile.setTaskId(taskId);
 
-						server.request("GET-FILE" + ":" + savePath);
-						String response = server.response("SAVE-FILE");
+						server.request("GET-FILE" + "#" + filename);
+
+						executor.submit(new Runnable() {
+
+							@Override
+							public void run() {					
+																
+								try {																						
+//									int port = rollover.next();
+									int port = 8181;
+									System.out.println("Allocating port " + port + " to transfer file");
+									
+									System.out.println("Transfering file ...");
+									FileTransferServer server = new FileTransferServer(port, filename);
+									server.receive();							
+									System.out.println("Finished file " + filename);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (NoSuchAlgorithmException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}								
+							}
+								
+						});											
+						
+						String response = server.response("GET-FILE");
 
 						ObjectMapper mapper = new ObjectMapper();
-						PluginGetFile info = mapper.readValue(response,
-								PluginGetFile.class);
+						PluginGetFile info = mapper.readValue(response, PluginGetFile.class);
 
 						return info;
 					}
