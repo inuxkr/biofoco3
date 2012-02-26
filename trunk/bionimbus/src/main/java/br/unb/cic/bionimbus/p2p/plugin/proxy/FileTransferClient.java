@@ -10,11 +10,11 @@ import java.security.NoSuchAlgorithmException;
 
 import br.unb.cic.bionimbus.utils.Hashifier;
 
-public class FileClient {
+public class FileTransferClient {
 	
 	private final Socket server;
 	
-	public FileClient(String address, int port, String filename, long size) throws UnknownHostException, IOException, NoSuchAlgorithmException {
+	public FileTransferClient(String address, int port, String filename, long size) throws UnknownHostException, IOException, NoSuchAlgorithmException {
 		
 		server = new Socket(address, port);
 		
@@ -43,7 +43,7 @@ public class FileClient {
 	}
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, NoSuchAlgorithmException {
-		new FileClient("localhost", 7171, "teste.txt", 41665162L);
+		new FileTransferClient("localhost", 7171, "teste.txt", 41665162L);
 	}
 
 }
