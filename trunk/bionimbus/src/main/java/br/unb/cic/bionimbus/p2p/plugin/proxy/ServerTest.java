@@ -22,8 +22,8 @@ public class ServerTest {
 		RemotePlugin remote = new RemotePlugin(new P2PService(config), executor);
 		
 		//ACTIONS
-//		System.out.println(remote.startGetInfo().get());		
-//		remote.saveFile("/tmp/teste.txt");
+		System.out.println(remote.startGetInfo().get());		
+		remote.saveFile("/tmp/teste.txt");
 		remote.getFile(null, null, "aaa", "/tmp/teste.txt");
 	}
 	
