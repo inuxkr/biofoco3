@@ -15,13 +15,13 @@ import br.unb.cic.bionimbus.utils.Hashifier;
  * @author edward
  *
  */
-public class FileServer {
+public class FileTransferServer {
 	
 	private final ServerSocket server;
 	private Socket client;
 	private String filename;
 	
-	public FileServer(int port, String filename) throws IOException {		
+	public FileTransferServer(int port, String filename) throws IOException {		
 		server = new ServerSocket(port);
 		server.setReuseAddress(true);
 		this.filename = filename;
@@ -67,7 +67,7 @@ public class FileServer {
 	}
 	
 	public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-		new FileServer(7171, "/home/edward/Downloads/ext-4.0.7-gpl.zip").start();
+		new FileTransferServer(7171, "/home/edward/Downloads/ext-4.0.7-gpl.zip").start();
 	}
 	
 }
