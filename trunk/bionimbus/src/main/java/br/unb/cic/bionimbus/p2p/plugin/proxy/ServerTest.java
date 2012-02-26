@@ -20,7 +20,11 @@ public class ServerTest {
 	    ExecutorService executor = Executors.newCachedThreadPool();
 		
 		RemotePlugin remote = new RemotePlugin(new P2PService(config), executor);
-		System.out.println(remote.startGetInfo().get());
+		
+		//ACTIONS
+//		System.out.println(remote.startGetInfo().get());		
+//		remote.saveFile("/tmp/teste.txt");
+		remote.getFile(null, null, "aaa", "/tmp/teste.txt");
 	}
 	
 }

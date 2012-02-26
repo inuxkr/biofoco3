@@ -89,29 +89,50 @@ public class ProxyClientStub implements Proxy {
 
 		if (command.startsWith("SAVE-FILE")) {
 
-			String[] split = command.split(":");
+			String[] split = command.split("#");
 			String filePath = split[1];
+			
+			System.out.println("File path received: " + filePath);
 
-			File file = new File(filePath);
+			File file = new File(filePath + ".received");
+			
+			//the port will be received on message (rolloverport)
+			//decompose the start from the constructor
+			FileTransferClient transfer = new FileTransferClient(address, 8181, file.getAbsolutePath());
+			transfer.receive();
 
 			PluginFile pFile = new PluginFile();
 			pFile.setPath(file.getName());
 			pFile.setSize(file.length());
 			String absolutePath = new File(LinuxGetInfo.PATH).getAbsolutePath();
-			file.renameTo(new File(absolutePath + File.separator
-					+ file.getName()));
+			file.renameTo(new File(absolutePath + File.separator+ file.getName()));
 
 			ObjectMapper mapper = new ObjectMapper();
 			return "SAVE-FILE#" + mapper.writeValueAsString(pFile);
 		}
 		
 		if (command.startsWith("GET-FILE")) {
+			
+			String[] split = command.split("#");
+			String filePath = split[1];
+			
+			System.out.println("File path sent: " + filePath);
+
+			File file = new File(filePath);
+			
+			//the port will be received on message (rolloverport)
+			//decompose the start from the constructor
+			FileTransferClient transfer = new FileTransferClient(address, 8181, file.getAbsolutePath());
+			transfer.send();
 
 //			String absolutePath = new File(LinuxGetInfo.PATH).getAbsolutePath();
 //			FileUtils.copyFile(new File(absolutePath + File.separator
 //					+ getFile.getPluginFile().getPath()), new File(serverPath
 //					+ File.separator + getFile.getPluginFile().getPath()));
 //			return getFile;
+			
+			return "GET-FILE#" + filePath;
+			
 		}
 		
 		if (command.startsWith("RUN-TASK")) {
