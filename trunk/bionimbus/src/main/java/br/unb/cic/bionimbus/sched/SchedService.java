@@ -197,7 +197,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private void fillJobFileSize(Collection<PluginFile> pluginFiles) {
 		for (JobInfo job : pendingJobs.values()) {
-			for (String fileId : job.getInputs().keySet()) {
+			for (Pair<String, Long> pair : job.getInputs()) {
+				String fileId = pair.first;
 				PluginFile file = getFileById(fileId, pluginFiles);
 
 				if (file != null) {

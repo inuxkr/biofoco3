@@ -273,7 +273,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 		
 		String fileId = parms.get("fileId");
 		String fileName = parms.get("fileName");
-		Pair<String, Integer> inputFile = inputFiles.get("fileId");
+		Pair<String, Integer> inputFile = inputFiles.get(fileId);
 		int count = 0;
 		if (inputFile != null)
 			count = inputFile.second;
@@ -323,7 +323,8 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 		task.setJobInfo(job);
 		if (job.getInputs().size() > 0) {
 			pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
-			for (String fileId : job.getInputs().keySet()) {
+			for (Pair<String, Long> pair: job.getInputs()) {
+				String fileId = pair.first;
 				p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), fileId, task.getId()));
 			}
 		} else {

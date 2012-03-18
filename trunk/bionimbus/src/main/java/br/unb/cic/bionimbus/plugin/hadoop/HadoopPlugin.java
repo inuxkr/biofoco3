@@ -380,7 +380,8 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		task.setJobInfo(job);
 		if (job.getInputs().size() > 0) {
 			pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
-			for (String fileId : job.getInputs().keySet()) {
+			for (Pair<String, Long> pair : job.getInputs()) {
+				String fileId = pair.first;
 				p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), fileId, task.getId()));
 			}
 		} else {
