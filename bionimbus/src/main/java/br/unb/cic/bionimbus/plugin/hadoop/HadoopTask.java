@@ -3,12 +3,12 @@ package br.unb.cic.bionimbus.plugin.hadoop;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.plugin.PluginTaskState;
+import br.unb.cic.bionimbus.utils.Pair;
 
 public class HadoopTask implements Callable<PluginTask> {
 	
@@ -31,9 +31,10 @@ public class HadoopTask implements Callable<PluginTask> {
 	public PluginTask call() throws Exception {
 		
 		String args = task.getJobInfo().getArgs();
-		Set<String> inputs = task.getJobInfo().getInputs().keySet();
+		List<Pair<String, Long>> inputs = task.getJobInfo().getInputs();
 		int i = 1;
-		for (String input : inputs) {
+		for (Pair<String, Long> pair : inputs) {
+			String input = pair.first;
 			args = args.replaceFirst("%I" + i, path + "/" + plugin.getInputFiles().get(input).first);
 			i++;
 		}

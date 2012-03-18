@@ -1,10 +1,10 @@
 package br.unb.cic.bionimbus.client;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+
+import br.unb.cic.bionimbus.utils.Pair;
 
 public class JobInfo {
 
@@ -14,7 +14,7 @@ public class JobInfo {
 
 	private String args = "";
 	
-	private Map<String, Long> inputs = new HashMap<String, Long>();
+	private List<Pair<String, Long>> inputs = new ArrayList<Pair<String,Long>>();
 
 	private List<String> outputs = new ArrayList<String>();
 
@@ -44,12 +44,12 @@ public class JobInfo {
 		this.args = args;
 	}
 
-	public Map<String, Long> getInputs() {
+	public List<Pair<String, Long>> getInputs() {
 		return inputs;
 	}
 
 	public void addInput(String id, Long size) {
-		inputs.put(id, size);
+		inputs.add(new Pair<String, Long>(id, size));
 	}
 
 	public List<String> getOutputs() {

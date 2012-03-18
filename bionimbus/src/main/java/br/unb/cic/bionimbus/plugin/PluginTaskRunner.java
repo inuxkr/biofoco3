@@ -1,10 +1,12 @@
 package br.unb.cic.bionimbus.plugin;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
+
+import br.unb.cic.bionimbus.utils.Pair;
 
 public class PluginTaskRunner implements Callable<PluginTask> {
 
@@ -28,17 +30,18 @@ public class PluginTaskRunner implements Callable<PluginTask> {
 	public PluginTask call() throws Exception {
 
 		String args = task.getJobInfo().getArgs();
-		Set<String> inputs = task.getJobInfo().getInputs().keySet();
+		List<Pair<String, Long>> inputs = task.getJobInfo().getInputs();
 		int i = 1;
-		for (String input : inputs) {
-			args = args.replaceFirst("%I" + i, path + "/" + plugin.getInputFiles().get(input).first);
+		for (Pair<String, Long> pair: inputs) {
+			String input = pair.first;
+			args = args.replaceFirst("%I" + i, path + File.pathSeparator + plugin.getInputFiles().get(input).first);
 			i++;
 		}
 
 		List<String> outputs = task.getJobInfo().getOutputs();
 		i = 1;
 		for (String output : outputs) {
-			args = args.replaceFirst("%O" + i, path + "/" + output);
+			args = args.replaceFirst("%O" + i, path + File.pathSeparator + output);
 			i++;
 		}
 
