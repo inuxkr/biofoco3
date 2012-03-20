@@ -49,6 +49,12 @@ public class JobInfo {
 	}
 
 	public void addInput(String id, Long size) {
+		for (Pair<String, Long> pair : inputs) {
+			if (pair.first.equals(id)) {
+				inputs.remove(pair);
+				break;
+			}
+		}
 		inputs.add(new Pair<String, Long>(id, size));
 	}
 
