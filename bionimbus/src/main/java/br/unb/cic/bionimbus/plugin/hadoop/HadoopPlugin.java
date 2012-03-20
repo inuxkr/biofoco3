@@ -249,7 +249,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		
 		String fileId = parms.get("fileId");
 		String fileName = parms.get("fileName");
-		Pair<String, Integer> inputFile = inputFiles.get("fileId");
+		Pair<String, Integer> inputFile = inputFiles.get(fileId);
 		int count = 0;
 		if (inputFile != null)
 			count = inputFile.second;
