@@ -2,6 +2,8 @@ package br.unb.cic.bionimbus.sched;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -197,7 +199,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private void fillJobFileSize(Collection<PluginFile> pluginFiles) {
 		for (JobInfo job : pendingJobs.values()) {
-			for (Pair<String, Long> pair : job.getInputs()) {
+			List<Pair<String, Long>> pairList = new ArrayList(job.getInputs());
+			for (Pair<String, Long> pair : pairList) {
 				String fileId = pair.first;
 				PluginFile file = getFileById(fileId, pluginFiles);
 
@@ -247,13 +250,13 @@ public class SchedService implements Service, P2PListener, Runnable {
 		Pair<JobInfo, PluginTask> pair = runningJobs.get(task.getId());
 		JobInfo job = pair.first;
 		
-		if (task.getState().equals(PluginTaskState.WAITING)) {
-			runningJobs.remove(task.getId());
-			cancelJob(p2p.getPeerNode().getHost(), getJobInfoFromPair(pair).getId());
-			pendingJobs.put(getJobInfoFromPair(pair).getId(), getJobInfoFromPair(pair));
-		} else {
+		//if (task.getState().equals(PluginTaskState.WAITING)) {
+		//	runningJobs.remove(task.getId());
+		//	cancelJob(p2p.getPeerNode().getHost(), getJobInfoFromPair(pair).getId());
+		//	pendingJobs.put(getJobInfoFromPair(pair).getId(), getJobInfoFromPair(pair));
+		//} else {
 			runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(job, task));
-		}
+		//}
 	}
 	
 	private void updateJobsFileSize(PeerNode sender) {
