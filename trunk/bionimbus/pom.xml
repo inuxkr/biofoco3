@@ -86,7 +86,7 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.8.1</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
@@ -126,7 +126,12 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro-ipc</artifactId>
 			<version>1.6.2</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>org.codegist</groupId>
+			<artifactId>codegist-common</artifactId>
+			<version>2.0.0-RC1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>bionimbus</finalName>

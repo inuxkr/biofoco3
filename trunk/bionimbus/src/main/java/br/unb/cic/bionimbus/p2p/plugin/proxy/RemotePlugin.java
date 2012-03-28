@@ -1,6 +1,7 @@
 package br.unb.cic.bionimbus.p2p.plugin.proxy;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Callable;
@@ -10,6 +11,8 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jackson.map.ObjectMapper;
+
+import com.google.common.io.Files;
 
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PService;
@@ -31,8 +34,6 @@ public class RemotePlugin extends AbstractPlugin {
 
 	private final ExecutorService executor;
 
-	private RolloverPort rollover;
-
 	public RemotePlugin(P2PService p2p, ExecutorService executor) {
 
 		super(p2p);
@@ -44,8 +45,6 @@ public class RemotePlugin extends AbstractPlugin {
 
 		server = new ProxyServerStub(executor);
 		server.start();
-		
-		rollover = new RolloverPort(8080, 8181);
 	}
 
 	@Override
@@ -93,35 +92,14 @@ public class RemotePlugin extends AbstractPlugin {
 							}
 						}
 
-//						server.request("SAVE-FILE" + "#" + Hashifier.hashContent(new File(filename)) + "#" + filename);
+//						Hashifier.hashContent(new File(filename))
 						
-						server.request("SAVE-FILE" + "#" + filename);
+						System.out.println("Transfering file ...");
+											
+						server.request("SAVE-FILE" + "#" + filename + "#", new File(filename));
 						
-						executor.submit(new Runnable() {
-
-							@Override
-							public void run() {					
-																
-								try {																						
-//									int port = rollover.next();
-									int port = 8181;
-									System.out.println("Allocating port " + port + " to transfer file");
-									
-									System.out.println("Transfering file ...");
-									FileTransferServer server = new FileTransferServer(port, filename);
-									server.send();							
-									System.out.println("Finished file " + filename);
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (NoSuchAlgorithmException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}								
-							}
-								
-						});
-						
+						System.out.println("Finished file " + filename);
+												
 						String response = server.response("SAVE-FILE");
 
 						ObjectMapper mapper = new ObjectMapper();
@@ -150,32 +128,32 @@ public class RemotePlugin extends AbstractPlugin {
 						getFile.setPluginFile(pluginFile);
 						getFile.setTaskId(taskId);
 
-						server.request("GET-FILE" + "#" + filename);
+						server.request("GET-FILE" + "#" + filename, new File(filename));
 
-						executor.submit(new Runnable() {
-
-							@Override
-							public void run() {					
-																
-								try {																						
-//									int port = rollover.next();
-									int port = 8181;
-									System.out.println("Allocating port " + port + " to transfer file");
-									
-									System.out.println("Transfering file ...");
-									FileTransferServer server = new FileTransferServer(port, filename);
-									server.receive();							
-									System.out.println("Finished file " + filename);
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (NoSuchAlgorithmException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}								
-							}
-								
-						});											
+//						executor.submit(new Runnable() {
+//
+//							@Override
+//							public void run() {					
+//																
+//								try {																						
+////									int port = rollover.next();
+//									int port = 8181;
+//									System.out.println("Allocating port " + port + " to transfer file");
+//									
+//									System.out.println("Transfering file ...");
+//									FileTransferServer server = new FileTransferServer(port, filename);
+//									server.receive();							
+//									System.out.println("Finished file " + filename);
+//								} catch (IOException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								} catch (NoSuchAlgorithmException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}								
+//							}
+//								
+//						});											
 						
 						String response = server.response("GET-FILE");
 

@@ -11,9 +11,27 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.google.common.io.Files;
+
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.linux.LinuxGetInfo;
+
+/**
+
+record Chunk {
+  fixed checksum(4);
+  binary data;
+}
+
+streamed array<Chunk> getBlock(int blockId);
+PutResult putBlock(int blockid, streamed array<Chunk> chunks)
+
+List<Chunk> getBlock(int blockId);
+PutResult putBlock(int blockId, List<Chunk> chunks);
+
+ *
+ */
 
 public class ProxyClientStub implements Proxy {
 
@@ -25,6 +43,7 @@ public class ProxyClientStub implements Proxy {
 	private final ScheduledExecutorService executor;
 
 	public static final int INTERVAL = 30;
+	private File file;
 
 	public ProxyClientStub(String address, int port,
 			ScheduledExecutorService executor) {
@@ -56,6 +75,8 @@ public class ProxyClientStub implements Proxy {
 				String command = read();
 				String result = execute(command);
 				write(result);
+				
+				if (result.startsWith(""))
 
 				sleep(TimeUnit.SECONDS, 1);
 
@@ -98,8 +119,9 @@ public class ProxyClientStub implements Proxy {
 			
 			//the port will be received on message (rolloverport)
 			//decompose the start from the constructor
-			FileTransferClient transfer = new FileTransferClient(address, 8181, file.getAbsolutePath());
-			transfer.receive();
+//			FileTransferClient transfer = new FileTransferClient(address, 8181, file.getAbsolutePath());
+//			transfer.receive();
+			// WRITE FILE
 
 			PluginFile pFile = new PluginFile();
 			pFile.setPath(file.getName());
@@ -118,19 +140,8 @@ public class ProxyClientStub implements Proxy {
 			
 			System.out.println("File path sent: " + filePath);
 
-			File file = new File(filePath);
-			
-			//the port will be received on message (rolloverport)
-			//decompose the start from the constructor
-			FileTransferClient transfer = new FileTransferClient(address, 8181, file.getAbsolutePath());
-			transfer.send();
+			file = new File(LinuxGetInfo.PATH);
 
-//			String absolutePath = new File(LinuxGetInfo.PATH).getAbsolutePath();
-//			FileUtils.copyFile(new File(absolutePath + File.separator
-//					+ getFile.getPluginFile().getPath()), new File(serverPath
-//					+ File.separator + getFile.getPluginFile().getPath()));
-//			return getFile;
-			
 			return "GET-FILE#" + filePath;
 			
 		}
@@ -161,6 +172,16 @@ public class ProxyClientStub implements Proxy {
 		DataOutputStream output = new DataOutputStream(server.getOutputStream());
 		output.writeUTF(message);
 		output.flush();
+	}
+	
+	public void write(File file) throws IOException {
+
+		if (!binded || server.isClosed())
+			throw new IllegalStateException("Stub is not binded!");
+
+		DataOutputStream output = new DataOutputStream(server.getOutputStream());	
+		output.writeUTF("#");
+		Files.copy(file, output);
 	}
 
 	public void unbind() throws IOException {
