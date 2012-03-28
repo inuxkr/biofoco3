@@ -1,0 +1,37 @@
+
+@namespace("br.unb.cic.bionimbus.avro.proto") // the java package
+protocol RemoteProxyProtocol {
+
+   enum State {
+   	   IDLE, WORKING, BUSY
+   }
+   
+   enum Command {
+   		SAVE_FILE, INFO, GET_FILE, RUN_TASK
+   }
+
+   record NodeState {
+  		long timestamp;
+  		State state;
+   } 
+     
+   record Task {
+   		long id;
+   		Command command;
+   		array<string> data;
+   }	
+
+   record InfoRecord {
+	  long timestamp;
+	  string data;
+   }
+   
+   array<Task> pullPendingTasks();
+   
+   void ping(NodeState state);
+
+   void pushNodeInfo(InfoRecord info);
+   
+   void pushCompletedTask(Task task);
+
+}

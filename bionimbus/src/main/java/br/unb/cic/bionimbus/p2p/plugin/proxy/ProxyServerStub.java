@@ -2,6 +2,8 @@ package br.unb.cic.bionimbus.p2p.plugin.proxy;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.io.Files;
 
 class ProxyServerStub implements Proxy {
 
@@ -34,6 +38,8 @@ class ProxyServerStub implements Proxy {
 
 	private final int port;
 
+	private File file;
+
 	public ProxyServerStub(ExecutorService executor) {
 		this(executor, PORT);
 	}
@@ -50,6 +56,12 @@ class ProxyServerStub implements Proxy {
 
 	public void request(String command) {
 		outgoingQueue.add(command);
+	}
+	
+	public void request(String command, File file) {
+		outgoingQueue.add(command);
+		
+		this.file = file;
 	}
 
 	public void start() {
@@ -118,10 +130,20 @@ class ProxyServerStub implements Proxy {
 				}
 
 				do {
+					
 					System.out.println("Consumindo dados da fila de entrada...");
 					
 					DataOutputStream output = new DataOutputStream(client.getOutputStream());
 					output.writeUTF(command);
+					
+					if (command.startsWith("SAVE-FILE")) {
+						Files.copy(file, output);
+						output.flush();
+					}
+					
+					if (command.startsWith("GET-FILE")){
+//						Files.copy(file, output);
+					}
 
 					DataInputStream input = new DataInputStream(client.getInputStream());
 					
