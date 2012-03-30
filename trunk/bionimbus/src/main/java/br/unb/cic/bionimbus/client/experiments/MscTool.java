@@ -104,34 +104,41 @@ public class MscTool {
 	public void runJobs() throws IOException, InterruptedException {
 		initCommunication();
 		List<Pipeline> list = getPipelines();
+		List<Pipeline> sending = new ArrayList<Pipeline>(list);
 
-		int count = 0;
-		List<JobInfo> jobs = new ArrayList<JobInfo>();
-		for (Pipeline pipeline : list) {
-			JobInfo job = pipeline.nextJob();
-			if (job != null)
-				jobs.add(job);
-			if (++count >= 4) {
-				sendJobs(jobs);
-				jobs.clear();
-				count = 0;
-				TimeUnit.MINUTES.sleep(40);
-			}
-		}
-
-		if (count < 4)
-			sendJobs(jobs);
 
 		while (!list.isEmpty()) {
+
+			int count = 0;
+			List<JobInfo> jobs = new ArrayList<JobInfo>();
+			List<Pipeline> sendAux = new ArrayList<Pipeline>(sending);
+			for (Pipeline pipeline : sendAux) {
+				JobInfo job = pipeline.firstJob();
+				if (job != null) {
+					jobs.add(job);
+					sending.remove(pipeline);
+					if (++count >= 4) {
+						sendJobs(jobs);
+						TimeUnit.MINUTES.sleep(1);
+						break;
+					}
+				}
+			}
+	
+			if ((count > 0) && (count < 4))
+				sendJobs(jobs);
+
 			Collection<PluginFile> files = listCloudFiles();
 			List<Pipeline> auxList = new ArrayList<Pipeline>(list);
 
 			for (Pipeline pipeline : auxList) {
 				String file = pipeline.getCurrentOutput();
+				if (file == null)
+					continue;
 				for (PluginFile pluginFile : files) {
 					if (!pluginFile.getPath().equals(file))
 					  continue;
-					JobInfo job = pipeline.nextJob();
+					JobInfo job = pipeline.nextJob(pluginFile);
 					if (job != null) {
 						List<JobInfo> jobList = new ArrayList<JobInfo>();
 						jobList.add(job);
@@ -145,6 +152,8 @@ public class MscTool {
 
 			TimeUnit.SECONDS.sleep(5);
 		}
+		
+		LOG.info("test concluded!");
 	}
 
 	private Collection<PluginFile> listCloudFiles() throws InterruptedException {
@@ -156,7 +165,7 @@ public class MscTool {
 	private void sendJobs(List<JobInfo> jobs) throws InterruptedException {
 		communication.sendReq(new JobReqMessage(p2p.getPeerNode(), jobs), P2PMessageType.JOBRESP);
 		JobRespMessage resp = (JobRespMessage) communication.getResp();
-		LOG.info("job " + resp.getJobInfo().getId() + "sent succesfully...");
+		LOG.info("job " + resp.getJobInfo().getId() + " sent succesfully...");
 	}
 
 	public void printResult() {
