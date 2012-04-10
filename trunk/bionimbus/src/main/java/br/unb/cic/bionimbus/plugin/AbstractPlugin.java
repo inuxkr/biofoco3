@@ -321,7 +321,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 
 		PluginTask task = new PluginTask();
 		task.setJobInfo(job);
-		if (job.getInputs().size() > 0) {
+		if (!job.getInputs().isEmpty()) {
 			pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
 			for (Pair<String, Long> pair: job.getInputs()) {
 				String fileId = pair.first;
