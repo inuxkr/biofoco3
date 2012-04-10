@@ -24,7 +24,7 @@ public final class ChordRing {
 
 	public ChordRing(PeerNode thisNode) {
 		this(thisNode, SHA1_BIT_SIZE);
-		LOG.debug("Starting chord ring");
+		LOG.debug(String.format("Starting chord ring for peer %s", id));
 	}
 
 	public ChordRing(PeerNode thisNode, int bitsize) {
