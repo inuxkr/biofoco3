@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import br.unb.cic.bionimbus.client.shell.commands.Help;
 import br.unb.cic.bionimbus.client.shell.commands.History;
 import br.unb.cic.bionimbus.client.shell.commands.JobCancel;
 import br.unb.cic.bionimbus.client.shell.commands.JobStart;
+import br.unb.cic.bionimbus.client.shell.commands.ListCommands;
 import br.unb.cic.bionimbus.client.shell.commands.ListFiles;
 import br.unb.cic.bionimbus.client.shell.commands.ListServices;
 import br.unb.cic.bionimbus.client.shell.commands.Quit;
@@ -61,6 +64,7 @@ public final class SimpleShell {
 		commandMap.put(ListServices.NAME, new ListServices(this));
 		commandMap.put(JobStart.NAME, new JobStart(this));
 		commandMap.put(JobCancel.NAME, new JobCancel(this));
+		commandMap.put(ListCommands.NAME, new ListCommands(this));
 	}
 	
 	public void registerCommand(Command command){
@@ -151,6 +155,11 @@ public final class SimpleShell {
 		}
 		
 		return Pair.of(command, params.toArray(new String[0]));
+	}
+
+	public Collection<Command> getCommands() {
+		// TODO Auto-generated method stub
+		return new HashSet<Command>(commandMap.values());
 	}
 
 }
