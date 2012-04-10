@@ -21,6 +21,7 @@ public class BioNimbusConfig {
 	
 	private String serverPath = "";
 
+	@JsonIgnore
 	private String infra;
 
 	public boolean isClient() {
