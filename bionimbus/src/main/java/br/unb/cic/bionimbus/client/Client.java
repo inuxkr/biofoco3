@@ -130,7 +130,7 @@ public class Client implements P2PListener {
 		Client client = new Client();
 		client.setP2P(p2p);
 
-		while (p2p.getPeers().size() == 0) {
+		while (p2p.getPeers().isEmpty()) {
 		}
 		System.out.println("I am not alone in the dark anymore!");
 
