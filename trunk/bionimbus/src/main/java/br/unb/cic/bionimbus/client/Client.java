@@ -132,9 +132,10 @@ public class Client implements P2PListener {
 
 		while (p2p.getPeers().isEmpty()) {
 		}
-		System.out.println("I am not alone in the dark anymore!");
+		
+		//System.out.println("I am not alone in the dark anymore!");
 
-		client.uploadFile("teste.txt");
+		//client.uploadFile("teste.txt");
 		
 		TimeUnit.SECONDS.sleep(120);
 		client.listFiles();
