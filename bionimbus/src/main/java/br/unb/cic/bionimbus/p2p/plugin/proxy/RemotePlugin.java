@@ -22,7 +22,6 @@ import br.unb.cic.bionimbus.plugin.PluginGetFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
-import br.unb.cic.bionimbus.utils.Hashifier;
 
 public class RemotePlugin extends AbstractPlugin {
 
