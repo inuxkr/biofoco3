@@ -4,6 +4,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.plugin.AbstractPlugin;
@@ -14,11 +16,11 @@ import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.plugin.PluginTaskRunner;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 public class LinuxPlugin extends AbstractPlugin {
 
-	private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("LinuxPlugin-workers-%d").build());
+	private final ExecutorService executorService = Executors
+			.newCachedThreadPool(new BasicThreadFactory.Builder()
+					.namingPattern("LinuxPlugin-workers-%d").build());
 
 	public LinuxPlugin(P2PService p2p) {
 		super(p2p);

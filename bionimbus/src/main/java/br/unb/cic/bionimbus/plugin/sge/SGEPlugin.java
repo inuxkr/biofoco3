@@ -4,6 +4,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.plugin.AbstractPlugin;
@@ -17,11 +19,11 @@ import br.unb.cic.bionimbus.plugin.linux.LinuxGetFile;
 import br.unb.cic.bionimbus.plugin.linux.LinuxGetInfo;
 import br.unb.cic.bionimbus.plugin.linux.LinuxSaveFile;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 public class SGEPlugin extends AbstractPlugin {
 	
-	private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("SGEPlugin-workers-%d").build());
+	private final ExecutorService executorService = Executors
+			.newCachedThreadPool(new BasicThreadFactory.Builder()
+					.namingPattern("SGEPlugin-workers-%d").build());
 
 	public SGEPlugin(P2PService p2p) {
 		super(p2p);

@@ -3,11 +3,11 @@ package br.unb.cic.bionimbus.plugin.linux;
 import java.io.File;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.io.FileUtils;
+
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginGetFile;
-
-import com.google.common.io.Files;
 
 public class LinuxGetFile implements Callable<PluginGetFile> {
 
@@ -25,7 +25,7 @@ public class LinuxGetFile implements Callable<PluginGetFile> {
 
 	public PluginGetFile call() throws Exception {
 		String absolutePath = new File(LinuxGetInfo.PATH).getAbsolutePath();
-		Files.copy(new File(absolutePath + File.separator + getFile.getPluginFile().getPath()),
+		FileUtils.copyFile(new File(absolutePath + File.separator + getFile.getPluginFile().getPath()),
 				new File(serverPath + File.separator + getFile.getPluginFile().getPath()));
 		return getFile;
 	}

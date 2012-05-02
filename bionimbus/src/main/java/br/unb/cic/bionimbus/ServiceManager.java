@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.unb.cic.bionimbus.discovery.DiscoveryService;
+import br.unb.cic.bionimbus.monitor.MonitorService;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.sched.SchedService;
 import br.unb.cic.bionimbus.storage.StorageService;
