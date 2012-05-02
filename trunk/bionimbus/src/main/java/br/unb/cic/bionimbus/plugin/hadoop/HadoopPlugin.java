@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.client.FileInfo;
@@ -53,15 +54,15 @@ import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.plugin.PluginTaskState;
 import br.unb.cic.bionimbus.utils.Pair;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 	private String id = UUID.randomUUID().toString();
 	
-	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("HadoopPlugin-%d").build());
+	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("HadoopPlugin-%d").build());
 
-	private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("HadoopPlugin-workers-%d").build());
+	private final ExecutorService executorService = Executors
+			.newCachedThreadPool(new BasicThreadFactory.Builder()
+					.namingPattern("HadoopPlugin-workers-%d").build());
 	
 	private Future<PluginInfo> fInfo = null;
 	

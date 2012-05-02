@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
@@ -37,8 +37,8 @@ import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.utils.Pair;
 
 public class MonitorService implements Service, P2PListener, Runnable {
-	
-	private final ScheduledExecutorService schedExecService = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("MonitorService-%d").build());
+
+	private final ScheduledExecutorService schedExecService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("MonitorService-%d").build());
 	
 	private final Map<String, JobInfo> pendingJobs = new ConcurrentHashMap<String, JobInfo>();
 	

@@ -1,5 +1,0 @@
-Fixing compiling error
---This line, and those below, will be ignored--
-
-M    src/main/java/br/unb/cic/bionimbus/p2p/plugin/proxy/RemotePlugin.java
-M    src/main/java/br/unb/cic/bionimbus/client/Client.java

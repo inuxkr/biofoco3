@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.client.FileInfo;
@@ -36,8 +37,6 @@ import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
 import br.unb.cic.bionimbus.utils.Pair;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 public abstract class AbstractPlugin extends P2PAbstractListener implements Plugin, Runnable {
 	
 	private String id = UUID.randomUUID().toString();
@@ -50,7 +49,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 
 	private int myCount = 0;
 	
-	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1,  new ThreadFactoryBuilder().setDaemon(true).setNameFormat("bionimbus-plugin-%d").build());
+	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("bionimbus-plugin-%d").build());
 	
 	private final ConcurrentMap<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
 	
