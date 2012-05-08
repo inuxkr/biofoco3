@@ -10,6 +10,8 @@ public class JobInfo {
 
 	private String id = UUID.randomUUID().toString();
 
+	private String localId;
+	
 	private long serviceId;
 
 	private String args = "";
@@ -26,6 +28,14 @@ public class JobInfo {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getLocalId() {
+		return this.localId;
+	}
+	
+	public void setLocalId(String id) {
+		this.localId = id;
 	}
 
 	public long getServiceId() {

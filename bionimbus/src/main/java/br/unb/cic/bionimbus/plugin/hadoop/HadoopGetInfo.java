@@ -9,19 +9,58 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginService;
+import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.plugin.PluginTaskState;
 
 public class HadoopGetInfo implements Callable<PluginInfo> {
 
 	private static final String nameNode = "http://localhost:50070/dfshealth.jsp";
 	private static final String jobTracker = "http://localhost:50030/jobtracker.jsp";
 	private static final String nodes = "<a href=\"machines.jsp?type=active\">";
+	private static final String tasks = "http://localhost:50030/jobtasks.jsp?jobid=%s&type=map&pagenum=1";
 	private static final String serviceDir = "services";
 
+	public static void getTaskInfo(PluginTask task) throws Exception {
+		
+		// O estado da task e waiting ate que prove-se o contrario
+		task.setState(PluginTaskState.WAITING);
+		
+		// Se o local id estiver nulo quer dizer que a task ainda nem executou no hadoop
+		if (task.getJobInfo().getLocalId() == null) return;
+		
+		URL url = new URL(String.format(tasks, task.getJobInfo().getLocalId()));
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.connect();
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String s = "";
+
+		while ((s = br.readLine()) != null) {
+			Pattern pattern = Pattern.compile("<td>(\\d+\\.\\d+)%<table", Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(s);
+
+			while (matcher.find()) {
+				double percent = Double.parseDouble(matcher.group(1));
+				System.out.println(percent);
+				if (percent > 0.0) {
+					task.setState(PluginTaskState.RUNNING);
+					return;
+				}
+			}
+		}
+		
+		br.close();
+		conn.disconnect();
+	}
+	
 	private void getNameNodeInfo(PluginInfo info) throws Exception {
 		
 		URL url = new URL(nameNode);
