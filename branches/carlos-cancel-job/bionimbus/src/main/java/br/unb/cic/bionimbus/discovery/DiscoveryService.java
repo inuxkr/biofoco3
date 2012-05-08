@@ -27,7 +27,7 @@ import br.unb.cic.bionimbus.plugin.PluginInfo;
 
 public class DiscoveryService implements Service, P2PListener, Runnable {
 	
-	private static final int PERIOD_SECS = 30;
+	private static final int PERIOD_SECS = 5;
 
 	private final Map<String, PluginInfo> infoMap = new ConcurrentHashMap<String, PluginInfo>();
 

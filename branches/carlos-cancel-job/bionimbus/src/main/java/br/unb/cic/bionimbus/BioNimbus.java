@@ -10,11 +10,11 @@ import br.unb.cic.bionimbus.plugin.PluginFactory;
 
 public class BioNimbus {
 
+	public static String BASE_PATH = "/home/parallels/Devel/UnB/vc/biofoco3/bionimbus/exported-folders/";
 	private Plugin plugin = null;
 	private P2PService p2p = null;
-
+	
 	public BioNimbus(BioNimbusConfig config) {
-
 		p2p = new P2PService(config);
 		p2p.start();
 
@@ -32,7 +32,7 @@ public class BioNimbus {
 
 	public static void main(String[] args) throws IOException {
 		
-		String configFile = System.getProperty("config.file", "conf/server.json");
+		String configFile = System.getProperty("config.file", BASE_PATH + "conf/server.json");
 		BioNimbusConfig config = BioNimbusConfigLoader.loadHostConfig(configFile);
 				
 		new BioNimbus(config);

@@ -1,6 +1,10 @@
 package br.unb.cic.bionimbus.plugin.hadoop;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +162,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		return new InfoRespMessage(p2p.getPeerNode(), info);
 	}
 
+	// TODO: Copiar daqui
 	private void checkGetInfo() {
 		myCount++;
 		if (myCount < 10)
@@ -185,7 +190,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			fInfo = null;
 		}
 	}
-
+	
 	private void checkTaskStatus(PeerNode receiver, String taskId) {
 		PluginTask task = null;
 
@@ -194,12 +199,21 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			task.setState(PluginTaskState.WAITING);
 		} else if (executingTasks.containsKey(taskId)) {
 			task = executingTasks.get(taskId).first;
+			try {
+				HadoopGetInfo.getTaskInfo(task);	
+			} catch (Exception ex) {
+				//TODO: O que fazer no erro?
+				// Por enquanto printa erro no servidor.
+				ex.printStackTrace();
+			}
+			
 		} else if (endingTasks.containsKey(taskId)) {
 			task = endingTasks.get(taskId).first;
 			task.setState(PluginTaskState.DONE);
 		}
 
 		if (task != null) {
+			System.out.println(task.getState());
 			StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), task);
 			p2p.sendMessage(receiver.getHost(), msg);
 		}
