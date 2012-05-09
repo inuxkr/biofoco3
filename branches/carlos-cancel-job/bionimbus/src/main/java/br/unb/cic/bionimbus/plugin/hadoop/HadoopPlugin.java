@@ -454,7 +454,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			task = pair.first;
 			pair.second.cancel(true);
 		} else if (pendingTasks.containsKey(taskId)) {
-			task = pendingTasks.remove(taskId).first;			
+			task = pendingTasks.remove(taskId).first;		
 		} else if (endingTasks.containsKey(taskId)) {
 			task = endingTasks.remove(taskId).first;
 		}

@@ -49,7 +49,9 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 
 			while (matcher.find()) {
 				double percent = Double.parseDouble(matcher.group(1));
-				System.out.println(percent);
+				
+				// DEBUG
+				// System.out.println(percent);
 				if (percent > 0.0) {
 					task.setState(PluginTaskState.RUNNING);
 					return;

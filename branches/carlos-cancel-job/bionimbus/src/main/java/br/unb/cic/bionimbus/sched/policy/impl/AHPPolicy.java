@@ -4,19 +4,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import Jama.Matrix;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginTask;
+import br.unb.cic.bionimbus.plugin.PluginTaskState;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 
 public class AHPPolicy extends SchedPolicy {
 	
+	private static final int BLACKLIST_LIMIT = 3;
+	
     private List<PluginInfo> usedResources = new ArrayList<PluginInfo>();
+    private Map<JobInfo, Integer> blackList = new HashMap<JobInfo, Integer>();
 	
 	@Override
 	public HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) {
+		if (jobInfos.isEmpty()) return null;
 		for (PluginInfo p: this.getCloudMap().values()) {
 			System.out.println(p.getId() + " " + p.getNumOccupied());
 		}
@@ -25,6 +32,50 @@ public class AHPPolicy extends SchedPolicy {
 		JobInfo biggerJob = getBiggerJob(new ArrayList<JobInfo>(jobInfos));
 		jobMap.put(biggerJob, this.scheduleJob(biggerJob));
 		return jobMap;
+	}
+
+	@Override
+	public HashMap<JobInfo, PluginInfo> relocate(Collection<Pair<JobInfo, PluginTask>> taskPairs, List<JobInfo> jobsToCancel) {
+		for ( Pair<JobInfo, PluginTask> taskPair : taskPairs) {
+			PluginTask task = taskPair.getSecond();
+			JobInfo job = taskPair.getFirst();
+			
+			if (!PluginTaskState.WAITING.equals(task.getState())) continue;
+			
+			int count = 0;
+			if (blackList.containsKey(job)) {
+				count = blackList.get(job);
+			}
+			
+			blackList.put(job, count + 1      );
+
+			if (blackList.get(job) >= BLACKLIST_LIMIT) {
+				if (job != null) {
+					jobsToCancel.add(job);
+				}
+			}
+		}
+		
+		//DEBUG
+		System.out.println("BLACK LIST COUNT");
+		
+		for (JobInfo job : blackList.keySet()) {
+			//DEBUG
+			System.out.println(job.getId() + " : " + blackList.get(job));
+		}
+		
+		for (JobInfo job : jobsToCancel) {
+			blackList.remove(job);
+		}
+		
+		return schedule(jobsToCancel);
+	}
+	
+	@Override
+	public void jobDone(JobInfo job) {
+		//DEBUG
+		System.out.println(job.getId() + "removed from black list.");
+		blackList.remove(job);
 	}
 
 	private PluginInfo scheduleJob(JobInfo jobInfo) {

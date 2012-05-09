@@ -7,8 +7,10 @@ import java.util.List;
 
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.sched.SchedException;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
+import br.unb.cic.bionimbus.utils.Pair;
 
 public class RRPolicy extends SchedPolicy {
 
@@ -41,6 +43,19 @@ public class RRPolicy extends SchedPolicy {
         	
        		return schedMap;
         }
+        
+
+		@Override
+		public HashMap<JobInfo, PluginInfo> relocate(
+				Collection<Pair<JobInfo, PluginTask>> taskPairs,
+				List<JobInfo> jobToCancel) {
+			return null;
+		}
+		
+		@Override
+		public void jobDone(JobInfo job) {
+			// TODO Auto-generated method stub
+		}
         
         private List<PluginInfo> filterByService(long serviceId, List<PluginInfo> plgs) {
                 ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>();
