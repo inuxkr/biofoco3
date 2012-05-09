@@ -1,8 +1,8 @@
 package br.unb.cic.bionimbus.sched;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,7 +47,6 @@ import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
-import br.unb.cic.bionimbus.plugin.PluginTaskState;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 
@@ -74,6 +73,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 	private P2PService p2p = null;
 
 	private SchedPolicy schedPolicy;
+	
+	private boolean isScheduling = false;
 
 	public SchedService(ServiceManager manager) {
 		manager.register(this);
@@ -81,7 +82,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	public SchedPolicy getPolicy() {
 		if (schedPolicy == null) {
-			schedPolicy = SchedPolicy.getInstance(cloudMap);
+			schedPolicy = SchedPolicy.getInstance();
 		}
 		schedPolicy.setCloudMap(cloudMap);
 		return schedPolicy;
@@ -93,6 +94,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		
 		checkPendingJobs();
 		checkRunningJobs();
+		startSched();
 		Message msg = new CloudReqMessage(p2p.getPeerNode());
 		p2p.broadcast(msg);
 	}
@@ -102,7 +104,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		this.p2p = p2p;
 		if (p2p != null)
 			p2p.addListener(this);
-		schedExecService.scheduleAtFixedRate(this, 0, 15, TimeUnit.SECONDS);
+		schedExecService.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -117,16 +119,22 @@ public class SchedService implements Service, P2PListener, Runnable {
 
 	}
 
-	private void checkPendingJobs() {
+	private synchronized void checkPendingJobs() {
 		// TODO aqui temos que checar os jobs que estão aguardando o escalonamento.
 		// precisamos esperar um timeout ate' fazer nova requisicao.
 	}
 	
-	private void checkRunningJobs() {
+	private synchronized void checkRunningJobs() {
 		PeerNode peer = p2p.getPeerNode();
-		for (String taskId : runningJobs.keySet()) {
+		for (String taskId : getRunningJobs().keySet()) {
 			sendStatusReq(peer, taskId);
 		}
+	}
+	
+	private synchronized void startSched() {
+		if (isScheduling) return;
+		// Antes de escalonar verifica o tamanho dos arquivos.
+		updateJobsFileSize(p2p.getPeerNode());
 	}
 	
 	@Override
@@ -159,7 +167,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 				LOG.debug("Wild job " + jobInfo.getId() + " appears.");
 				pendingJobs.put(jobInfo.getId(), jobInfo);
 			}
-			updateJobsFileSize(sender);
 			break;
 		case STARTRESP:
 			StartRespMessage respMsg = (StartRespMessage) msg;
@@ -175,13 +182,15 @@ public class SchedService implements Service, P2PListener, Runnable {
 			break;
 		case CANCELRESP:
 			CancelRespMessage cancelResp = (CancelRespMessage) msg;
-			finalizeJob(cancelResp.getPluginTask());
+			finishCancelJob(cancelResp.getPluginTask());
 			Pair<String, Host> pair = cancelingJobs.get(cancelResp.getPluginTask().getId());
 			p2p.sendMessage(pair.second, new JobCancelRespMessage(p2p.getPeerNode(), pair.first));
 			break;
 		case LISTRESP:
 			ListRespMessage listResp = (ListRespMessage) msg;
 			fillJobFileSize(listResp.values());
+			
+			// Com os arquivos preenchidos, executa o escalonador.
 			scheduleJobs(sender, receiver);
 			break;
 		case END:
@@ -199,7 +208,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private void fillJobFileSize(Collection<PluginFile> pluginFiles) {
 		for (JobInfo job : pendingJobs.values()) {
-			List<Pair<String, Long>> pairList = new ArrayList(job.getInputs());
+			List<Pair<String, Long>> pairList = new ArrayList<Pair<String, Long>>(job.getInputs());
 			for (Pair<String, Long> pair : pairList) {
 				String fileId = pair.first;
 				PluginFile file = getFileById(fileId, pluginFiles);
@@ -247,16 +256,15 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void updateJobStatus(PluginTask task) {
-		Pair<JobInfo, PluginTask> pair = runningJobs.get(task.getId());
-		JobInfo job = pair.first;
+		// DEBUG
+		// System.out.println("Old Task Info: ");
+		// System.out.println(task.getId() + ": " + runningJobs.get(task.getId()).second.getState());
 		
-		//if (task.getState().equals(PluginTaskState.WAITING)) {
-		//	runningJobs.remove(task.getId());
-		//	cancelJob(p2p.getPeerNode().getHost(), getJobInfoFromPair(pair).getId());
-		//	pendingJobs.put(getJobInfoFromPair(pair).getId(), getJobInfoFromPair(pair));
-		//} else {
-			runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(job, task));
-		//}
+		getRunningJobs().get(task.getId()).second.setState(task.getState());
+		
+		// DEBUG
+		// System.out.println("New Task Info: ");
+		// System.out.println(task.getId() + ": " + runningJobs.get(task.getId()).second.getState());
 	}
 	
 	private void updateJobsFileSize(PeerNode sender) {
@@ -264,65 +272,88 @@ public class SchedService implements Service, P2PListener, Runnable {
 		p2p.broadcast(listReqMsg);
 	}
 	
-	private void sendJobResp(PeerNode sender, PeerNode receiver, String jobId, PluginTask task) {
+	private synchronized void sendJobResp(PeerNode sender, PeerNode receiver, String jobId, PluginTask task) {
 		if (task == null) {
-			LOG.debug("Job " + jobId + " não possui serviço rodando.");
+			System.out.println("Job " + jobId + " não possui serviço rodando.");
 			JobRespMessage jobRespMsg = new JobRespMessage(sender, null);
 			p2p.broadcast(jobRespMsg);
 		} else {
-			LOG.info("Job " + jobId + " movido para a lista de jobs rodando.");
+			System.out.println("Job " + jobId + " movido para a lista de jobs rodando.");
 			JobInfo jobInfo = pendingJobs.remove(jobId);
-			runningJobs.put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
+			getRunningJobs().put(task.getId(), new Pair<JobInfo, PluginTask>(jobInfo, task));
 			JobRespMessage jobRespMsg = new JobRespMessage(sender, jobInfo);
 			p2p.broadcast(jobRespMsg);
-			scheduleJobs(sender, receiver);
+//			scheduleJobs(sender, receiver);
 		}
+		isScheduling = false;
+	}
+	
+	private void finishCancelJob(PluginTask task) {
+		System.out.println("Task canceled " + task.getJobInfo().getId());
 	}
 	
 	private void finalizeJob(PluginTask task) {
-		Pair<JobInfo, PluginTask> pair = runningJobs.remove(task.getId());
+		Pair<JobInfo, PluginTask> pair = getRunningJobs().remove(task.getId());
 		
 		if (pair != null) {
-			JobInfo job = getJobInfoFromPair(pair);
+			JobInfo job = pair.first;
 		
 			LOG.info("Job " + job.getId() + " executado em " + ((float)(System.currentTimeMillis() - job.getTimestamp()) / 1000) + " segundos");
+			getPolicy().jobDone(job);
 			//p2p.sendMessage(new EndJobMessage(job));
 		}
 	}
 	
 	private void scheduleJobs(PeerNode sender, PeerNode receiver) {
-		if (pendingJobs.size() == 0) return;
-		LOG.info("--- Inicio de escalonamento ---");
-		HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(pendingJobs.values());
-		for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
-			JobInfo jobInfo = entry.getKey();
-			PluginInfo pluginInfo = entry.getValue();
-			
-			if (pluginInfo == null) {
-				sendJobResp(sender, receiver, jobInfo.getId(), null);
-			} else {
-				LOG.info(jobInfo.getId() + " scheduled to " + pluginInfo.getId());
-				sendStartReq(sender, pluginInfo.getHost(), jobInfo);
+		HashMap<JobInfo, PluginInfo> schedMap = null;
+		ArrayList<JobInfo> jobsToCancel = new ArrayList<JobInfo>();
+		if (pendingJobs.size() == 0) {
+			schedMap = getPolicy().relocate(getRunningJobs().values(), jobsToCancel);
+		} else {
+			schedMap = getPolicy().schedule(pendingJobs.values());
+		}
+		
+		for (JobInfo jobInfo : jobsToCancel) {
+			cancelJob(sender.getHost(), jobInfo.getId());
+		}
+		
+		if (schedMap != null) {
+		
+			for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
+				JobInfo jobInfo = entry.getKey();
+				PluginInfo pluginInfo = entry.getValue();
+				
+				if (pluginInfo == null) {
+					sendJobResp(sender, receiver, jobInfo.getId(), null);
+				} else {
+					System.out.println(jobInfo.getId() + " scheduled to " + pluginInfo.getId());
+					sendStartReq(sender, pluginInfo.getHost(), jobInfo);
+				}
 			}
 		}
-		LOG.info("--- Fim de escalonamento ---");
-			
 	}
 	
 	private void cancelJob(Host origin, String jobId) {
+		System.out.println("Canceling " + jobId);
+		
 		if (pendingJobs.containsKey(jobId)) {
 			pendingJobs.remove(jobId);
 			return;
 		}
-
-		for (Pair<JobInfo, PluginTask> pair : runningJobs.values()) {
+		
+		for (Pair<JobInfo, PluginTask> pair : getRunningJobs().values()) {
 			if (pair.first.getId().equals(jobId)) {
 				cancelingJobs.put(pair.second.getId(), new Pair<String, Host>(jobId, origin));
 				CancelReqMessage msg = new CancelReqMessage(p2p.getPeerNode(), pair.second.getId());
 				p2p.broadcast(msg);
+				getRunningJobs().remove(pair.first);
 				return;
 			}
 		}
 		
+	}
+	
+	private synchronized Map<String, Pair<JobInfo, PluginTask>> getRunningJobs() {
+		return runningJobs;
 	}
 }
