@@ -51,19 +51,6 @@ public class BasicSchedPolicy extends SchedPolicy {
    		return schedMap;
     }
 
-	@Override
-	public HashMap<JobInfo, PluginInfo> relocate(
-			Collection<Pair<JobInfo, PluginTask>> taskPairs,
-			List<JobInfo> jobToCancel) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void jobDone(JobInfo job) {
-		// TODO Auto-generated method stub
-	}
-	
     public PluginInfo scheduleJob(JobInfo jobInfo) {
     	List<PluginInfo> availablePlugins = filterByService(jobInfo.getServiceId());
     	if (availablePlugins.size() == 0) {
@@ -71,4 +58,23 @@ public class BasicSchedPolicy extends SchedPolicy {
     	}
 		return getBestPluginForJob(availablePlugins, jobInfo);
     }
+
+	@Override
+	public List<PluginTask> relocate(
+			Collection<Pair<JobInfo, PluginTask>> taskPairs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void cancelJobEvent(PluginTask task) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void jobDone(PluginTask task) {
+		// TODO Auto-generated method stub
+		
+	}
 }

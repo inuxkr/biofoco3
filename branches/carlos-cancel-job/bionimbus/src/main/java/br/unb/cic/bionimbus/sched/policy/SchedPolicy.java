@@ -36,7 +36,9 @@ public abstract class SchedPolicy {
 	
 	public abstract HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos);
 	
-	public abstract HashMap<JobInfo, PluginInfo> relocate(Collection< Pair<JobInfo, PluginTask>> taskPairs, List<JobInfo> jobToCancel);
+	public abstract List<PluginTask> relocate(Collection< Pair<JobInfo, PluginTask>> taskPairs);
 	
-	public abstract void jobDone(JobInfo job);
+	public abstract void cancelJobEvent(PluginTask task);
+	
+	public abstract void jobDone(PluginTask task);
 }

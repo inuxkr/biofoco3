@@ -16,11 +16,15 @@ import br.unb.cic.bionimbus.utils.Pair;
 
 public class AHPPolicy extends SchedPolicy {
 	
-	private static final int BLACKLIST_LIMIT = 3;
-	
+	private static final int BLACKLIST_LIMIT = 6;
     private List<PluginInfo> usedResources = new ArrayList<PluginInfo>();
-    private Map<JobInfo, Integer> blackList = new HashMap<JobInfo, Integer>();
+    private Map<PluginTask, Integer> blackList = new HashMap<PluginTask, Integer>();
 	
+    @Override
+    public void cancelJobEvent(PluginTask task) {
+    	blackList.remove(task);
+    }
+    
 	@Override
 	public HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) {
 		if (jobInfos.isEmpty()) return null;
@@ -35,23 +39,30 @@ public class AHPPolicy extends SchedPolicy {
 	}
 
 	@Override
-	public HashMap<JobInfo, PluginInfo> relocate(Collection<Pair<JobInfo, PluginTask>> taskPairs, List<JobInfo> jobsToCancel) {
+	public List<PluginTask> relocate(Collection<Pair<JobInfo, PluginTask>> taskPairs) {
+		List<PluginTask> tasksToCancel = new ArrayList<PluginTask>();
 		for ( Pair<JobInfo, PluginTask> taskPair : taskPairs) {
 			PluginTask task = taskPair.getSecond();
 			JobInfo job = taskPair.getFirst();
+
+			if (PluginTaskState.RUNNING.equals(task.getState())) {
+				if (blackList.containsKey(task)) {
+					blackList.remove(task);
+				}
+			}
 			
 			if (!PluginTaskState.WAITING.equals(task.getState())) continue;
 			
 			int count = 0;
-			if (blackList.containsKey(job)) {
-				count = blackList.get(job);
+			if (blackList.containsKey(task)) {
+				count = blackList.get(task);
 			}
 			
-			blackList.put(job, count + 1      );
+			blackList.put(task, count + 1      );
 
-			if (blackList.get(job) >= BLACKLIST_LIMIT) {
+			if (blackList.get(task) >= BLACKLIST_LIMIT) {
 				if (job != null) {
-					jobsToCancel.add(job);
+					tasksToCancel.add(task);
 				}
 			}
 		}
@@ -59,23 +70,25 @@ public class AHPPolicy extends SchedPolicy {
 		//DEBUG
 		System.out.println("BLACK LIST COUNT");
 		
-		for (JobInfo job : blackList.keySet()) {
+		for (PluginTask task : blackList.keySet()) {
 			//DEBUG
-			System.out.println(job.getId() + " : " + blackList.get(job));
+			System.out.println(task.getId() + " : " + blackList.get(task));
 		}
 		
-		for (JobInfo job : jobsToCancel) {
-			blackList.remove(job);
+		for (PluginTask task : tasksToCancel) {
+			blackList.remove(task);
 		}
 		
-		return schedule(jobsToCancel);
+		return tasksToCancel;
 	}
 	
 	@Override
-	public void jobDone(JobInfo job) {
+	public void jobDone(PluginTask task) {
 		//DEBUG
-		System.out.println(job.getId() + "removed from black list.");
-		blackList.remove(job);
+		System.out.println(task.getId() + "removed from black list.");
+		if (blackList.containsKey(task)) {
+			blackList.remove(task);
+		}
 	}
 
 	private PluginInfo scheduleJob(JobInfo jobInfo) {
