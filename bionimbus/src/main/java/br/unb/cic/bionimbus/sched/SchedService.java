@@ -80,7 +80,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		manager.register(this);
 	}
 	
-	public SchedPolicy getPolicy() {
+	public synchronized SchedPolicy getPolicy() {
 		if (schedPolicy == null) {
 			schedPolicy = SchedPolicy.getInstance();
 		}
@@ -126,7 +126,9 @@ public class SchedService implements Service, P2PListener, Runnable {
 	
 	private synchronized void checkRunningJobs() {
 		PeerNode peer = p2p.getPeerNode();
+		System.out.println("RUNNING JOBS: ");
 		for (String taskId : getRunningJobs().keySet()) {
+			System.out.println("Task ID: " + taskId);
 			sendStatusReq(peer, taskId);
 		}
 	}
@@ -241,20 +243,6 @@ public class SchedService implements Service, P2PListener, Runnable {
 		p2p.broadcast(msg); //TODO: isto é realmente um broadcast?
 	}
 	
-	private JobInfo getJobInfoFromPair(Pair<JobInfo, PluginTask> pair) {
-		JobInfo ret = null;
-				
-		if (pair.second != null) {
-			ret = pair.second.getJobInfo();
-		}
-			
-		if (pair.first != null) {
-			ret = pair.first;
-		}
-		
-		return ret;
-	}
-	
 	private void updateJobStatus(PluginTask task) {
 		// DEBUG
 		// System.out.println("Old Task Info: ");
@@ -299,26 +287,22 @@ public class SchedService implements Service, P2PListener, Runnable {
 			JobInfo job = pair.first;
 		
 			LOG.info("Job " + job.getId() + " executado em " + ((float)(System.currentTimeMillis() - job.getTimestamp()) / 1000) + " segundos");
-			getPolicy().jobDone(job);
+			getPolicy().jobDone(task);
 			//p2p.sendMessage(new EndJobMessage(job));
 		}
 	}
 	
 	private void scheduleJobs(PeerNode sender, PeerNode receiver) {
 		HashMap<JobInfo, PluginInfo> schedMap = null;
-		ArrayList<JobInfo> jobsToCancel = new ArrayList<JobInfo>();
 		if (pendingJobs.size() == 0) {
-			schedMap = getPolicy().relocate(getRunningJobs().values(), jobsToCancel);
+			List<PluginTask> tasksToCancel = getPolicy().relocate(getRunningJobs().values());
+			for (PluginTask task : tasksToCancel) {
+				cancelJob(sender.getHost(), task.getJobInfo().getId());
+				pendingJobs.put(task.getJobInfo().getId(), task.getJobInfo());
+			}
 		} else {
 			schedMap = getPolicy().schedule(pendingJobs.values());
-		}
-		
-		for (JobInfo jobInfo : jobsToCancel) {
-			cancelJob(sender.getHost(), jobInfo.getId());
-		}
-		
-		if (schedMap != null) {
-		
+			
 			for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
 				JobInfo jobInfo = entry.getKey();
 				PluginInfo pluginInfo = entry.getValue();
@@ -343,10 +327,11 @@ public class SchedService implements Service, P2PListener, Runnable {
 		
 		for (Pair<JobInfo, PluginTask> pair : getRunningJobs().values()) {
 			if (pair.first.getId().equals(jobId)) {
+				getRunningJobs().remove(pair.first);
+				getPolicy().cancelJobEvent(pair.second);
 				cancelingJobs.put(pair.second.getId(), new Pair<String, Host>(jobId, origin));
 				CancelReqMessage msg = new CancelReqMessage(p2p.getPeerNode(), pair.second.getId());
 				p2p.broadcast(msg);
-				getRunningJobs().remove(pair.first);
 				return;
 			}
 		}

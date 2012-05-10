@@ -44,19 +44,6 @@ public class RRPolicy extends SchedPolicy {
        		return schedMap;
         }
         
-
-		@Override
-		public HashMap<JobInfo, PluginInfo> relocate(
-				Collection<Pair<JobInfo, PluginTask>> taskPairs,
-				List<JobInfo> jobToCancel) {
-			return null;
-		}
-		
-		@Override
-		public void jobDone(JobInfo job) {
-			// TODO Auto-generated method stub
-		}
-        
         private List<PluginInfo> filterByService(long serviceId, List<PluginInfo> plgs) {
                 ArrayList<PluginInfo> plugins = new ArrayList<PluginInfo>();
                 for (PluginInfo pluginInfo : plgs) {
@@ -81,4 +68,23 @@ public class RRPolicy extends SchedPolicy {
         
         	return plugins;
         }
+
+		@Override
+		public List<PluginTask> relocate(
+				Collection<Pair<JobInfo, PluginTask>> taskPairs) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void cancelJobEvent(PluginTask task) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void jobDone(PluginTask task) {
+			// TODO Auto-generated method stub
+			
+		}
 }
