@@ -243,12 +243,14 @@ public class SchedService implements Service, P2PListener, Runnable {
 		p2p.broadcast(msg); //TODO: isto é realmente um broadcast?
 	}
 	
-	private void updateJobStatus(PluginTask task) {
+	private synchronized void updateJobStatus(PluginTask task) {
 		// DEBUG
 		// System.out.println("Old Task Info: ");
 		// System.out.println(task.getId() + ": " + runningJobs.get(task.getId()).second.getState());
 		
-		getRunningJobs().get(task.getId()).second.setState(task.getState());
+		if (getRunningJobs().containsKey(task.getId())) {
+			getRunningJobs().get(task.getId()).second.setState(task.getState());
+		}
 		
 		// DEBUG
 		// System.out.println("New Task Info: ");
@@ -327,7 +329,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 		
 		for (Pair<JobInfo, PluginTask> pair : getRunningJobs().values()) {
 			if (pair.first.getId().equals(jobId)) {
-				getRunningJobs().remove(pair.first);
+				getRunningJobs().remove(pair.second.getId());
 				getPolicy().cancelJobEvent(pair.second);
 				cancelingJobs.put(pair.second.getId(), new Pair<String, Host>(jobId, origin));
 				CancelReqMessage msg = new CancelReqMessage(p2p.getPeerNode(), pair.second.getId());

@@ -449,6 +449,15 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			Pair<PluginTask, Future<PluginTask>> pair = executingTasks.remove(taskId);
 			task = pair.first;
 			pair.second.cancel(true);
+			
+			try {
+				String exec = "hadoop job -kill " + task.getJobInfo().getLocalId();
+				System.out.println(exec);
+				Runtime.getRuntime().exec(exec);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		} else if (pendingTasks.containsKey(taskId)) {
 			task = pendingTasks.remove(taskId).first;		
 		} else if (endingTasks.containsKey(taskId)) {
