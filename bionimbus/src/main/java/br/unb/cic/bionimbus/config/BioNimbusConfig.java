@@ -21,19 +21,12 @@ public class BioNimbusConfig {
 	
 	private String serverPath = "";
 
-	@JsonIgnore
-	private String infra;
-
 	public boolean isClient() {
 		return client;
 	}
 	
-	public void setInfra(String infra) {
-		this.infra = infra;
-	}	
-	
 	public String getInfra() {
-		return infra;
+		return "hadoop";
 	}
 	
 	public void setHost(Host host) {
@@ -82,6 +75,4 @@ public class BioNimbusConfig {
 	                  .add(serverPath, serverPath)
 		              .toString();
 	}
-
-
 }

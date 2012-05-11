@@ -291,9 +291,7 @@ public class SchedService implements Service, P2PListener, Runnable {
 	}
 	
 	private void scheduleJobs(PeerNode sender, PeerNode receiver) {
-		
-		if (pendingJobs.isEmpty()) return;
-		
+		if (pendingJobs.size() == 0) return;
 		LOG.info("--- Inicio de escalonamento ---");
 		HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(pendingJobs.values());
 		for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {

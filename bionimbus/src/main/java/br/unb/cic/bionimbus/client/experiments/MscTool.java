@@ -43,7 +43,7 @@ public class MscTool {
 
 		this.p2p = new P2PService(config);
 		this.p2p.start();
-		while (p2p.getPeers().isEmpty())
+		while (p2p.getPeers().size() == 0)
 			;
 
 		LOG.info("client is connected.");

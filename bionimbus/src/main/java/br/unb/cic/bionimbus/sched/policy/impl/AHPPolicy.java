@@ -30,7 +30,7 @@ public class AHPPolicy extends SchedPolicy {
 	private PluginInfo scheduleJob(JobInfo jobInfo) {
 		List<PluginInfo> plugins = filterByService(jobInfo.getServiceId(),
 				getCloudMap().values());
-		if (plugins.isEmpty()) {
+		if (plugins.size() == 0) {
 			return null;
 		}
 		return getBestService(plugins);

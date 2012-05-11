@@ -127,11 +127,9 @@ public class SchedTester {
 		scheduleJobs();
 	}
 	private void scheduleJobs() {
-		
-		if (!pendingJobs.isEmpty()) return;
-		
+		if (pendingJobs.size() == 0) return;
 		LOG.info("--- Inicio de escalonamento ---");
-		final Map<JobInfo, PluginInfo> schedMap = getPolicy().schedule(pendingJobs.values());
+		HashMap<JobInfo, PluginInfo> schedMap = getPolicy().schedule(pendingJobs.values());
 		for (Map.Entry<JobInfo,PluginInfo> entry : schedMap.entrySet()) {
 			JobInfo jobInfo = entry.getKey();
 			PluginInfo pluginInfo = entry.getValue();

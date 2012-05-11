@@ -34,11 +34,6 @@ public class BioNimbus {
 		
 		String configFile = System.getProperty("config.file", "conf/server.json");
 		BioNimbusConfig config = BioNimbusConfigLoader.loadHostConfig(configFile);
-		
-		if (config.getInfra() == null) {
-			config.setInfra("hadoop");
-		}
-		config.setInfra(config.getInfra());
 				
 		new BioNimbus(config);
 	}

@@ -22,7 +22,8 @@ public class ListServices implements Command {
 	@Override
 	public String execute(String... params) throws Exception {
 		if (!shell.isConnected())
-			throw new IllegalStateException("This command should be used with an active connection!");
+			throw new IllegalStateException(
+					"This command should be used with an active connection!");
 
 		P2PService p2p = shell.getP2P();
 		SyncCommunication comm = new SyncCommunication(p2p);
@@ -33,7 +34,7 @@ public class ListServices implements Command {
 		CloudRespMessage cloudMsg = (CloudRespMessage) comm.getResp();
 
 		String list = "";
-		if (!cloudMsg.values().isEmpty()) {
+		if (cloudMsg.values().size() > 0) {
 			for (PluginInfo info : cloudMsg.values()) {
 				for (PluginService service : info.getServices()) {
 					list += "ID: " + service.getId() + "; NAME: " + service.getName() + "\n";

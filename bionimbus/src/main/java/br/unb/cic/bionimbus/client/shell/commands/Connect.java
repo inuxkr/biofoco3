@@ -25,7 +25,7 @@ public class Connect implements Command {
 		p2p.start();
 		shell.setP2P(p2p);
 		
-		while (p2p.getPeers().isEmpty())
+		while (p2p.getPeers().size() == 0)
 			;
 		
 		shell.setConnected(true);

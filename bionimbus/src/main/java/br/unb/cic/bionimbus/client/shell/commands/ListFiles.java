@@ -35,7 +35,7 @@ public class ListFiles implements Command {
 		ListRespMessage resp = (ListRespMessage) comm.getResp();
 
 		String list = "";
-		if (!resp.values().isEmpty()) {
+		if (resp.values().size() > 0) {
 			for (PluginFile file : resp.values()) {
 				list += "ID: " + file.getId() + "; NAME: " + file.getPath() + "; SIZE: " + file.getSize() + "\n";
 			}

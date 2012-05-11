@@ -132,7 +132,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 				executingTasks.remove(task.getId());
 
-				if (!task.getJobInfo().getOutputs().isEmpty()) {
+				if (task.getJobInfo().getOutputs().size() > 0) {
 					int count = 0;
 					for (String output : task.getJobInfo().getOutputs()) {
 						File file = new File(p2p.getConfig().getServerPath() + "/" + output);
@@ -378,7 +378,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 		PluginTask task = new PluginTask();
 		task.setJobInfo(job);
-		if (!job.getInputs().isEmpty()) {
+		if (job.getInputs().size() > 0) {
 			pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
 			for (Pair<String, Long> pair : job.getInputs()) {
 				String fileId = pair.first;
