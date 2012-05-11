@@ -192,7 +192,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 		if (pendingTasks.containsKey(taskId)) {
 			task = pendingTasks.get(taskId).first;
-			task.setState(PluginTaskState.WAITING);
+			task.setState(PluginTaskState.PENDING);
 		} else if (executingTasks.containsKey(taskId)) {
 			task = executingTasks.get(taskId).first;
 			try {

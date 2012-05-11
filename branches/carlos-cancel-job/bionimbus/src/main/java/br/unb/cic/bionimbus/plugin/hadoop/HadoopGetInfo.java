@@ -29,11 +29,14 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 
 	public static void getTaskInfo(PluginTask task) throws Exception {
 		
-		// O estado da task e waiting ate que prove-se o contrario
-		task.setState(PluginTaskState.WAITING);
+		// O estado da task eh pending enquanto ela nao obter um Local Id.
+		task.setState(PluginTaskState.PENDING);
 		
 		// Se o local id estiver nulo quer dizer que a task ainda nem executou no hadoop
 		if (task.getJobInfo().getLocalId() == null) return;
+		
+		// O estado da task e waiting ate que prove-se o contrario
+		task.setState(PluginTaskState.WAITING);
 		
 		URL url = new URL(String.format(tasks, task.getJobInfo().getLocalId()));
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();

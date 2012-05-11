@@ -350,7 +350,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
 
 		if (pendingTasks.containsKey(taskId)) {
 			task = pendingTasks.get(taskId).first;
-			task.setState(PluginTaskState.WAITING);
+			task.setState(PluginTaskState.PENDING);
 		} else if (executingTasks.containsKey(taskId)) {
 			task = executingTasks.get(taskId).first;
 		} else if (endingTasks.containsKey(taskId)) {
