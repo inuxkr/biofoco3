@@ -191,15 +191,24 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 
 		if (pendingTasks.containsKey(taskId)) {
 			task = pendingTasks.get(taskId).first;
-			task.setState(PluginTaskState.WAITING);
+			task.setState(PluginTaskState.PENDING);
 		} else if (executingTasks.containsKey(taskId)) {
 			task = executingTasks.get(taskId).first;
+			try {
+				HadoopGetInfo.getTaskInfo(task);	
+			} catch (Exception ex) {
+				//TODO: O que fazer no erro?
+				// Por enquanto printa erro no servidor.
+				ex.printStackTrace();
+			}
+			
 		} else if (endingTasks.containsKey(taskId)) {
 			task = endingTasks.get(taskId).first;
 			task.setState(PluginTaskState.DONE);
 		}
 
 		if (task != null) {
+			System.out.println(task.getId() + " : " + task.getState());
 			StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), task);
 			p2p.sendMessage(receiver.getHost(), msg);
 		}
@@ -439,8 +448,17 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			Pair<PluginTask, Future<PluginTask>> pair = executingTasks.remove(taskId);
 			task = pair.first;
 			pair.second.cancel(true);
+			
+			try {
+				String exec = "hadoop job -kill " + task.getJobInfo().getLocalId();
+				System.out.println(exec);
+				Runtime.getRuntime().exec(exec);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		} else if (pendingTasks.containsKey(taskId)) {
-			task = pendingTasks.remove(taskId).first;			
+			task = pendingTasks.remove(taskId).first;		
 		} else if (endingTasks.containsKey(taskId)) {
 			task = endingTasks.remove(taskId).first;
 		}
