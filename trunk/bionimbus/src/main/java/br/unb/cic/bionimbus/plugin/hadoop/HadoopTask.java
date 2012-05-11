@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.plugin.PluginTaskState;
+import br.unb.cic.bionimbus.plugin.hadoop.utils.RunningJobIdParser;
 import br.unb.cic.bionimbus.utils.Pair;
 
 public class HadoopTask implements Callable<PluginTask> {
@@ -19,7 +20,7 @@ public class HadoopTask implements Callable<PluginTask> {
 	private final PluginService service;
 	
 	private final String path;
-
+	
 	public HadoopTask(HadoopPlugin plugin, PluginTask task, PluginService service, String path) {
 		this.plugin = plugin;
 		this.service = service;
@@ -50,19 +51,26 @@ public class HadoopTask implements Callable<PluginTask> {
 		try {
 			p = Runtime.getRuntime().exec(service.getPath() + " " + args);
 			task.setState(PluginTaskState.RUNNING);
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					p.getInputStream()));
+			
+			RunningJobIdParser parser = new RunningJobIdParser(p.getErrorStream());
+			parser.run();
+			
+			while (parser.getResult() == null) {
+				// Espera obter algum resultado no parser.
+			}
+			
+			this.task.getJobInfo().setLocalId(parser.getResult());
+			BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			String line;
 			while ((line = br.readLine()) != null) {
 				System.out.println(line);
 			}
 			br.close();
 			task.setState(PluginTaskState.DONE);
+			parser.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return task;
 	}
-
 }
