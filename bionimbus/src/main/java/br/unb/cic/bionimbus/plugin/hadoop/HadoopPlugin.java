@@ -73,7 +73,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private int myCount = 0;
 	
 	private final ConcurrentMap<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
-
+	
 	private final ConcurrentMap<String, Pair<PluginTask, Future<PluginTask>>> executingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
 	
 	private final ConcurrentMap<String, Pair<PluginTask, Integer>> endingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
@@ -208,7 +208,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		}
 
 		if (task != null) {
-			System.out.println(task.getId() + " : " + task.getState());
+			System.out.println(task.getJobInfo().getId() + "(" + task.getId() + "|" + task.getJobInfo().getLocalId() + ") : " + task.getState());
 			StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), task);
 			p2p.sendMessage(receiver.getHost(), msg);
 		}
@@ -451,7 +451,6 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 			
 			try {
 				String exec = "hadoop job -kill " + task.getJobInfo().getLocalId();
-				System.out.println(exec);
 				Runtime.getRuntime().exec(exec);
 			} catch (Exception e) {
 				e.printStackTrace();
