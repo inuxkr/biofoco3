@@ -16,7 +16,7 @@ import br.unb.cic.bionimbus.utils.Pair;
 
 public class AHPPolicy extends SchedPolicy {
 	
-	private static final int BLACKLIST_LIMIT = 6;
+	private static final int BLACKLIST_LIMIT = 12;
     private List<PluginInfo> usedResources = new ArrayList<PluginInfo>();
     private Map<PluginTask, Integer> blackList = new HashMap<PluginTask, Integer>();
 	
@@ -28,9 +28,6 @@ public class AHPPolicy extends SchedPolicy {
 	@Override
 	public HashMap<JobInfo, PluginInfo> schedule(Collection<JobInfo> jobInfos) {
 		if (jobInfos.isEmpty()) return null;
-		for (PluginInfo p: this.getCloudMap().values()) {
-			System.out.println(p.getId() + " " + p.getNumOccupied());
-		}
 		
 		HashMap<JobInfo, PluginInfo> jobMap = new HashMap<JobInfo, PluginInfo>();
 		JobInfo biggerJob = getBiggerJob(new ArrayList<JobInfo>(jobInfos));
@@ -39,7 +36,7 @@ public class AHPPolicy extends SchedPolicy {
 	}
 
 	@Override
-	public List<PluginTask> relocate(Collection<Pair<JobInfo, PluginTask>> taskPairs) {
+	public synchronized List<PluginTask> relocate(Collection<Pair<JobInfo, PluginTask>> taskPairs) {
 		List<PluginTask> tasksToCancel = new ArrayList<PluginTask>();
 		for ( Pair<JobInfo, PluginTask> taskPair : taskPairs) {
 			PluginTask task = taskPair.getSecond();
@@ -67,14 +64,6 @@ public class AHPPolicy extends SchedPolicy {
 			}
 		}
 		
-		//DEBUG
-		System.out.println("BLACK LIST COUNT");
-		
-		for (PluginTask task : blackList.keySet()) {
-			//DEBUG
-			System.out.println(task.getId() + "(" + task.getState() + ") : " + blackList.get(task));
-		}
-		
 		for (PluginTask task : tasksToCancel) {
 			blackList.remove(task);
 		}
@@ -85,7 +74,6 @@ public class AHPPolicy extends SchedPolicy {
 	@Override
 	public void jobDone(PluginTask task) {
 		//DEBUG
-		System.out.println(task.getId() + "removed from black list.");
 		if (blackList.containsKey(task)) {
 			blackList.remove(task);
 		}
@@ -224,8 +212,6 @@ public class AHPPolicy extends SchedPolicy {
 			priorities.add(pSum / sum);
 		}
 		
-		System.out.println("Priorities: "  + priorities);
-		
 		return priorities;
 	}
 
@@ -286,7 +272,9 @@ public class AHPPolicy extends SchedPolicy {
 		List<Double> prioritiesProcessor = getPrioritiesOnMatrix(mProcessor);
 		List<Double> priorities = multiplyVectors(prioritiesLatency, prioritiesProcessor);
 		
-		System.out.println(priorities);
+		System.out.println("Latency: " + prioritiesLatency);
+		System.out.println("Process: " + prioritiesProcessor);
+		System.out.println("Global : " + priorities);
 		
 		while (!priorities.isEmpty()) {
 			int index = getMaxNumberIndex(priorities);

@@ -10,7 +10,6 @@ public class RunningJobIdParser extends StreamReaderParserThread {
 	@Override
 	public String parse(String line) {
 		if (line == null) return null;
-		System.out.println(line);
 		if (line.contains("Running job:")) {
 			return line.substring(line.lastIndexOf(" ") + 1);
 		}

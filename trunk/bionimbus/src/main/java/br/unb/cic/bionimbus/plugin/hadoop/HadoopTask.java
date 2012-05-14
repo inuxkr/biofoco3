@@ -63,7 +63,7 @@ public class HadoopTask implements Callable<PluginTask> {
 			BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			String line;
 			while ((line = br.readLine()) != null) {
-				System.out.println(line);
+//				System.out.println(line);
 			}
 			br.close();
 			task.setState(PluginTaskState.DONE);
