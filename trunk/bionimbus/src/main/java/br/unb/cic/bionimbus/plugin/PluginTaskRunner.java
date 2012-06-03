@@ -11,11 +11,8 @@ import br.unb.cic.bionimbus.utils.Pair;
 public class PluginTaskRunner implements Callable<PluginTask> {
 
 	private final AbstractPlugin plugin;
-
 	private final PluginTask task;
-
 	private final PluginService service;
-
 	private final String path;
 
 	public PluginTaskRunner(AbstractPlugin plugin, PluginTask task,

@@ -1,31 +1,30 @@
 package br.unb.cic.bionimbus;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import br.unb.cic.bionimbus.discovery.DiscoveryService;
-import br.unb.cic.bionimbus.monitor.MonitorService;
 import br.unb.cic.bionimbus.p2p.P2PService;
-import br.unb.cic.bionimbus.sched.SchedService;
-import br.unb.cic.bionimbus.storage.StorageService;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+@Singleton
 public class ServiceManager {
 
-	private final List<Service> services = new ArrayList<Service>();
+	private final Set<Service> _services;
 
-	public ServiceManager() {
-		new DiscoveryService(this);
-		new StorageService(this);
-		new SchedService(this);
-		//new MonitorService(this);
+	@Inject
+	public ServiceManager(Set<Service> services) {
+        _services = new HashSet<Service>();
+        _services.addAll(services);
 	}
 
 	public void register(Service service) {
-		services.add(service);
+		_services.add(service);
 	}
 
 	public void startAll(P2PService p2p) {		
-		for (Service service : services) {
+		for (Service service : _services) {
 			service.start(p2p);
 		}
 	}

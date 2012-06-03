@@ -1,190 +1,266 @@
 package br.unb.cic.bionimbus.p2p.plugin.proxy;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
+import javax.servlet.http.HttpServlet;
+
+import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginOps;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.io.Files;
+public class ProxyServerStub {
 
-class ProxyServerStub implements Proxy {
+    private volatile boolean running;
+    private final JettyRunner jetty;
+    private final ExecutorService executorService;
+    private static final Random random = new Random();
+    private final Queue<RequestMessage> outgoingQueue = Queues.newConcurrentLinkedQueue(); // external
+    // -->
+    // proxy
+    // -->
+    // client
+    private final ConcurrentMap<Long, LinkedBlockingQueue<ResponseMessage>> incomingQueue = Maps.newConcurrentMap();
 
-	private volatile boolean running;
+    // client
+    // -->
+    // proxy
+    // -->
+    // external
+    private static final Logger LOG = LoggerFactory.getLogger(ProxyServerStub.class);
+    private final int port;
+    private File file;
 
-	private ServerSocket server;
-	private final ExecutorService executorService;
+    private static ProxyServerStub REF;
 
-	private volatile boolean clientConnection = false;
+    private String filePath;
+    private int maxFileSize = 50 * 1024;
+    private int maxMemSize = 4 * 1024;
 
-	private final Queue<String> outgoingQueue = new ConcurrentLinkedQueue<String>();
-	private final Map<String, BlockingQueue<String>> incomingQueue = new HashMap<String, BlockingQueue<String>>();
-	
-	private static final Logger LOG = LoggerFactory.getLogger(ProxyServerStub.class);
+    public static synchronized ProxyServerStub getInstance() {
+        return REF;
+    }
 
-	private final int port;
+    public static synchronized ProxyServerStub newInstance(ExecutorService executor, String host, int port) {
+        if (REF == null)
+            REF = new ProxyServerStub(executor, host, port);
+        return REF;
+    }
 
-	private File file;
+    private ProxyServerStub(ExecutorService executor, String host, int port) {
 
-	public ProxyServerStub(ExecutorService executor) {
-		this(executor, PORT);
-	}
+        this.port = port;
+        this.executorService = executor;
 
-	public ProxyServerStub(ExecutorService executor, int port) {
-		this.port = port;
-		this.executorService = executor;
-		
-		for (String command : Arrays.asList("SAVE-FILE", "INFO", "GET-FILE", "RUN-TASK")) {
-			incomingQueue.put(command, new LinkedBlockingQueue<String>());
+        jetty = JettyRunner.getInstance(port, new FileHandlingServlet());
+
+/*
+		for (Command command : Command.values()) {
+			incomingQueue.put(command, new LinkedBlockingQueue<ResponseMessage>());
 		}
-		
-	}
+*/
 
-	public void request(String command) {
-		outgoingQueue.add(command);
-	}
-	
-	public void request(String command, File file) {
-		outgoingQueue.add(command);
-		
-		this.file = file;
-	}
+    }
 
-	public void start() {
+    public long request(Command command) {
+        RequestMessage msg = new RequestMessage(random.nextLong(), command);
+        outgoingQueue.add(msg);
+        return msg.getId();
 
-		executorService.submit(new Runnable() {
+    }
 
-			@Override
-			public void run() {
-				
-				System.out.println("Starting ProxyServerStub on port " + port);
+    public long request(Command command, String filename) {
+        RequestMessage msg = new RequestMessage(random.nextLong(), command, filename);
+        outgoingQueue.add(msg);
+        return msg.getId();
+    }
 
-				try {
-					server = new ServerSocket(port);
-					server.setReuseAddress(true);
-					running = true;
-					while (running) {
-						// if (!clientConnection) {
-						System.out.println("Listening to connections...");
-						Socket client = server.accept();
-						clientConnection = true;
-						executorService.execute(new ClientConnection(client));
-						// }
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					running = false;
-					clientConnection = false;
-				}
-			}
+    public void start() {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Starting ProxyServerStub on port " + port);
+                try {
+                    jetty.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    running = false;
+                }
+            }
+        });
+    }
 
-		});
+    public void shutdown() {
+        try {
+            System.out.println("Stopping ProxyServerStub ...");
+            jetty.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            running = false;
+        }
+    }
 
-	}
+    public synchronized ResponseMessage getResponse(long messageId) throws InterruptedException {
+        System.out.println("Getting getResponse for message " + messageId);
+        incomingQueue.putIfAbsent(messageId, new LinkedBlockingQueue<ResponseMessage>());
+        return incomingQueue.get(messageId).take();
+    }
 
-	public void shutdown() {
-		try {
-			System.out.println("Stopping ProxyServerStub ...");
-			server.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			running = false;
-			clientConnection = false;
-		}
-	}
+    public void setResponse(ResponseMessage<? extends PluginOps> response) throws InterruptedException {
+        incomingQueue.get(response.getId()).put(response);
+    }
 
-	private final class ClientConnection implements Runnable {
+    public List<RequestMessage> getCommands() {
+        System.out.println("Consumindo dados da fila de entrada...");
+        RequestMessage command = null;
+        List<RequestMessage> out = Lists.newArrayList();
+        while ((command = outgoingQueue.poll()) != null) {
+            out.add(command);
+        }
+        return out;
+    }
 
-		private final Socket client;
-
-		public ClientConnection(Socket client) {
-			this.client = client;
-		}
-
-		public void run() {
-
-			System.out.println("client connected from address " + client.getInetAddress());
-
-			try {
-
-				String command = null;
-
-				while ((command = outgoingQueue.poll()) == null) {
-					System.out.print(".");
-					TimeUnit.SECONDS.sleep(2);
-				}
-
-				do {
-					
-					System.out.println("Consumindo dados da fila de entrada...");
-					
-					DataOutputStream output = new DataOutputStream(client.getOutputStream());
-					output.writeUTF(command);
-					
-					if (command.startsWith("SAVE-FILE")) {
-						Files.copy(file, output);
-						output.flush();
-					}
-					
-					if (command.startsWith("GET-FILE")){
-//						Files.copy(file, output);
-					}
-
-					DataInputStream input = new DataInputStream(client.getInputStream());
-					
-					String result = input.readUTF();					
-					System.out.println("Dados recebidos do cliente: " + result);
-					String[] splits = result.split("#");
-					command = splits[0];
-					String response = splits[1];
-					incomingQueue.get(command).add(response);
-
-				} while ((command = outgoingQueue.poll()) != null);
-				
-				System.out.println("Fila de entrada vazia");
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				System.out.println("Fechando socket do stub e ignorando erros");
-				closeAndIgnoreErrors(client);
-				clientConnection = false;
-			}
-		}
-
-		private void closeAndIgnoreErrors(Socket socket) {
-			try {
-				socket.close();
-			} catch (IOException ie) { /* ignore */
-			}
-		}
-	}
-
-	public boolean hasClientConnection() {
-		return clientConnection;
-	}
-
-	public String response(String command) throws InterruptedException {
-		System.out.println("Getting response for command " + command);
-		return incomingQueue.get(command).take();
-	}
+    class FileHandlingServlet extends HttpServlet {
+//
+//		private static final long serialVersionUID = 8048142529312970675L;
+//
+//        private volatile long leaseTime = 0L;
+//        public static final long INTERVAL_MS = 60 * 1000;
+//
+//        @Override
+//        public void init() throws ServletException {
+//            HealthChecks.register(new MyHealthCheck("latestConnectionTime"));
+//            filePath = "/tmp";
+//        }
+//
+//		public void doGet(HttpServletRequest request, HttpServletResponse getResponse)
+//        throws ServletException, IOException {
+//
+//			getResponse.setContentType("application/json");
+//			getResponse.setStatus(HttpServletResponse.SC_OK);
+//
+//            ObjectMapper mapper = new ObjectMapper();
+//            getResponse.getWriter().write(mapper.writeValueAsString(out));
+//			String result = request.getParameter("result");
+//
+//			if (result != null) {
+//				System.out.println(result);
+//			}
+//
+//            leaseTime = System.currentTimeMillis();
+//		}
+//
+//		@Override
+//		protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+//				throws ServletException, IOException {
+//
+//			String data = req.getParameter("data");
+//			if (data != null) {
+//				System.out.println(data);
+//				StringTokenizer st = new StringTokenizer(data, "#");
+//				String command = st.nextToken();
+//				String json = st.nextToken();
+//				try {
+//					incomingQueue.get(command).put(json);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//
+//			boolean isMultipart = ServletFileUpload.isMultipartContent(req);
+//			java.io.PrintWriter out = resp.getWriter();
+//			if (isMultipart)
+//				try {
+//					getFile(req);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//
+//            leaseTime = System.currentTimeMillis();
+//		}
+//
+//		private void getFile(HttpServletRequest req) throws Exception {
+//
+//			DiskFileItemFactory factory = new DiskFileItemFactory();
+//			// maximum size that will be stored in memory
+//			factory.setSizeThreshold(maxMemSize);
+//			// Location to save data that is larger than maxMemSize.
+//			factory.setRepository(new File("/tmp"));
+//
+//			// Create a new file upload handler
+//			ServletFileUpload upload = new ServletFileUpload(factory);
+//			// maximum file size to be uploaded.
+//			upload.setSizeMax(maxFileSize);
+//
+//			// Parse the request to get file items.
+//			List<?> fileItems = upload.parseRequest(req);
+//
+//			// Process the uploaded file items
+//			Iterator<?> i = fileItems.iterator();
+//
+//			while (i.hasNext()) {
+//				FileItem fi = (FileItem) i.next();
+//				if (!fi.isFormField()) {
+//					// Get the uploaded file parameters
+//					String fieldName = fi.getFieldName();
+//					String fileName = fi.getName();
+//					String contentType = fi.getContentType();
+//					boolean isInMemory = fi.isInMemory();
+//					long sizeInBytes = fi.getSize();
+//
+//					// Write the file
+//					if (fileName.lastIndexOf("\\") >= 0) {
+//						file = new File(
+//								filePath
+//										+ fileName.substring(fileName
+//												.lastIndexOf("\\")));
+//					} else {
+//						file = new File(
+//								filePath
+//										+ fileName.substring(fileName
+//												.lastIndexOf("\\") + 1));
+//					}
+//					fi.write(file);
+//				}
+//			}
+//            leaseTime = System.currentTimeMillis();
+//		}
+//
+//        class MyHealthCheck extends HealthCheck {
+//
+//            private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:mm:s");
+//
+//            protected MyHealthCheck(String name) {
+//                super(name);
+//            }
+//
+//            @Override
+//            protected Result check() throws Exception {
+//
+//                if (INTERVAL_MS < 2 * (System.currentTimeMillis() - leaseTime)){
+//
+//                    String message = null;
+//                    if (leaseTime == 0) {
+//                        message = "ever detected.";
+//                    }
+//                    else {
+//                        message = String.format("since %s (current time: %s)"
+//                                ,sdf.format(new Date(leaseTime))
+//                                ,sdf.format(new Date()));
+//                    }
+//                    return Result.unhealthy("No connection from stub " + message);
+//                }
+//                return Result.healthy();
+//            }
+//        }
+    }
 
 }

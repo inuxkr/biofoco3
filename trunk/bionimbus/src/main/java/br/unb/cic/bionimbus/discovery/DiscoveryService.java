@@ -1,66 +1,79 @@
 package br.unb.cic.bionimbus.discovery;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-
 import br.unb.cic.bionimbus.Service;
-import br.unb.cic.bionimbus.ServiceManager;
 import br.unb.cic.bionimbus.messaging.Message;
-import br.unb.cic.bionimbus.p2p.P2PEvent;
-import br.unb.cic.bionimbus.p2p.P2PEventType;
-import br.unb.cic.bionimbus.p2p.P2PListener;
-import br.unb.cic.bionimbus.p2p.P2PMessageEvent;
-import br.unb.cic.bionimbus.p2p.P2PMessageType;
-import br.unb.cic.bionimbus.p2p.P2PService;
-import br.unb.cic.bionimbus.p2p.PeerNode;
-import br.unb.cic.bionimbus.p2p.messages.AbstractMessage;
-import br.unb.cic.bionimbus.p2p.messages.CloudRespMessage;
-import br.unb.cic.bionimbus.p2p.messages.ErrorMessage;
-import br.unb.cic.bionimbus.p2p.messages.InfoReqMessage;
-import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.p2p.*;
+import br.unb.cic.bionimbus.p2p.messages.*;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.google.inject.Singleton;
 
-public class DiscoveryService implements Service, P2PListener, Runnable {
+import java.util.concurrent.*;
+
+@Singleton
+public class DiscoveryService implements Service, P2PListener, Runnable, RemovalListener<Object, Object> {
 	
 	private static final int PERIOD_SECS = 5;
-
-	private final Map<String, PluginInfo> infoMap = new ConcurrentHashMap<String, PluginInfo>();
-
-	private final ScheduledExecutorService schedExecService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("DiscoveryService-%d").build());
+//	private final ConcurrentMap<String, PluginInfo> infoMap;
+    private final Cache<String, PluginInfo> infoCache;
+	private final ScheduledExecutorService schedExecService;
 
 	private P2PService p2p;
 
-	public DiscoveryService(ServiceManager manager) {
-		System.out.println("registering DiscoveryService...");
-		manager.register(this);
-	}
+    public DiscoveryService() {
 
-	@Override
+        infoCache = CacheBuilder.newBuilder()
+                                .initialCapacity(1000)
+                                .weakKeys()
+                                .expireAfterWrite(3*PERIOD_SECS, TimeUnit.SECONDS)
+                                .removalListener(this)
+                                .build();
+
+        schedExecService = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder()
+                                                                    .setDaemon(true)
+                                                                    .setNameFormat("DiscoveryService-%d")
+                                                                    .build());
+    }
+
+    @Override
 	public void run() {
 		System.out.println("running DiscoveryService...");
-		Message msg = new InfoReqMessage(p2p.getPeerNode());
-		p2p.broadcast(msg);
-
-		long now = System.currentTimeMillis();
-		for (PluginInfo plugin : infoMap.values()) {
-			if (now - plugin.getTimestamp() > 3*PERIOD_SECS*1000) {
-				infoMap.remove(plugin.getId());
-			}
-		}
+        broadcastDiscoveryMessage();
+//        removeStaleEntriesFromInfoMap();
 	}
 
-	@Override
-	public void start(P2PService p2p) {
-		this.p2p = p2p;
-		if (p2p != null)
-			p2p.addListener(this);
-		schedExecService.scheduleAtFixedRate(this, 0, PERIOD_SECS, TimeUnit.SECONDS);
-	}
+    private void broadcastDiscoveryMessage() {
+        Preconditions.checkNotNull(p2p);
+        Message msg = new InfoReqMessage(p2p.getPeerNode());
+        p2p.broadcast(msg);
+    }
+
+    /**
+     * TODO: substituir por Guava Cache com expiração
+     */
+/*
+    private void removeStaleEntriesFromInfoMap() {
+        long now = System.currentTimeMillis();
+        for (PluginInfo plugin : infoMap.values()) {
+            if (now - plugin.getTimestamp() > 3*PERIOD_SECS*1000) {
+                infoMap.remove(plugin.getId());
+            }
+        }
+    }
+*/
+
+    @Override
+	public void start(final P2PService p2p) {
+        Preconditions.checkNotNull(p2p);
+        this.p2p = p2p;
+        p2p.addListener(this);
+        schedExecService.scheduleAtFixedRate(this, 0, PERIOD_SECS, TimeUnit.SECONDS);
+    }
 
 	@Override
 	public void shutdown() {
@@ -68,14 +81,14 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 		schedExecService.shutdownNow();
 	}
 
+    /**
+     * TODO: qual a razão de existir este método?
+     */
 	@Override
-	public void getStatus() {
-		// TODO Auto-generated method stub
-
-	}
+	public void getStatus() {}
 
 	@Override
-	public void onEvent(P2PEvent event) {
+	public void onEvent(final P2PEvent event) {
 		if (!event.getType().equals(P2PEventType.MESSAGE))
 			return;
 
@@ -94,16 +107,10 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 		switch (P2PMessageType.of(msg.getType())) {
 		case INFORESP:
 			InfoRespMessage infoMsg = (InfoRespMessage) msg;
-			PluginInfo info = infoMsg.getPluginInfo();
-			info.setUptime(receiver.uptime());
-			info.setLatency(receiver.getLatency());
-			info.setTimestamp(System.currentTimeMillis());
-			infoMap.put(info.getId(), info);
+            insertResponseIntoInfoMap(receiver, infoMsg);
 			break;
 		case CLOUDREQ:
-			CloudRespMessage cloudMsg = new CloudRespMessage(sender, infoMap.values());
-			if (receiver != null)
-				p2p.sendMessage(receiver.getHost(), cloudMsg);
+            sendRequestMessage(sender, receiver);
 			break;
 		case ERROR:
 			ErrorMessage errMsg = (ErrorMessage) msg;
@@ -114,4 +121,22 @@ public class DiscoveryService implements Service, P2PListener, Runnable {
 		}
 	}
 
+    private void sendRequestMessage(final PeerNode sender, final PeerNode receiver) {
+        CloudRespMessage cloudMsg = new CloudRespMessage(sender, infoCache.asMap().values());
+        if (receiver != null)
+            p2p.sendMessage(receiver.getHost(), cloudMsg);
+    }
+
+    private void insertResponseIntoInfoMap(PeerNode receiver, InfoRespMessage infoMsg) {
+        PluginInfo info = infoMsg.getPluginInfo();
+        info.setUptime(receiver.uptime());
+        info.setLatency(receiver.getLatency());
+        info.setTimestamp(System.currentTimeMillis());
+        infoCache.put(info.getId(), info);
+    }
+
+    @Override
+    public void onRemoval(RemovalNotification<Object, Object> removalNotification) {
+        System.out.println("Removendo entrada do infoCache");
+    }
 }

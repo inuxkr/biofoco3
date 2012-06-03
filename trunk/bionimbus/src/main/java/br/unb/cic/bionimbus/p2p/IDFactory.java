@@ -15,26 +15,16 @@
 package br.unb.cic.bionimbus.p2p;
 
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 import com.google.common.base.Preconditions;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 
 
 public final class IDFactory {
 	
 	private static final Random random = new Random(System.nanoTime());
-	private static MessageDigest md;
-	
-	static{
-		try {
-			md = MessageDigest.getInstance("SHA-1");
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
-	}
 	
 	private IDFactory() {}
 	
@@ -54,9 +44,8 @@ public final class IDFactory {
 	}
 
 	private static byte[] digest(byte[] input) {
-		md.reset();
-		md.update(input);
-		return md.digest();
+		Hasher sha1 = Hashing.sha1().newHasher();
+		return sha1.putBytes(input).hash().asBytes();		
 	}
 
 	public static ID newRandomID() {

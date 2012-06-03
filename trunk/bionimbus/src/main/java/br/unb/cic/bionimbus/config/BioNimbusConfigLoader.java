@@ -9,13 +9,17 @@ public final class BioNimbusConfigLoader {
 
 	private BioNimbusConfigLoader() {}
 	
-	public static BioNimbusConfig loadHostConfig(String filename) throws IOException {
+	public static BioNimbusConfig loadHostConfig(final String filename) throws IOException {
+
 		ObjectMapper mapper = new ObjectMapper();
-//		HostConfig hostConfig = mapper.readValue(new File(filename), HostConfig.class);
-		return mapper.readValue(new File(filename), BioNimbusConfig.class);
-//		BioNimbusConfig config = new BioNimbusConfig();
-//		config.setHost(new Host(hostConfig.getAddress(), hostConfig.getPort()));
-//		return config;
+		BioNimbusConfig config = mapper.readValue(new File(filename), BioNimbusConfig.class);
+
+        if (config.getInfra() == null) {
+            config.setInfra("linux");
+        }
+
+        config.setInfra(config.getInfra());
+        return config;
 	}
 
 }

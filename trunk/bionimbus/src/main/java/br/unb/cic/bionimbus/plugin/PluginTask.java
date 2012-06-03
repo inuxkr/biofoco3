@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import br.unb.cic.bionimbus.client.JobInfo;
 
-public class PluginTask {
+public class PluginTask implements PluginOps {
 	
 	private PluginTaskState state = PluginTaskState.WAITING;
 	

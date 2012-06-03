@@ -22,33 +22,31 @@ import br.unb.cic.bionimbus.messaging.MessageService;
 import br.unb.cic.bionimbus.p2p.messages.PingReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.PingRespMessage;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class P2PService implements MessageListener, FileListener {
 
-	private final MessageService msgService = new MessageService();
-
-	private final List<P2PListener> listeners = new CopyOnWriteArrayList<P2PListener>();
-	
+	private final MessageService msgService;
+	private final List<P2PListener> listeners;
 	private final PeerNode peerNode;
-	
 	private final ChordRing chord;
-
 	private final BioNimbusConfig config;
-	
-	private final Set<Host> seeds = new CopyOnWriteArraySet<Host>();
-	
-	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+	private final Set<Host> seeds;
+	private ScheduledExecutorService executor;
 		
-	public P2PService(BioNimbusConfig config) {
+	public P2PService(final BioNimbusConfig config) {
 		this.peerNode = PeerFactory.createPeer(true);
 		peerNode.setHost(config.getHost());		
 		chord = new ChordRing(peerNode);
-		
-		seeds.addAll(config.getSeeds());
+
+        seeds = new CopyOnWriteArraySet<Host>();
+        seeds.addAll(config.getSeeds());
 		
 		this.config = config;
-	}
+        msgService = new MessageService();
+        listeners = new CopyOnWriteArrayList<P2PListener>();
+    }
 	
 	public BioNimbusConfig getConfig() {
 		return config;
@@ -56,7 +54,7 @@ public class P2PService implements MessageListener, FileListener {
 
 	public void start() {
 		
-		List<Integer> types = new ArrayList<Integer>();
+		final List<Integer> types = new ArrayList<Integer>();
 
 		for (P2PMessageType enumType : P2PMessageType.values())
 			types.add(enumType.code());
@@ -108,7 +106,7 @@ public class P2PService implements MessageListener, FileListener {
 	}
 	
 	public void getFile(Host host, String fileName) {
-		Map<String, String> emptyMap = Collections.emptyMap();
+		final Map<String, String> emptyMap = Collections.emptyMap();
 		this.getFile(host, fileName, emptyMap);
 	}
 	
@@ -117,9 +115,9 @@ public class P2PService implements MessageListener, FileListener {
 	}
 
 	@Override
-	public void onFileRecvd(File file, Map<String, String> parms) {
+	public void onFileReceived(File file, Map<String, String> parameters) {
 		for (P2PListener listener : listeners) {
-			P2PEvent event = new P2PFileEvent(file, parms);
+			P2PEvent event = new P2PFileEvent(file, parameters);
 			listener.onEvent(event);
 		}
 	}
@@ -158,7 +156,7 @@ public class P2PService implements MessageListener, FileListener {
 	}
 
 	public List<Host> getSeeds() {
-		return new ArrayList<Host>(config.getSeeds());
+		return ImmutableList.copyOf(config.getSeeds());
 	}
 	
 	private class SeedFinger implements Runnable {
@@ -183,6 +181,6 @@ public class P2PService implements MessageListener, FileListener {
 	}
 
 	public List<PeerNode> getPeers() {
-		return new ArrayList<PeerNode>(chord.peers());
+		return ImmutableList.copyOf(chord.peers());
 	}
 }
