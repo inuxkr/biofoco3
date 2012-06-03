@@ -1,8 +1,0 @@
-{ "type": "record",
-  "name": "CustomerCredit",
-  "doc": "Credit available for bank customers",
-  "fields" : [
-    {"name": "username", "type": "string"},
-    {"name": "credit", "type": "double", "default": 0.0},
-    {"name": "approved", "type": ["boolean","null"], "default": "false"}
-  ]}
