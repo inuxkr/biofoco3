@@ -65,6 +65,6 @@ public class PluginFile {
 	
 	@Override
 	public String toString() {
-		return id.toString() + ":" + path;
+		return id + ":" + path;
 	}
 }

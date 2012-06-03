@@ -135,7 +135,7 @@ public class Client implements P2PListener {
 		
 		//System.out.println("I am not alone in the dark anymore!");
 
-		//client.uploadFile("teste.txt");
+		//client.uploadFileToProxy("teste.txt");
 		
 		TimeUnit.SECONDS.sleep(120);
 		client.listFiles();

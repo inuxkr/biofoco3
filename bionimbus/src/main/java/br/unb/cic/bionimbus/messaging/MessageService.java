@@ -10,7 +10,9 @@ import br.unb.cic.bionimbus.config.BioNimbusConfig;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.inject.Singleton;
 
+@Singleton
 public class MessageService {
 
 	private final MessageServiceServer server = new MessageServiceServer();
@@ -77,6 +79,6 @@ public class MessageService {
 
 	public void recvFile(File file, Map<String, String> parms) {
 		for (FileListener listener : fileListenersList)
-			listener.onFileRecvd(file, parms);
+			listener.onFileReceived(file, parms);
 	}
 }

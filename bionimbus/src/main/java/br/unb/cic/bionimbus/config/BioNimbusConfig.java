@@ -6,25 +6,40 @@ import java.util.Set;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.google.common.base.Objects;
+import com.google.inject.Singleton;
 
 import br.unb.cic.bionimbus.p2p.Host;
 
+@Singleton
 public class BioNimbusConfig {
 	
 	private @JsonIgnore String id;
-	
+	private @JsonIgnore String infra;
 	private @JsonIgnore Set<Host> seeds = new HashSet<Host>();
-
 	private Host host;
-	
-	private boolean client = false;
-	
+	private boolean client = false;	
 	private String serverPath = "";
+    
+    private String proxyHost = "localhost";
+    private int proxyPort = 8080;
 
-	@JsonIgnore
-	private String infra;
+    public String getProxyHost() {
+        return proxyHost;
+    }
 
-	public boolean isClient() {
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    public int getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(int proxyPort) {
+        this.proxyPort = proxyPort;
+    }
+
+    public boolean isClient() {
 		return client;
 	}
 	

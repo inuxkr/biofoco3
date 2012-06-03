@@ -5,6 +5,6 @@ import java.util.Map;
 
 public interface FileListener {
 	
-	void onFileRecvd(File file, Map<String, String> parms);
+	void onFileReceived(File file, Map<String, String> parameters);
 
 }

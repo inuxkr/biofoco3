@@ -1,9 +1,11 @@
 package br.unb.cic.bionimbus.p2p;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +114,7 @@ public final class ChordRing {
 				peers.add(p);
 			}
 		}
-		return peers;
+		return ImmutableSortedSet.copyOf(peers);
 	}
 
 	public synchronized String printRawTable() {

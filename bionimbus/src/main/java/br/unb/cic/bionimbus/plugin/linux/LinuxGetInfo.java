@@ -1,14 +1,13 @@
 package br.unb.cic.bionimbus.plugin.linux;
 
+import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.PluginService;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
-import br.unb.cic.bionimbus.plugin.PluginInfo;
-import br.unb.cic.bionimbus.plugin.PluginService;
 
 public class LinuxGetInfo implements Callable<PluginInfo> {
 
@@ -45,7 +44,7 @@ public class LinuxGetInfo implements Callable<PluginInfo> {
 	}
 
 	private void getServices() throws Exception {
-		List<PluginService> list = new CopyOnWriteArrayList<PluginService>();
+		final List<PluginService> list = new CopyOnWriteArrayList<PluginService>();
 		File dir = new File(SERVICE_DIR);
 
 		if (dir.isDirectory()) {

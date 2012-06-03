@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.unb.cic.bionimbus.Service;
-import br.unb.cic.bionimbus.ServiceManager;
 import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.Host;
@@ -52,6 +51,9 @@ import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class SchedService implements Service, P2PListener, Runnable {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(SchedService.class);
@@ -88,8 +90,8 @@ public class SchedService implements Service, P2PListener, Runnable {
 
 	private int isPending = 0;
 
-	public SchedService(ServiceManager manager) {
-		manager.register(this);
+	public SchedService(){
+
 	}
 
 	public synchronized SchedPolicy getPolicy() {

@@ -18,11 +18,9 @@ import br.unb.cic.bionimbus.plugin.PluginTaskRunner;
 
 public class LinuxPlugin extends AbstractPlugin {
 
-	private final ExecutorService executorService = Executors
-			.newCachedThreadPool(new BasicThreadFactory.Builder()
-					.namingPattern("LinuxPlugin-workers-%d").build());
+	private final ExecutorService executorService = Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("LinuxPlugin-workers-%d").build());
 
-	public LinuxPlugin(P2PService p2p) {
+	public LinuxPlugin(final P2PService p2p) {
 		super(p2p);
 	}
 

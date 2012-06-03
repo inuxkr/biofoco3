@@ -1,7 +1,6 @@
 package br.unb.cic.bionimbus.storage;
 
 import java.io.File;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -9,12 +8,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import br.unb.cic.bionimbus.Service;
-import br.unb.cic.bionimbus.ServiceManager;
 import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.messaging.Message;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
@@ -47,10 +44,6 @@ public class StorageService implements Service, P2PListener, Runnable {
 	private Map<String, PluginFile> savedFiles = new ConcurrentHashMap<String, PluginFile>();
 
 	private P2PService p2p = null;
-
-	public StorageService(ServiceManager manager) {
-		manager.register(this);
-	}
 
 	@Override
 	public void run() {

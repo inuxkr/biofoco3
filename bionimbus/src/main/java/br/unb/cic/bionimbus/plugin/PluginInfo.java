@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.unb.cic.bionimbus.p2p.Host;
 
-public class PluginInfo {
+public class PluginInfo implements PluginOps {
 	
 	private String id;
 	

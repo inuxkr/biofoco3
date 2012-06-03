@@ -38,456 +38,456 @@ import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
 import br.unb.cic.bionimbus.utils.Pair;
 
 public abstract class AbstractPlugin extends P2PAbstractListener implements Plugin, Runnable {
-	
-	private String id = UUID.randomUUID().toString();
-	
-	private Future<PluginInfo> futureInfo = null;
-	
-	private PluginInfo myInfo = null;
-	
-	private String errorString = "Plugin is loading...";
 
-	private int myCount = 0;
-	
-	private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("bionimbus-plugin-%d").build());
-	
-	private final ConcurrentMap<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
-	
-	private final ConcurrentMap<String, Pair<PluginTask, Future<PluginTask>>> executingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
-	
-	private final ConcurrentMap<String, Pair<PluginTask, Integer>> endingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
-	
-	private final List<Future<PluginFile>> pendingSaves = new CopyOnWriteArrayList<Future<PluginFile>>();
-	
-	private final List<Future<PluginGetFile>> pendingGets = new CopyOnWriteArrayList<Future<PluginGetFile>>();
-	
-	private final ConcurrentMap<String, Pair<String, Integer>> inputFiles = new ConcurrentHashMap<String, Pair<String,Integer>>();
-	
-	private final ConcurrentMap<String, PluginFile> pluginFiles = new ConcurrentHashMap<String, PluginFile>();
-	
-	public AbstractPlugin(P2PService p2p) {
-		super(p2p);
+    private String id = UUID.randomUUID().toString();
 
-		File infoFile = new File("plugininfo.json");
-		if (infoFile.exists()) {
-			try {
-				ObjectMapper mapper = new ObjectMapper();
-				myInfo = mapper.readValue(infoFile, PluginInfo.class);
-				id = myInfo.getId();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    private Future<PluginInfo> futureInfo = null;
 
-	public Map<String, Pair<String, Integer>> getInputFiles() {
-		return inputFiles;
-	}
-	
-	protected abstract Future<PluginInfo> startGetInfo();
-	
-	protected abstract Future<PluginFile> saveFile(String filename);
-	
-	protected abstract Future<PluginGetFile> getFile(Host origin, PluginFile file, String taskId, String savePath);
-	
-	protected abstract Future<PluginTask> startTask(PluginTask task);
-	
-	private String getId() {
-		return id;
-	}
-	
-	private Future<PluginInfo> getFutureInfo() {
-		return futureInfo;
-	}
-	
-	private void setFutureInfo(Future<PluginInfo> futureInfo) {
-		this.futureInfo = futureInfo;
-	}
-	
-	protected PluginInfo getMyInfo() {
-		return myInfo;
-	}
-	
-	private void setMyInfo(PluginInfo info) {
-		myInfo = info;
+    private PluginInfo myInfo = null;
 
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.writeValue(new File("plugininfo.json"), myInfo);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private String getErrorString() {
-		return errorString;
-	}
-	
-	private void setErrorString(String errorString) {
-		this.errorString = errorString;
-	}
+    private String errorString = "Plugin is loading...";
 
-	@Override
-	public void setP2P(P2PService p2p) {
-		// TODO Auto-generated method stub
+    private int myCount = 0;
 
-	}
-	
-	@Override
-	public void start() {
-		schedExecutorService.scheduleAtFixedRate(this, 0, 3, TimeUnit.SECONDS);
-	}
-	
-	@Override
-	public void shutdown() {
-		schedExecutorService.shutdown();
-		getP2P().remove(this);
-	}
-	
-	@Override
-	public void run() {
-		checkGetInfo();
-		checkFinishedTasks();
-		checkPendingSaves();
-		checkPendingGets();
-	}
-	
-	private void checkGetInfo() {
-		myCount++;
-		if (myCount < 10)
-			return;
-		myCount = 0;
+    private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("bionimbus-plugin-%d").build());
 
-		Future<PluginInfo> futureInfo = getFutureInfo();
-		if (futureInfo == null) {
-			setFutureInfo(startGetInfo());
-			return;
-		}
+    private final ConcurrentMap<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
 
-		if (!futureInfo.isDone())
-			return;
-		
-		try {
-			PluginInfo newInfo = futureInfo.get();
-			newInfo.setId(id);
-			newInfo.setHost(getP2P().getPeerNode().getHost());
-			setMyInfo(newInfo);
-		} catch (Exception e) {
-			setErrorString(e.getMessage());
-			setMyInfo(null);
-		}
+    private final ConcurrentMap<String, Pair<PluginTask, Future<PluginTask>>> executingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
 
-		setFutureInfo(null);
-	}
-	
-	private void checkFinishedTasks() {
-		P2PService p2p = getP2P();
-		Future<PluginTask> futureTask;
-		PluginTask task;
+    private final ConcurrentMap<String, Pair<PluginTask, Integer>> endingTasks = new ConcurrentHashMap<String, Pair<PluginTask,Integer>>();
 
-		for (Pair<PluginTask, Future<PluginTask>> pair : executingTasks.values()) {
-			futureTask = pair.second;
+    private final List<Future<PluginFile>> pendingSaves = new CopyOnWriteArrayList<Future<PluginFile>>();
 
-			if (!futureTask.isDone())
-				continue;
+    private final List<Future<PluginGetFile>> pendingGets = new CopyOnWriteArrayList<Future<PluginGetFile>>();
 
-			try {
-				task = futureTask.get();
-			} catch (Exception e) {
-				task = pair.first;
-				Message msg = new TaskErrorMessage(p2p.getPeerNode(), getId(), task.getId(), e.getMessage());
-				p2p.broadcast(msg);
-				continue;
-			}
+    private final ConcurrentMap<String, Pair<String, Integer>> inputFiles = new ConcurrentHashMap<String, Pair<String,Integer>>();
 
-			executingTasks.remove(task.getId());
+    private final ConcurrentMap<String, PluginFile> pluginFiles = new ConcurrentHashMap<String, PluginFile>();
 
-			if (task.getJobInfo().getOutputs().size() > 0) {
-				int count = 0;
-				for (String output : task.getJobInfo().getOutputs()) {
-					File file = new File(p2p.getConfig().getServerPath() + "/" + output);
-					FileInfo info = new FileInfo();
-					info.setName(p2p.getConfig().getServerPath() + "/" + output);
-					info.setSize(file.length());
-					StoreReqMessage msg = new StoreReqMessage(p2p.getPeerNode(), info, task.getId());
-					p2p.broadcast(msg);
-					count++;
-				}				
-				endingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, count));
-			} else {
-				EndMessage endMsg = new EndMessage(p2p.getPeerNode(), task);
-				p2p.broadcast(endMsg);
-			}
-		}
-	}
-	
-	private void checkPendingSaves() {
-		P2PService p2p = getP2P();
+    public AbstractPlugin(final P2PService p2p) {
+        super(p2p);
 
-		for (Future<PluginFile> f : pendingSaves) {
+        File infoFile = new File("plugininfo.json");
+        if (infoFile.exists()) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                myInfo = mapper.readValue(infoFile, PluginInfo.class);
+                id = myInfo.getId();  //TODO plugininfo.json só serve para recuperar ID?
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-			if (!f.isDone())
-				continue;
+    public Map<String, Pair<String, Integer>> getInputFiles() {
+        return inputFiles;
+    }
 
-			try {
-				PluginFile file = f.get();
-				file.setPluginId(getId());
-				pendingSaves.remove(f);
-				pluginFiles.put(file.getId(), file);
-				StoreAckMessage msg = new StoreAckMessage(p2p.getPeerNode(), file);
-				p2p.broadcast(msg);
-			} catch (Exception e) {
-				e.printStackTrace();
-				//TODO criar mensagem de erro?
-			}
-		}
-	}
-	
-	private void checkPendingGets() {
-		P2PService p2p = getP2P();
+    protected abstract Future<PluginInfo> startGetInfo();
 
-		for (Future<PluginGetFile> f : pendingGets) {
+    protected abstract Future<PluginFile> saveFile(String filename);
 
-			if (!f.isDone())
-				continue;
-			
-			try {
-				PluginGetFile get = f.get();
-				pendingGets.remove(f);
-				Message msg = new PrepRespMessage(p2p.getPeerNode(), getMyInfo(), get.getPluginFile(), get.getTaskId());
-				p2p.sendMessage(get.getPeer(), msg);
-			} catch (Exception e) {
-				e.printStackTrace();
-				// TODO criar mensagem de erro?
-			}
-		}
-	}
+    protected abstract Future<PluginGetFile> getFile(Host origin, PluginFile file, String taskId, String savePath);
 
-	@Override
-	protected void recvFile(File file, Map<String, String> parms) {
-		if (parms.isEmpty()) {
-			Future<PluginFile> save = saveFile(file.getPath());
-			pendingSaves.add(save);
-			return;
-		}
-		
-		String fileId = parms.get("fileId");
-		String fileName = parms.get("fileName");
-		Pair<String, Integer> inputFile = inputFiles.get(fileId);
-		int count = 0;
-		if (inputFile != null)
-			count = inputFile.second;
-		count++;
-		inputFiles.put(fileId, new Pair<String, Integer>(fileName, count));
-			
-		
-		String taskId = parms.get("taskId");
-		Pair<PluginTask, Integer> pair = pendingTasks.get(taskId);
-		count = pair.second;
-		if (--count == 0) {
-			pendingTasks.remove(taskId);
-			Future<PluginTask> futureTask = startTask(pair.first);
-			Pair<PluginTask, Future<PluginTask>> fPair = Pair.of(pair.first, futureTask);
-			executingTasks.put(pair.first.getId(), fPair);
-			return;
-		}
-		
-		Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
-		pendingTasks.put(taskId, newPair);
-	}
+    protected abstract Future<PluginTask> startTask(PluginTask task);
 
-	@Override
-	protected void recvInfoReq(Host origin) {
-		Message message;
-		P2PService p2p = getP2P();
+    private String getId() {
+        return id;
+    }
 
-		if (getMyInfo() == null)
-			message = new InfoErrorMessage(p2p.getPeerNode(), getId(), getErrorString());
-		else
-			message = new InfoRespMessage(p2p.getPeerNode(), getMyInfo());
+    private Future<PluginInfo> getFutureInfo() {
+        return futureInfo;
+    }
 
-		p2p.sendMessage(origin, message);
-	}
+    private void setFutureInfo(Future<PluginInfo> futureInfo) {
+        this.futureInfo = futureInfo;
+    }
 
-	@Override
-	protected void recvInfoResp(Host origin, PluginInfo info) { }
+    protected PluginInfo getMyInfo() {
+        return myInfo;
+    }
 
-	@Override
-	protected void recvStartReq(Host origin, JobInfo job) {
-		P2PService p2p = getP2P();
-		PluginService service = getMyInfo().getService(job.getServiceId());
-		if (service == null)
-			return;
+    private void setMyInfo(PluginInfo info) {
+        myInfo = info;
 
-		PluginTask task = new PluginTask();
-		task.setJobInfo(job);
-		if (!job.getInputs().isEmpty()) {
-			pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
-			for (Pair<String, Long> pair: job.getInputs()) {
-				String fileId = pair.first;
-				p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), fileId, task.getId()));
-			}
-		} else {
-			Future<PluginTask> futureTask = startTask(task);
-			Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, futureTask);
-			executingTasks.put(task.getId(), pair);
-		}
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(new File("plugininfo.json"), myInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-		StartRespMessage resp = new StartRespMessage(p2p.getPeerNode(), job.getId(), task);
-		p2p.sendMessage(origin, resp);
-	}
+    private String getErrorString() {
+        return errorString;
+    }
 
-	@Override
-	protected void recvStartResp(Host origin, String jobId, PluginTask task) { }
+    private void setErrorString(String errorString) {
+        this.errorString = errorString;
+    }
 
-	@Override
-	protected void recvEnd(Host origin, PluginTask task) { }
+    @Override
+    public void setP2P(P2PService p2p) {
+        // TODO Auto-generated method stub
 
-	@Override
-	protected void recvStatusReq(Host origin, String taskId) {
-		P2PService p2p = getP2P();
-		PluginTask task = null;
+    }
 
-		if (pendingTasks.containsKey(taskId)) {
-			task = pendingTasks.get(taskId).first;
-			task.setState(PluginTaskState.PENDING);
-		} else if (executingTasks.containsKey(taskId)) {
-			task = executingTasks.get(taskId).first;
-		} else if (endingTasks.containsKey(taskId)) {
-			task = endingTasks.get(taskId).first;
-			task.setState(PluginTaskState.DONE);
-		}
+    @Override
+    public void start() {
+        schedExecutorService.scheduleAtFixedRate(this, 0, 3, TimeUnit.SECONDS);
+    }
 
-		if (task != null) {
-			StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), task);
-			p2p.sendMessage(origin, msg);
-		}
-	}
+    @Override
+    public void shutdown() {
+        schedExecutorService.shutdown();
+        getP2P().remove(this);
+    }
 
-	@Override
-	protected void recvStatusResp(Host origin, PluginTask task) { }
+    @Override
+    public void run() {
+        checkGetInfo();
+        checkFinishedTasks();
+        checkPendingSaves();
+        checkPendingGets();
+    }
 
-	@Override
-	protected void recvStoreReq(Host origin, FileInfo file, String taskId) { }
+    private void checkGetInfo() {
+        myCount++;
+        if (myCount < 10)
+            return;
+        myCount = 0;
 
-	@Override
-	protected void recvStoreResp(Host origin, PluginInfo plugin, FileInfo file, String taskId) {
-		if (taskId.length() <= 0)
-			return;
+        Future<PluginInfo> futureInfo = getFutureInfo();
+        if (futureInfo == null) {
+            setFutureInfo(startGetInfo());
+            return;
+        }
 
-		P2PService p2p = getP2P();
-		if (plugin.equals(getMyInfo())) {
-			Future<PluginFile> save = saveFile(file.getName());
-			pendingSaves.add(save);
-		} else {
-			p2p.sendFile(plugin.getHost(), file.getName());
-		}
-		
-		Pair<PluginTask, Integer> pair = endingTasks.get(taskId);
-		int count = pair.second;
-		count--;
+        if (!futureInfo.isDone())
+            return;
 
-		if (count == 0) {
-			endingTasks.remove(taskId);
-			EndMessage endMsg = new EndMessage(p2p.getPeerNode(), pair.first);
-			p2p.broadcast(endMsg);
-		} else {
-			Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
-			endingTasks.put(taskId, newPair);
-		}
-	}
+        try {
+            PluginInfo newInfo = futureInfo.get();
+            newInfo.setId(id);
+            newInfo.setHost(getP2P().getPeerNode().getHost());
+            setMyInfo(newInfo);
+        } catch (Exception e) {
+            setErrorString(e.getMessage());
+            setMyInfo(null);
+        }
 
-	@Override
-	protected void recvStoreAck(Host origin, PluginFile file) { }
+        setFutureInfo(null);
+    }
 
-	@Override
-	protected void recvGetReq(Host origin, String fileId, String taskId) { }
+    private void checkFinishedTasks() {
+        P2PService p2p = getP2P();
+        Future<PluginTask> futureTask;
+        PluginTask task;
 
-	@Override
-	protected void recvGetResp(Host origin, PluginInfo plugin, PluginFile file, String taskId) {
-		P2PService p2p = getP2P();
-		Message msg = new PrepReqMessage(p2p.getPeerNode(), file, taskId);
-		p2p.sendMessage(plugin.getHost(), msg);
-	}
+        for (Pair<PluginTask, Future<PluginTask>> pair : executingTasks.values()) {
+            futureTask = pair.second;
 
-	@Override
-	protected void recvCloudReq(Host origin) { }
+            if (!futureTask.isDone())
+                continue;
 
-	@Override
-	protected void recvCloudResp(Host origin, Collection<PluginInfo> plugins) {	}
+            try {
+                task = futureTask.get();
+            } catch (Exception e) {
+                task = pair.first;
+                Message msg = new TaskErrorMessage(p2p.getPeerNode(), getId(), task.getId(), e.getMessage());
+                p2p.broadcast(msg);
+                continue;
+            }
 
-	@Override
-	protected void recvSchedReq(Host origin, Collection<JobInfo> jobList) { }
+            executingTasks.remove(task.getId());
 
-	@Override
-	protected void recvSchedResp(Host origin, String jobId, PluginInfo plugin) { }
+            if (task.getJobInfo().getOutputs().size() > 0) {
+                int count = 0;
+                for (String output : task.getJobInfo().getOutputs()) {
+                    File file = new File(p2p.getConfig().getServerPath() + "/" + output);
+                    FileInfo info = new FileInfo();
+                    info.setName(p2p.getConfig().getServerPath() + "/" + output);
+                    info.setSize(file.length());
+                    StoreReqMessage msg = new StoreReqMessage(p2p.getPeerNode(), info, task.getId());
+                    p2p.broadcast(msg);
+                    count++;
+                }
+                endingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, count));
+            } else {
+                EndMessage endMsg = new EndMessage(p2p.getPeerNode(), task);
+                p2p.broadcast(endMsg);
+            }
+        }
+    }
 
-	@Override
-	protected void recvJobReq(Host origin, Collection<JobInfo> jobList) { }
+    private void checkPendingSaves() {
+        P2PService p2p = getP2P();
 
-	@Override
-	protected void recvJobResp(Host origin, JobInfo job) { }
+        for (Future<PluginFile> f : pendingSaves) {
 
-	@Override
-	protected void recvError(Host origin, String error) { }
+            if (!f.isDone())
+                continue;
 
-	@Override
-	protected void recvPingReq(Host origin, long timestamp) { }
+            try {
+                PluginFile file = f.get();
+                file.setPluginId(getId());
+                pendingSaves.remove(f);
+                pluginFiles.put(file.getId(), file);
+                StoreAckMessage msg = new StoreAckMessage(p2p.getPeerNode(), file);
+                p2p.broadcast(msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                //TODO criar mensagem de erro?
+            }
+        }
+    }
 
-	@Override
-	protected void recvPingResp(Host origin, long timestamp) { }
+    private void checkPendingGets() {
+        P2PService p2p = getP2P();
 
-	@Override
-	protected void recvListReq(Host origin) { }
+        for (Future<PluginGetFile> f : pendingGets) {
 
-	@Override
-	protected void recvListResp(Host origin, Collection<PluginFile> files) { }
+            if (!f.isDone())
+                continue;
 
-	@Override
-	protected void recvPrepReq(Host origin, PluginFile file, String taskId) {
-		Future<PluginGetFile> f = getFile(origin, file, taskId, getP2P().getConfig().getServerPath());
-		pendingGets.add(f);
-	}
+            try {
+                PluginGetFile get = f.get();
+                pendingGets.remove(f);
+                Message msg = new PrepRespMessage(p2p.getPeerNode(), getMyInfo(), get.getPluginFile(), get.getTaskId());
+                p2p.sendMessage(get.getPeer(), msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                // TODO criar mensagem de erro?
+            }
+        }
+    }
 
-	@Override
-	protected void recvPrepResp(Host origin, PluginInfo plugin, PluginFile file, String taskId) {
-		Map<String, String> parms = new HashMap<String, String>();
-		parms.put("taskId", taskId);
-		parms.put("fileId", file.getId());
-		parms.put("fileName", file.getPath());
+    @Override
+    protected void recvFile(File file, Map<String, String> parms) {
+        if (parms.isEmpty()) {
+            Future<PluginFile> save = saveFile(file.getPath());
+            pendingSaves.add(save);
+            return;
+        }
 
-		if (plugin.equals(getMyInfo())) {
-			recvFile(new File(file.getPath()), parms);
-		} else {
-			getP2P().getFile(plugin.getHost(), file.getPath(), parms);
-		}
-	}
+        String fileId = parms.get("fileId");
+        String fileName = parms.get("fileName");
+        Pair<String, Integer> inputFile = inputFiles.get(fileId);
+        int count = 0;
+        if (inputFile != null)
+            count = inputFile.second;
+        count++;
+        inputFiles.put(fileId, new Pair<String, Integer>(fileName, count));
 
-	@Override
-	protected void recvCancelReq(Host origin, String taskId) {
-		P2PService p2p = getP2P();
-		PluginTask task = null;
 
-		if (executingTasks.containsKey(taskId)) {
-			Pair<PluginTask, Future<PluginTask>> pair = executingTasks.remove(taskId);
-			task = pair.first;
-			pair.second.cancel(true);
-		} else if (pendingTasks.containsKey(taskId)) {
-			task = pendingTasks.remove(taskId).first;			
-		} else if (endingTasks.containsKey(taskId)) {
-			task = endingTasks.remove(taskId).first;
-		}
-		
-		CancelRespMessage msg = new CancelRespMessage(p2p.getPeerNode(), task);
-		p2p.sendMessage(origin, msg);
-	}
-	
-	@Override
-	protected void recvCancelResp(Host origin, PluginTask task) { }
+        String taskId = parms.get("taskId");
+        Pair<PluginTask, Integer> pair = pendingTasks.get(taskId);
+        count = pair.second;
+        if (--count == 0) {
+            pendingTasks.remove(taskId);
+            Future<PluginTask> futureTask = startTask(pair.first);
+            Pair<PluginTask, Future<PluginTask>> fPair = Pair.of(pair.first, futureTask);
+            executingTasks.put(pair.first.getId(), fPair);
+            return;
+        }
 
-	@Override
-	protected void recvJobCancelReq(Host origin, String jobId) { };
+        Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
+        pendingTasks.put(taskId, newPair);
+    }
 
-	@Override
-	protected void recvJobCancelResp(Host origin, String jobId) { };
+    @Override
+    protected void recvInfoReq(Host origin) {
+        Message message;
+        P2PService p2p = getP2P();
+
+        if (getMyInfo() == null)
+            message = new InfoErrorMessage(p2p.getPeerNode(), getId(), getErrorString());
+        else
+            message = new InfoRespMessage(p2p.getPeerNode(), getMyInfo());
+
+        p2p.sendMessage(origin, message);
+    }
+
+    @Override
+    protected void recvInfoResp(Host origin, PluginInfo info) { }
+
+    @Override
+    protected void recvStartReq(Host origin, JobInfo job) {
+        P2PService p2p = getP2P();
+        PluginService service = getMyInfo().getService(job.getServiceId());
+        if (service == null)
+            return;
+
+        PluginTask task = new PluginTask();
+        task.setJobInfo(job);
+        if (!job.getInputs().isEmpty()) {
+            pendingTasks.put(task.getId(), new Pair<PluginTask, Integer>(task, job.getInputs().size()));
+            for (Pair<String, Long> pair: job.getInputs()) {
+                String fileId = pair.first;
+                p2p.broadcast(new GetReqMessage(p2p.getPeerNode(), fileId, task.getId()));
+            }
+        } else {
+            Future<PluginTask> futureTask = startTask(task);
+            Pair<PluginTask, Future<PluginTask>> pair = Pair.of(task, futureTask);
+            executingTasks.put(task.getId(), pair);
+        }
+
+        StartRespMessage resp = new StartRespMessage(p2p.getPeerNode(), job.getId(), task);
+        p2p.sendMessage(origin, resp);
+    }
+
+    @Override
+    protected void recvStartResp(Host origin, String jobId, PluginTask task) { }
+
+    @Override
+    protected void recvEnd(Host origin, PluginTask task) { }
+
+    @Override
+    protected void recvStatusReq(Host origin, String taskId) {
+        P2PService p2p = getP2P();
+        PluginTask task = null;
+
+        if (pendingTasks.containsKey(taskId)) {
+            task = pendingTasks.get(taskId).first;
+            task.setState(PluginTaskState.PENDING);
+        } else if (executingTasks.containsKey(taskId)) {
+            task = executingTasks.get(taskId).first;
+        } else if (endingTasks.containsKey(taskId)) {
+            task = endingTasks.get(taskId).first;
+            task.setState(PluginTaskState.DONE);
+        }
+
+        if (task != null) {
+            StatusRespMessage msg = new StatusRespMessage(p2p.getPeerNode(), task);
+            p2p.sendMessage(origin, msg);
+        }
+    }
+
+    @Override
+    protected void recvStatusResp(Host origin, PluginTask task) { }
+
+    @Override
+    protected void recvStoreReq(Host origin, FileInfo file, String taskId) { }
+
+    @Override
+    protected void recvStoreResp(Host origin, PluginInfo plugin, FileInfo file, String taskId) {
+        if (taskId.length() <= 0)
+            return;
+
+        P2PService p2p = getP2P();
+        if (plugin.equals(getMyInfo())) {
+            Future<PluginFile> save = saveFile(file.getName());
+            pendingSaves.add(save);
+        } else {
+            p2p.sendFile(plugin.getHost(), file.getName());
+        }
+
+        Pair<PluginTask, Integer> pair = endingTasks.get(taskId);
+        int count = pair.second;
+        count--;
+
+        if (count == 0) {
+            endingTasks.remove(taskId);
+            EndMessage endMsg = new EndMessage(p2p.getPeerNode(), pair.first);
+            p2p.broadcast(endMsg);
+        } else {
+            Pair<PluginTask, Integer> newPair = new Pair<PluginTask, Integer>(pair.first, count);
+            endingTasks.put(taskId, newPair);
+        }
+    }
+
+    @Override
+    protected void recvStoreAck(Host origin, PluginFile file) { }
+
+    @Override
+    protected void recvGetReq(Host origin, String fileId, String taskId) { }
+
+    @Override
+    protected void recvGetResp(Host origin, PluginInfo plugin, PluginFile file, String taskId) {
+        P2PService p2p = getP2P();
+        Message msg = new PrepReqMessage(p2p.getPeerNode(), file, taskId);
+        p2p.sendMessage(plugin.getHost(), msg);
+    }
+
+    @Override
+    protected void recvCloudReq(Host origin) { }
+
+    @Override
+    protected void recvCloudResp(Host origin, Collection<PluginInfo> plugins) {	}
+
+    @Override
+    protected void recvSchedReq(Host origin, Collection<JobInfo> jobList) { }
+
+    @Override
+    protected void recvSchedResp(Host origin, String jobId, PluginInfo plugin) { }
+
+    @Override
+    protected void recvJobReq(Host origin, Collection<JobInfo> jobList) { }
+
+    @Override
+    protected void recvJobResp(Host origin, JobInfo job) { }
+
+    @Override
+    protected void recvError(Host origin, String error) { }
+
+    @Override
+    protected void recvPingReq(Host origin, long timestamp) { }
+
+    @Override
+    protected void recvPingResp(Host origin, long timestamp) { }
+
+    @Override
+    protected void recvListReq(Host origin) { }
+
+    @Override
+    protected void recvListResp(Host origin, Collection<PluginFile> files) { }
+
+    @Override
+    protected void recvPrepReq(Host origin, PluginFile file, String taskId) {
+        Future<PluginGetFile> f = getFile(origin, file, taskId, getP2P().getConfig().getServerPath());
+        pendingGets.add(f);
+    }
+
+    @Override
+    protected void recvPrepResp(Host origin, PluginInfo plugin, PluginFile file, String taskId) {
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("taskId", taskId);
+        parms.put("fileId", file.getId());
+        parms.put("fileName", file.getPath());
+
+        if (plugin.equals(getMyInfo())) {
+            recvFile(new File(file.getPath()), parms);
+        } else {
+            getP2P().getFile(plugin.getHost(), file.getPath(), parms);
+        }
+    }
+
+    @Override
+    protected void recvCancelReq(Host origin, String taskId) {
+        P2PService p2p = getP2P();
+        PluginTask task = null;
+
+        if (executingTasks.containsKey(taskId)) {
+            Pair<PluginTask, Future<PluginTask>> pair = executingTasks.remove(taskId);
+            task = pair.first;
+            pair.second.cancel(true);
+        } else if (pendingTasks.containsKey(taskId)) {
+            task = pendingTasks.remove(taskId).first;
+        } else if (endingTasks.containsKey(taskId)) {
+            task = endingTasks.remove(taskId).first;
+        }
+
+        CancelRespMessage msg = new CancelRespMessage(p2p.getPeerNode(), task);
+        p2p.sendMessage(origin, msg);
+    }
+
+    @Override
+    protected void recvCancelResp(Host origin, PluginTask task) { }
+
+    @Override
+    protected void recvJobCancelReq(Host origin, String jobId) { }
+
+    @Override
+    protected void recvJobCancelResp(Host origin, String jobId) { }
 }

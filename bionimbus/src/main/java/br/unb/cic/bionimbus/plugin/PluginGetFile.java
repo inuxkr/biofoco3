@@ -2,7 +2,7 @@ package br.unb.cic.bionimbus.plugin;
 
 import br.unb.cic.bionimbus.p2p.Host;
 
-public class PluginGetFile {
+public class PluginGetFile implements PluginOps {
 	
 	private PluginFile pluginFile;
 	
@@ -38,14 +38,15 @@ public class PluginGetFile {
 	public boolean equals(Object object) {
 		if (this == object)
 			return true;
-		
-		if (!(object instanceof PluginGetFile)) {
-			return false;
-		}
-		
-		PluginGetFile other = (PluginGetFile) object;
-		
-		return (this.pluginFile.equals(other.pluginFile) && this.taskId.equals(other.taskId));
+
+        if (!(object instanceof PluginGetFile)) {
+
+            PluginGetFile other = (PluginGetFile) object;
+
+            return (this.pluginFile.equals(other.pluginFile) && this.taskId.equals(other.taskId));
+        } else {
+            return false;
+        }
 	}
 	
 	@Override

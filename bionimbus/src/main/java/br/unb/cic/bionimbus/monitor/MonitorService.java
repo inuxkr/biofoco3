@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import com.google.inject.Singleton;
+
 import br.unb.cic.bionimbus.Service;
 import br.unb.cic.bionimbus.ServiceManager;
 import br.unb.cic.bionimbus.client.JobInfo;
@@ -36,6 +38,7 @@ import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.utils.Pair;
 
+@Singleton
 public class MonitorService implements Service, P2PListener, Runnable {
 
 	private final ScheduledExecutorService schedExecService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("MonitorService-%d").build());
