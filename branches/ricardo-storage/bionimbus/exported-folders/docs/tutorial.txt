@@ -1,5 +1,0 @@
-
-
-1. Empacotando zip com projeto e dependências em um único jar.
-$ mvn clean package assembly:single
-
