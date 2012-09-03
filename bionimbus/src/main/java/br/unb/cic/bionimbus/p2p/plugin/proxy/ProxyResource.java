@@ -29,25 +29,27 @@ public class ProxyResource {
         server = ProxyServerStub.getInstance();
     }
     
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getCommands() throws IOException {
-        List<RequestMessage> out = server.getCommands();
-        return serialize(out);
-    }
+    //TODO reativar este sub-projeto
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public String getCommands() throws IOException {
+//        List<RequestMessage> out = server.getCommands();
+//        return serialize(out);
+//    }
 
-    @POST
-    @Path("/info")
-    public String retrieveInfo(@FormParam("data") String data) throws IOException, InterruptedException {
-        System.out.println(data);
-        if (data != null && data.length() > 0){
-            ObjectMapper mapper = new ObjectMapper();
-            ResponseMessage<PluginInfo> response = mapper.readValue(data, new TypeReference<ResponseMessage<PluginInfo>>() {});
-            server.setResponse(response);
-            return "Info received";
-        }
-        return null;
-    }
+    //TODO reativar este sub-projeto
+//    @POST
+//    @Path("/info")
+//    public String retrieveInfo(@FormParam("data") String data) throws IOException, InterruptedException {
+//        System.out.println(data);
+//        if (data != null && data.length() > 0){
+//            ObjectMapper mapper = new ObjectMapper();
+//            ResponseMessage<PluginInfo> response = mapper.readValue(data, new TypeReference<ResponseMessage<PluginInfo>>() {});
+//            server.setResponse(response);
+//            return "Info received";
+//        }
+//        return null;
+//    }
     
     String serialize(Object obj) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
