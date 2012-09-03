@@ -10,7 +10,7 @@ import br.unb.cic.bionimbus.plugin.*;
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PService;
 
-import static br.unb.cic.bionimbus.p2p.plugin.proxy.Command.GET_INFO;
+//import static br.unb.cic.bionimbus.p2p.plugin.proxy.Command.GET_INFO;
 
 public class RemotePlugin extends AbstractPlugin {
 
@@ -46,14 +46,15 @@ public class RemotePlugin extends AbstractPlugin {
 
 					public PluginInfo call() throws Exception {
 
-						long messageId = server.request(GET_INFO);
-						ResponseMessage<PluginInfo> response = server.getResponse(messageId);
-						PluginInfo info = response.getResponse();
-						info.setId(id);
-						info.setHost(host);
+//						long messageId = server.request(GET_INFO);
+//						ResponseMessage<PluginInfo> response = server.getResponse(messageId);
+//						PluginInfo info = response.getResponse();
+//						info.setId(id);
+//						info.setHost(host);
+//
+//						return info;
 
-						return info;
-
+						return null;
 					}
 				});
 		executor.execute(future);

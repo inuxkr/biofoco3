@@ -20,12 +20,12 @@ public class ProxyServerStub {
     private final JettyRunner jetty;
     private final ExecutorService executorService;
     private static final Random random = new Random();
-    private final Queue<RequestMessage> outgoingQueue = Queues.newConcurrentLinkedQueue(); // external
-    // -->
-    // proxy
-    // -->
-    // client
-    private final ConcurrentMap<Long, LinkedBlockingQueue<ResponseMessage>> incomingQueue = Maps.newConcurrentMap();
+//    private final Queue<RequestMessage> outgoingQueue = Queues.newConcurrentLinkedQueue(); // external
+//    // -->
+//    // proxy
+//    // -->
+//    // client
+//    private final ConcurrentMap<Long, LinkedBlockingQueue<ResponseMessage>> incomingQueue = Maps.newConcurrentMap();
 
     // client
     // -->
@@ -67,18 +67,18 @@ public class ProxyServerStub {
 
     }
 
-    public long request(Command command) {
-        RequestMessage msg = new RequestMessage(random.nextLong(), command);
-        outgoingQueue.add(msg);
-        return msg.getId();
-
-    }
-
-    public long request(Command command, String filename) {
-        RequestMessage msg = new RequestMessage(random.nextLong(), command, filename);
-        outgoingQueue.add(msg);
-        return msg.getId();
-    }
+//    public long request(Command command) {
+//        RequestMessage msg = new RequestMessage(random.nextLong(), command);
+//        outgoingQueue.add(msg);
+//        return msg.getId();
+//
+//    }
+//
+//    public long request(Command command, String filename) {
+//        RequestMessage msg = new RequestMessage(random.nextLong(), command, filename);
+//        outgoingQueue.add(msg);
+//        return msg.getId();
+//    }
 
     public void start() {
         executorService.submit(new Runnable() {
@@ -106,25 +106,25 @@ public class ProxyServerStub {
         }
     }
 
-    public synchronized ResponseMessage getResponse(long messageId) throws InterruptedException {
-        System.out.println("Getting getResponse for message " + messageId);
-        incomingQueue.putIfAbsent(messageId, new LinkedBlockingQueue<ResponseMessage>());
-        return incomingQueue.get(messageId).take();
-    }
-
-    public void setResponse(ResponseMessage<? extends PluginOps> response) throws InterruptedException {
-        incomingQueue.get(response.getId()).put(response);
-    }
-
-    public List<RequestMessage> getCommands() {
-        System.out.println("Consumindo dados da fila de entrada...");
-        RequestMessage command = null;
-        List<RequestMessage> out = Lists.newArrayList();
-        while ((command = outgoingQueue.poll()) != null) {
-            out.add(command);
-        }
-        return out;
-    }
+//    public synchronized ResponseMessage getResponse(long messageId) throws InterruptedException {
+//        System.out.println("Getting getResponse for message " + messageId);
+//        incomingQueue.putIfAbsent(messageId, new LinkedBlockingQueue<ResponseMessage>());
+//        return incomingQueue.get(messageId).take();
+//    }
+//
+//    public void setResponse(ResponseMessage<? extends PluginOps> response) throws InterruptedException {
+//        incomingQueue.get(response.getId()).put(response);
+//    }
+//
+//    public List<RequestMessage> getCommands() {
+//        System.out.println("Consumindo dados da fila de entrada...");
+//        RequestMessage command = null;
+//        List<RequestMessage> out = Lists.newArrayList();
+//        while ((command = outgoingQueue.poll()) != null) {
+//            out.add(command);
+//        }
+//        return out;
+//    }
 
     class FileHandlingServlet extends HttpServlet {
 //
