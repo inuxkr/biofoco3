@@ -59,7 +59,7 @@ isPending: 0
 Job 4477c8c5-9e51-414b-8643-55fe0ab9ed5f: 5.714 segundos
 
 Isso quer dizer que o serviço foi agendado para execução, escalonado e executado! =)
-Para criar um novo serviço basta criar um arquivo .json dentro da pasta services.
+Para criar um novo serviço basta criar um arquivo .json dentro da pasta services seguindo o padrão dos outros.
 
 5. Acho que isso já é o suficiente para começar. Com um BREAKPOINT aqui e ali no código da para entender da onde veio pra onde vai etc. E qualquer coisa é só me mandarem um email.
 
