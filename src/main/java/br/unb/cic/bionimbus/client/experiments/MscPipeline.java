@@ -30,7 +30,7 @@ public class MscPipeline implements Pipeline {
 		job.setServiceId(1111);
 		job.addInput(input.getId(), input.getSize());
 		// AQUI VOCE TEM QUE COLOCAR O ID DO ARQUIVO s1.fa
-		job.addInput("7fa0a4ec-5776-492e-9d92-f8036eba43f3", new Long(114503237));
+		job.addInput("f7bfe579-acdc-4a68-970e-13a5fad235b5", new Long(425984));
 		job.addOutput(outputFiles.get(0));
 		jobs.add(job);
 
@@ -48,7 +48,7 @@ public class MscPipeline implements Pipeline {
 		job.setId(null);
 		job.setServiceId(1113);
 		// AQUI VOCE TEM QUE COLOCAR O ID DO ARQUIVO human.genome
-		job.addInput("5abb7a9d-5398-49a2-9821-6352ebe7defc", new Long(365));
+		job.addInput("1440d6ba-ca56-4d51-a167-cbf00d54a6fa", new Long(365));
 		job.addOutput(outputFiles.get(2));
 		jobs.add(job);
 

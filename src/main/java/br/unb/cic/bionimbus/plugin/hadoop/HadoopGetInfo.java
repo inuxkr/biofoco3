@@ -151,7 +151,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 	
 	private void loadServices(PluginInfo info) throws Exception {
 		List<PluginService> list = new CopyOnWriteArrayList<PluginService>();
-		System.out.println("serviceDir = " + serviceDir);
+		//System.out.println("serviceDir = " + serviceDir);
 		File dir = new File(serviceDir);
 		
 		if (dir.isDirectory()) {
@@ -165,12 +165,56 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		}
 		info.setServices(list);
 	}
+	
+	private void getNetworkInfo(PluginInfo info) {
+		/*
+		try {  
+            URL url = new URL("http://www.ip2location.com/");  
+            HttpURLConnection conexao = (HttpURLConnection) url.openConnection();
+            conexao.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+            conexao.connect();
+            java.io.BufferedReader pagina = new java.io.BufferedReader(new java.io.InputStreamReader(conexao.getInputStream()));
+            String str;
+
+            Pattern patternIP = Pattern.compile("[0-9]*\\.[0-9]*\\.[0-9]*\\.[0-9]*");
+            Pattern patternLL = Pattern.compile("-?[0-9]*\\.[0-9]*,\\s-?[0-9]*\\.[0-9]*");
+
+            while((str = pagina.readLine()) != null){
+            	
+            	if (str.contains("chkLatLng")) {
+            		Matcher m = patternLL.matcher(str);
+            		if (m.find()) {
+            			for (int i = 0; i <= m.groupCount(); i++) {
+            				String[] ll = m.group(i).split(", ");
+            				info.setLatitude(Double.valueOf(ll[0]));
+            				info.setLongitude(Double.valueOf(ll[1]));
+            			}
+            		}
+            	}
+
+            	if (str.contains("ipAddress")) {
+            		Matcher m = patternIP.matcher(str);
+            		if (m.find()) {
+            			for (int i = 0; i <= m.groupCount(); i++) {
+            				info.setIp(m.group(i));
+            			}
+            		}
+            	}
+            }
+
+            pagina.close();
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }
+        */
+	}
 
 	@Override
 	public PluginInfo call() throws Exception {
 		PluginInfo info = new PluginInfo();
 		getNameNodeInfo(info);
 		getJobTrackerInfo(info);
+		getNetworkInfo(info);
 		loadServices(info);
 		return info;
 	}

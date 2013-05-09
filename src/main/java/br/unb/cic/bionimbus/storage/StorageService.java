@@ -129,6 +129,11 @@ public class StorageService implements Service, P2PListener, Runnable {
 			// TODO Tem que verificar se o Id do file existe, ou melhor, caso o file seja null deve
 			// exibir uma mensagem de erro avisando que o id do arquivo informado não existe
 			for (PluginInfo plugin : cloudMap.values()) {
+				System.out.println("Plugin: "+plugin.getId());
+				System.out.println("Plugin IP: "+plugin.getIp());
+				System.out.println("File Plugin: "+file.getPluginId());
+				System.out.println("File Path: "+file.getPath());
+				System.out.println("File ID: "+file.getId());
 				if (plugin.getId().equals(file.getPluginId())) {
 					p2p.sendMessage(receiver.getHost(), new GetRespMessage(p2p.getPeerNode(), plugin, file, getMsg.getTaskId()));
 					return;

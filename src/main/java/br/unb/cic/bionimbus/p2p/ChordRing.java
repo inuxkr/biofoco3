@@ -96,6 +96,7 @@ public final class ChordRing {
 			}
 		}
 		
+		//TODO Comentário de conexão
 		//System.out.println("chord ring: " + peers());
 	}
 

@@ -26,7 +26,8 @@ public class HadoopSaveFile implements Callable<PluginFile> {
 			pFile.setPath(file.getName());
 			pFile.setSize(file.length());
 
-			p = Runtime.getRuntime().exec("hadoop fs -moveFromLocal " + filePath + " " + file.getName());
+			System.out.println("hadoop fs -moveFromLocal " + filePath + " " + file.getName());
+			p = Runtime.getRuntime().exec("/usr/local/hadoop/bin/hadoop fs -moveFromLocal " + filePath + " " + file.getName());
 			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line;
 			while ((line = br.readLine()) != null) {

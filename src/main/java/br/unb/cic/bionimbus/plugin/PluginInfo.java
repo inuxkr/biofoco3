@@ -26,6 +26,22 @@ public class PluginInfo implements PluginOps {
 	
 	private Float fsFreeSize;
 	
+	private Float memorySize;
+	
+	private Float memoryFreeSize;
+	
+	private Float costKb;
+	
+	private Integer workLoad;
+	
+	private Integer distance;
+	
+	private String ip;
+	
+	private Double latitude;
+	
+	private Double longitude;
+	
 	private List<PluginService> services;
 
 	public String getId() {
@@ -106,6 +122,70 @@ public class PluginInfo implements PluginOps {
 
 	public void setNumOccupied(Integer numOccupied) {
 		this.numOccupied = numOccupied;
+	}
+	
+	public Float getMemorySize() {
+		return memorySize;
+	}
+
+	public void setMemorySize(Float memorySize) {
+		this.memorySize = memorySize;
+	}
+
+	public Float getMemoryFreeSize() {
+		return memoryFreeSize;
+	}
+
+	public void setMemoryFreeSize(Float memoryFreeSize) {
+		this.memoryFreeSize = memoryFreeSize;
+	}
+
+	public Float getCostKb() {
+		return costKb;
+	}
+
+	public void setCostKb(Float costKb) {
+		this.costKb = costKb;
+	}
+
+	public Integer getWorkLoad() {
+		return workLoad;
+	}
+
+	public void setWorkLoad(Integer workLoad) {
+		this.workLoad = workLoad;
+	}
+
+	public Integer getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Integer distance) {
+		this.distance = distance;
+	}
+	
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 	public List<PluginService> getServices() {

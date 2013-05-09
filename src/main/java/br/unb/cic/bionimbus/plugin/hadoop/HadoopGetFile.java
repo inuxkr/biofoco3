@@ -43,7 +43,8 @@ public class HadoopGetFile implements Callable<HadoopGetFile> {
 		Process p = null;
 		
 		try {
-			p = Runtime.getRuntime().exec("hadoop fs -get " + pluginFile.getPath() + " " + serverPath + "/" + file.getName());
+			System.out.println("/usr/local/hadoop/bin/hadoop fs -get " + pluginFile.getPath() + " " + serverPath + "/" + file.getName());
+			p = Runtime.getRuntime().exec("/usr/local/hadoop/bin/hadoop fs -get " + pluginFile.getPath() + " " + serverPath + "/" + file.getName());
 			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line;
 			while ((line = br.readLine()) != null) {
