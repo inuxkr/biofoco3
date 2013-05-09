@@ -1,1 +1,1 @@
-{"id":"2043430392832ab", "host":{"address": "localhost", "port": 8080}, "client": true, "seeds": [{"address":"localhost","port":9999}], "serverPath": "./client"}
+{"id":"2043430392832ab", "host":{"address": "192.168.0.14", "port": 8080}, "client": true, "seeds": [{"address":"192.168.0.14","port":9999},{"address":"192.168.0.11","port":9999}], "serverPath": "/home/ricardo/client","infra":"linux"}

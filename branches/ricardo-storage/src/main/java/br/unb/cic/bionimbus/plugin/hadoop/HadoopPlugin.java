@@ -89,7 +89,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 	private P2PService p2p;
 
 	public HadoopPlugin() {
-		File infoFile = new File("plugininfo.json");
+		File infoFile = new File("conf/plugininfo.json");
 		if (infoFile.exists()) {
 			try {
 				ObjectMapper mapper = new ObjectMapper();
@@ -186,6 +186,7 @@ public class HadoopPlugin implements Plugin, P2PListener, Runnable {
 		}
 	}
 
+	/* Verifica o status das tarefas */
 	private void checkTaskStatus(PeerNode receiver, String taskId) {
 		PluginTask task = null;
 

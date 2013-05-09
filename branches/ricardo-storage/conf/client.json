@@ -1,0 +1,1 @@
+{"id":"5c5d7276-c017-4ec0-b79b-c91c25c7a755", "host":{"address": "192.168.0.22", "port": 8080}, "client": true, "seeds": [{"address":"192.168.0.22","port":9999}], "serverPath": "/home/ricardo/client","infra":"hadoop"}

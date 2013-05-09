@@ -40,7 +40,7 @@ public class PeerPlatformTest {
 		TimeUnit.MINUTES.sleep(1);
 				
 		Set<PeerNode> peers = p2.getPeerView();
-		System.out.println(peers);
+		//System.out.println(peers);
 		
 //		p2.sendMessage("SERVICE");
 	}

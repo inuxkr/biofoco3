@@ -37,6 +37,7 @@ public class HadoopTask implements Callable<PluginTask> {
 		for (Pair<String, Long> pair : inputs) {
 			String input = pair.first;
 			args = args.replaceFirst("%I" + i, path + "/" + plugin.getInputFiles().get(input).first);
+			System.out.println("Input: " + path + "/" + plugin.getInputFiles().get(input).first);
 			i++;
 		}
 
@@ -44,6 +45,7 @@ public class HadoopTask implements Callable<PluginTask> {
 		i = 1;
 		for (String output : outputs) {
 			args = args.replaceFirst("%O" + i, path + "/" + output);
+			System.out.println("Output: " + path + "/" + output);
 			i++;
 		}
 
