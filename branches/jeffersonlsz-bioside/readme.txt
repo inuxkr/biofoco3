@@ -1,1 +1,0 @@
-Integração entre Bioside e Bionimbus.
