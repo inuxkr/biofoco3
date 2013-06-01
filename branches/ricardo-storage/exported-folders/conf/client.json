@@ -1,1 +1,1 @@
-{"id":"2043430392832ab", "host":{"address": "192.168.0.14", "port": 8080}, "client": true, "seeds": [{"address":"192.168.0.14","port":9999},{"address":"192.168.0.11","port":9999}], "serverPath": "/home/ricardo/client","infra":"linux"}
+{"id":"5c5d7276-c017-4ec0-b79b-c91c25c7a755", "host":{"address": "192.168.0.20", "port": 8080}, "client": true, "seeds": [{"address":"192.168.0.20","port":9999}], "serverPath": "/home/ricardo/client","infra":"hadoop"}
