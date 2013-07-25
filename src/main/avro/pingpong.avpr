@@ -1,0 +1,10 @@
+{
+ "namespace": "br.unb.cic.bionimbus.avro.proto",
+ "protocol": "PingPong",
+ "messages": {
+      "ping": {
+           "request":  [{"name": "message", "type": "string"}],
+           "response": [{"name": "message", "type": "string"}]
+      }
+  }
+}
