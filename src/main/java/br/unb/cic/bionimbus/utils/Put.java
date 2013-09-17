@@ -1,5 +1,7 @@
 package br.unb.cic.bionimbus.utils;
 
+import br.unb.cic.bionimbus.services.storage.StorageService;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -39,9 +41,7 @@ public class Put {
      * @throws SftpException
      */
     public boolean startSession() throws JSchException, SftpException {
-        String pathDest = "/home/ubuntu/workspace/zoonimbus/data/";
         try {
-
             session = jsch.getSession(USER, address, PORT);
             session.setConfig("StrictHostKeyChecking", "no");
             session.setPassword(PASSW);
@@ -61,9 +61,7 @@ public class Put {
              */
             //sftpChannel.chmod(777, path);
             System.out.println("\n Uploading file.....\n\n\n");
-            System.out.println(path);
-            System.out.println(pathDest);
-            sftpChannel.put(path, pathDest);
+            sftpChannel.put(path, StorageService.PATHDEST);
             sftpChannel.exit();
             session.disconnect();
 

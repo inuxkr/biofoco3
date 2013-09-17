@@ -41,6 +41,7 @@ public class Compactacao {
 	
 	public static String descompactar(String path) throws IOException {
 		
+		System.out.println("Descompactando....");
 		String decompressed = path.replaceAll(".cpt","");
 		
 		FileOutputStream fos = new FileOutputStream(decompressed);

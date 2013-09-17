@@ -14,6 +14,7 @@ import br.unb.cic.bionimbus.services.ZooKeeperService;
 import br.unb.cic.bionimbus.services.discovery.DiscoveryService;
 import br.unb.cic.bionimbus.services.monitor.MonitoringService;
 import br.unb.cic.bionimbus.services.sched.SchedService;
+import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.utils.Nmap;
 import br.unb.cic.bionimbus.utils.Put;
 import com.codahale.metrics.Counter;
@@ -58,6 +59,7 @@ public class StorageService extends AbstractBioService {
 //    private Set<String> pendingSaveFiles = new HashSet<String>();
     private P2PService p2p = null;
     private File dataFolder = new File("data-folder"); //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
+    public static String PATHDEST = "/home/ubuntu/workspace/zoonimbus/data-folder/";
     private Double MAXCAPACITY = 0.9;
     private int PORT = 8080;
     private int REPLICATIONFACTOR = 1;
@@ -403,9 +405,9 @@ public class StorageService extends AbstractBioService {
     public synchronized void fileUploaded(PluginFile fileuploaded) throws KeeperException, InterruptedException, IOException {
         System.out.println("(fileUploaded) Checando se existe a requisição no pending saving"+fileuploaded.toString());
         if (zkService.getZNodeExist(zkService.getPath().PREFIX_PENDING_FILE.getFullPath("", fileuploaded.getId(), ""), false)) {
-           
+        	Compactacao.descompactar(dataFolder+ "/"+fileuploaded.getName()+".cpt");
             String ipPluginFile;
-            ipPluginFile = getIpContainsFile(fileuploaded.getName());
+            ipPluginFile = getIpContainsFile(fileuploaded.getPath()+fileuploaded.getName());
             FileInfo file = new FileInfo();
             file.setFileId(fileuploaded.getId());
             file.setName(fileuploaded.getName());
@@ -818,5 +820,18 @@ public class StorageService extends AbstractBioService {
                     break;
                 }
         }
+    }
+    /**
+     * Extrai o Arquivo.
+     * @param file O nome do arquivo
+     */
+    public void extractFile(String file) {
+       
+        try {
+			Compactacao.descompactar(file);
+		} catch (IOException ex) {
+			Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+		}
+        
     }
 }

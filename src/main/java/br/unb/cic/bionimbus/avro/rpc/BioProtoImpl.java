@@ -464,6 +464,14 @@ public class BioProtoImpl implements BioProto {
 //        storageService.starWatchers(idPlugin);
     }
 
- 
-
+    /**
+     * Método RPC que extrai o arquivo enviado;
+     * @param file Nome do arquivo
+     */
+    @Override
+    public void extractFile(String file){
+        
+       storageService.extractFile(file);
+        
+    }
 }
