@@ -47,6 +47,7 @@ public class Upload implements Command {
             info.setFileId(file.getName());
             info.setName(file.getName());
             info.setSize(file.length());
+
             /*
              * Pega uma lista com todos os peers para calcular a latencia entre o cliente 
              * e os servidores.
@@ -87,9 +88,9 @@ public class Upload implements Command {
                      * Tenta enviar o arquivo a partir do melhor peer que está na lista
                      */
                     
-                    // Compactação
                     //Metadata.criarMetadata(path, node.getAddress(), "user", 1);
-                    //path = Compactacao.compactar(path);
+                    // Compactação
+                    path = Compactacao.compactar(path);
                     
                     Put conexao = new Put(node.getAddress(), path);
                     if (conexao.startSession()) {

@@ -30,6 +30,7 @@ public interface BioProto {
   boolean verifyFile(br.unb.cic.bionimbus.avro.gen.FileInfo fileSucess, java.util.List<java.lang.String> dest) throws org.apache.avro.AvroRemoteException;
   void setWatcher(java.lang.String idPlugin);
   long checkFileSize(java.lang.String file) throws org.apache.avro.AvroRemoteException;
+  void extractFile(java.lang.String file) throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends BioProto {
