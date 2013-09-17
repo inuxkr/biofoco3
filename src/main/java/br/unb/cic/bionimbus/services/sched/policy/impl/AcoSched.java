@@ -90,7 +90,7 @@ public class AcoSched extends SchedPolicy {
                 plugin = plg;
             }
         }
-
+        plugin = listPlugin.get(0);
         //armazena as informações utilizadas e atualizadas para o escalonamento no servidor zookeeper
         setMapAcoDatasZooKeeper(listPlugin);
 
@@ -352,7 +352,7 @@ public class AcoSched extends SchedPolicy {
         DecimalFormat decimal = new DecimalFormat("0.0000000000");
         //atualiza o feromonio local quando ele existe
         if (mapAcoDatas.get(plugin.getId()) != null && !mapAcoDatas.get(plugin.getId()).isEmpty() && !mapAcoDatas.get(plugin.getId()).get(0).equals(0d)) {
-            System.out.println("-- (updateLocalPheromone) - Feromonio: " + mapAcoDatas.get(plugin.getId()).get(0) + ", biggestProbability: " + decimal.format(biggestProbability));
+            //System.out.println("-- (updateLocalPheromone) - Feromonio: " + mapAcoDatas.get(plugin.getId()).get(0) + ", biggestProbability: " + decimal.format(biggestProbability));
             pheronome = mapAcoDatas.get(plugin.getId()).get(0);
             Double probability = new Double(decimal.format(biggestProbability).replace(",", "."));
             pheronome = (1 - p) * pheronome + (1 / probability==0d ? 0d : probability);
@@ -456,24 +456,24 @@ public class AcoSched extends SchedPolicy {
         DecimalFormat decimal = new DecimalFormat("0.0000000000");
 
         //feronomio elevado a potencia alfa(valor da variavel de controle)
-        Double pheromone = new Double(decimal.format(Math.pow(datas.get(0), datas.get(3))).replace(",", "."));
-        Double capacityComputing = new Double(decimal.format((Math.pow(capacityPlugin(plugin), datas.get(4)))).replace(",", "."));
-        Double loadBalacing = new Double(decimal.format(Math.pow(loadBalancingPlugin(plugin), datas.get(5))).replace(",", "."));
-
-        Double capacityMemory = new Double(decimal.format((Math.pow(((plugin.getMemoryFree()) / 1024), datas.get(6)))).replace(",", "."));
-
-//        Double capacityMemory = getRound(Math.pow( getRound(plugin.getMemoryFree()),datas.get(6)));
-        //((Double)Math.pow(((Float)datas.get(2)).doubleValue(), ((Float)datas.get(5)).doubleValue() )).floatValue()
-
-//        return (new Float(formatDecimal.format(pheromone)).floatValue()* new Float(formatDecimal.format(capacityComputing)).floatValue()* new Float(formatDecimal.format(loadBalacing)).floatValue());
+        Double pheromone = new Double(decimal.format(pow(datas.get(0), datas.get(3))).replace(",", "."));
+        Double capacityComputing = new Double(decimal.format((pow(capacityPlugin(plugin), datas.get(4)))).replace(",", "."));
+        Double loadBalacing = new Double(decimal.format(pow(loadBalancingPlugin(plugin), datas.get(5))).replace(",", "."));
+        Double capacityMemory = new Double(decimal.format((pow(((plugin.getMemoryFree()) / 1024), datas.get(6)))).replace(",", "."));
 
         LOGGER.info("\nValores do multiplication: pheromone = " + pheromone + " capacityComputing= " + capacityComputing + " loadBalacing= " + loadBalacing
                 + " capacityMemory= " + capacityMemory + "\n");
 
-
-
         return pheromone * capacityComputing * loadBalacing * capacityMemory;
-
+    }
+    
+    public double pow(double a, double b) {
+    	double result = Math.pow(a, a);
+    	
+    	if (!Double.isInfinite(result))
+    		return result;
+    	else
+    		return 0.00000001d;
     }
 
     /*

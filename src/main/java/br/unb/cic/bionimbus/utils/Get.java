@@ -18,8 +18,8 @@ public class Get {
     
     private JSch jsch = new JSch();
     private Session session = null;
-    private String USER = "zoonimbus";
-    private String PASSW = "Zoonimbus1";
+    private String USER = "ubuntu";
+    private String PASSW = "ubuntu";
     private int PORT = 22;
     private com.jcraft.jsch.Channel channel;
     

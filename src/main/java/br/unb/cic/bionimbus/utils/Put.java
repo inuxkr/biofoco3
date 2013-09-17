@@ -16,8 +16,8 @@ public class Put {
     private JSch jsch = new JSch();
     private Session session = null;
     private String address;
-    private String USER = "zoonimbus";
-    private String PASSW = "Zoonimbus1";
+    private String USER = "ubuntu";
+    private String PASSW = "ubuntu";
     private int PORT = 22;
     private Channel channel;
     private String path;
@@ -39,7 +39,7 @@ public class Put {
      * @throws SftpException
      */
     public boolean startSession() throws JSchException, SftpException {
-        String pathDest = "/home/zoonimbus/zoonimbusProject/data-folder/";
+        String pathDest = "/home/ubuntu/workspace/zoonimbus/data/";
         try {
 
             session = jsch.getSession(USER, address, PORT);
@@ -61,9 +61,11 @@ public class Put {
              */
             //sftpChannel.chmod(777, path);
             System.out.println("\n Uploading file.....\n\n\n");
-                sftpChannel.put(path, pathDest);
-                sftpChannel.exit();
-                session.disconnect();
+            System.out.println(path);
+            System.out.println(pathDest);
+            sftpChannel.put(path, pathDest);
+            sftpChannel.exit();
+            session.disconnect();
 
         } catch (JSchException a) {
             return false;

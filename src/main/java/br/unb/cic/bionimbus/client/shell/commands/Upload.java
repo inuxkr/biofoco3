@@ -10,6 +10,8 @@ import java.io.File;
 import br.unb.cic.bionimbus.client.shell.Command;
 import br.unb.cic.bionimbus.client.shell.SimpleShell;
 import br.unb.cic.bionimbus.services.storage.Ping;
+import br.unb.cic.bionimbus.utils.Compactacao;
+import br.unb.cic.bionimbus.utils.Metadata;
 import br.unb.cic.bionimbus.utils.Nmap;
 import br.unb.cic.bionimbus.utils.Put;
 import java.util.ArrayList;
@@ -84,6 +86,11 @@ public class Upload implements Command {
                     /*
                      * Tenta enviar o arquivo a partir do melhor peer que está na lista
                      */
+                    
+                    // Compactação
+                    //Metadata.criarMetadata(path, node.getAddress(), "user", 1);
+                    //path = Compactacao.compactar(path);
+                    
                     Put conexao = new Put(node.getAddress(), path);
                     if (conexao.startSession()) {
                         no = node;

@@ -60,7 +60,7 @@ public class StorageService extends AbstractBioService {
     private File dataFolder = new File("data-folder"); //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
     private Double MAXCAPACITY = 0.9;
     private int PORT = 8080;
-    private int REPLICATIONFACTOR = 2;
+    private int REPLICATIONFACTOR = 1;
     private List<String> listFile = new ArrayList<String>();
 
     @Inject
