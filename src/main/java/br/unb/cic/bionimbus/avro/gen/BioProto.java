@@ -5,6 +5,10 @@
  */
 package br.unb.cic.bionimbus.avro.gen;
 
+import java.util.List;
+
+import org.apache.avro.AvroRemoteException;
+
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface BioProto {
@@ -31,6 +35,7 @@ public interface BioProto {
   void setWatcher(java.lang.String idPlugin);
   long checkFileSize(java.lang.String file) throws org.apache.avro.AvroRemoteException;
   void extractFile(java.lang.String file) throws org.apache.avro.AvroRemoteException;
+  void getFile(java.lang.String file) throws org.apache.avro.AvroRemoteException;
 
   @SuppressWarnings("all")
   public interface Callback extends BioProto {
@@ -52,5 +57,7 @@ public interface BioProto {
     void callStorage(java.util.List<br.unb.cic.bionimbus.avro.gen.NodeInfo> list, org.apache.avro.ipc.Callback<java.util.List<br.unb.cic.bionimbus.avro.gen.NodeInfo>> callback) throws java.io.IOException;
     void verifyFile(br.unb.cic.bionimbus.avro.gen.FileInfo fileSucess, java.util.List<java.lang.String> dest, org.apache.avro.ipc.Callback<java.lang.Boolean> callback) throws java.io.IOException;
     void checkFileSize(java.lang.String file, org.apache.avro.ipc.Callback<java.lang.Long> callback) throws java.io.IOException;
+    void extractFile(java.lang.String file) throws org.apache.avro.AvroRemoteException;
+    void getFile(java.lang.String file) throws org.apache.avro.AvroRemoteException;
   }
 }
