@@ -61,7 +61,7 @@ public class Put {
              */
             //sftpChannel.chmod(777, path);
             System.out.println("\n Uploading file.....\n\n\n");
-            sftpChannel.put(path, StorageService.PATHDEST);
+            sftpChannel.put(path, StorageService.DATAFOLDER);
             sftpChannel.exit();
             session.disconnect();
 

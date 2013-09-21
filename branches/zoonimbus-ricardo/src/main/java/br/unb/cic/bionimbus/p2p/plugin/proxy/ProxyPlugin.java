@@ -10,6 +10,8 @@ import br.unb.cic.bionimbus.plugin.PluginGetFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.services.ZooKeeperService;
+
+import java.io.File;
 import java.io.IOException;
 
 public class ProxyPlugin extends AbstractPlugin {
@@ -47,5 +49,17 @@ public class ProxyPlugin extends AbstractPlugin {
     public Future<PluginTask> startTask(PluginTask task, ZooKeeperService zk) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+	@Override
+	public File[] listFiles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void getFile(String file) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

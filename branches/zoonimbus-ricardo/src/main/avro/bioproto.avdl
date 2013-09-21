@@ -315,4 +315,10 @@ protocol BioProto {
 
   //verifica o tamanho do arquivo
   long checkFileSize (string file);
+  
+  //extrai o arquivo
+  void extractFile (string file);
+  
+  //baixa o arquivo
+  void getFile (string file);
 }

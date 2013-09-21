@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.plugin.sge;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -63,5 +64,17 @@ public class ProxyPlugin extends AbstractPlugin {
     public boolean isReady() {
         return ready;
     }
+
+	@Override
+	public File[] listFiles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void getFile(String file) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

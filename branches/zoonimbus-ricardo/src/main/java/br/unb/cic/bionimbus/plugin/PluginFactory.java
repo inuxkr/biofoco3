@@ -16,7 +16,7 @@ public class PluginFactory {
     public static synchronized Plugin getPlugin(final String pluginType, final P2PService p2p) throws IOException {
         if (REF == null) {
             if (pluginType.equals("hadoop"))
-                REF = new HadoopPlugin();
+                REF = new HadoopPlugin(p2p);
             else if (pluginType.equals("linux"))
                 REF = new LinuxPlugin(p2p);
             else if (pluginType.equals("sge")) {

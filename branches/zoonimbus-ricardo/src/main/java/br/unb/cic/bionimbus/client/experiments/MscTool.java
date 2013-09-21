@@ -9,6 +9,7 @@ import br.unb.cic.bionimbus.client.JobInfo;
 import br.unb.cic.bionimbus.config.BioNimbusConfig;
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.services.storage.Ping;
+import br.unb.cic.bionimbus.services.storage.StorageService;
 import br.unb.cic.bionimbus.utils.Put;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -25,7 +26,6 @@ import org.slf4j.LoggerFactory;
 public class MscTool {
 
     private static final Logger LOG = LoggerFactory.getLogger(MscTool.class);
-//    private static StringBuilder result = new  StringBuilder();
 
     private RpcClient rpcClient;
     private BioNimbusConfig config ;
@@ -54,9 +54,7 @@ public class MscTool {
     
     private List<String> readFileNames() throws IOException {
         ArrayList<String> list = new ArrayList<String>();
-        String pathHome = System.getProperty("user.dir");
-        String path =  (pathHome.substring(pathHome.length()).equals("/") ? pathHome+"data-folder/" : pathHome+"/data-folder/");
-        BufferedReader br = new BufferedReader(new FileReader(path+"inputfiles.txt"));
+        BufferedReader br = new BufferedReader(new FileReader(StorageService.DATAFOLDER+"inputfiles.txt"));
         String line;
         while ((line = br.readLine()) != null)
             list.add(line);
@@ -141,7 +139,6 @@ public class MscTool {
         List<Pipeline> list = getPipelines();
         List<Pipeline> sending = new ArrayList<Pipeline>(list);
 
-
         while (!list.isEmpty()) {
 
             int count = 0;
@@ -198,8 +195,6 @@ public class MscTool {
     }
 
     private Collection<PluginFile> listCloudFiles() throws InterruptedException ,IOException{
-//        communication.sendReq(new ListReqMessage(p2p.getPeerNode()), P2PMessageType.LISTRESP);
-//        ListRespMessage listResp = (ListRespMessage) communication.getResp();
         Collection<PluginFile> collection = new ArrayList<PluginFile> ();
         for(br.unb.cic.bionimbus.avro.gen.PluginFile info : rpcClient.getProxy().listFiles()){
             PluginFile file = new PluginFile();
