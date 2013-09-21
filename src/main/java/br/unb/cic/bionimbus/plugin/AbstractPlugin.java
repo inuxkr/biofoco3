@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,7 +14,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import br.unb.cic.bionimbus.client.FileInfo;
 import br.unb.cic.bionimbus.client.JobInfo;
@@ -30,13 +28,11 @@ import br.unb.cic.bionimbus.p2p.messages.InfoErrorMessage;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.PrepReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.PrepRespMessage;
-import br.unb.cic.bionimbus.p2p.messages.StartRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StatusRespMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreAckMessage;
 import br.unb.cic.bionimbus.p2p.messages.StoreReqMessage;
 import br.unb.cic.bionimbus.p2p.messages.TaskErrorMessage;
 import br.unb.cic.bionimbus.services.ZooKeeperService;
-import br.unb.cic.bionimbus.utils.GetIpMac;
 import br.unb.cic.bionimbus.utils.Pair;
 import com.google.inject.Inject;
 import java.io.IOException;
@@ -44,51 +40,36 @@ import java.util.ArrayList;
 
 public abstract class AbstractPlugin extends P2PAbstractListener implements Plugin, Runnable {
 
-    private String id;
+	protected String id;
 
-    private Future<PluginInfo> futureInfo = null;
+    protected Future<PluginInfo> futureInfo = null;
 
-    private PluginInfo myInfo = null;
+    protected PluginInfo myInfo = null;
 
-    private String errorString = "Plugin is loading...";
+    protected String errorString = "Plugin is loading...";
 
-    private int myCount = 0;
+    protected int myCount = 0;
 
-    private final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("bionimbus-plugin-%d").build());
+    protected final ScheduledExecutorService schedExecutorService = Executors.newScheduledThreadPool(1, new BasicThreadFactory.Builder().namingPattern("bionimbus-plugin-%d").build());
 
-    private final ConcurrentMap<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Integer>>();
+    protected final ConcurrentMap<String, Pair<PluginTask, Integer>> pendingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Integer>>();
 
-    private final ConcurrentMap<String, Pair<PluginTask, Future<PluginTask>>> executingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
+    protected final ConcurrentMap<String, Pair<PluginTask, Future<PluginTask>>> executingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Future<PluginTask>>>();
 
-    private final ConcurrentMap<String, Pair<PluginTask, Integer>> endingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Integer>>();
+    protected final ConcurrentMap<String, Pair<PluginTask, Integer>> endingTasks = new ConcurrentHashMap<String, Pair<PluginTask, Integer>>();
 
-    private final List<Future<PluginFile>> pendingSaves = new CopyOnWriteArrayList<Future<PluginFile>>();
+    protected final List<Future<PluginFile>> pendingSaves = new CopyOnWriteArrayList<Future<PluginFile>>();
 
-    private final List<Future<PluginGetFile>> pendingGets = new CopyOnWriteArrayList<Future<PluginGetFile>>();
+    protected final List<Future<PluginGetFile>> pendingGets = new CopyOnWriteArrayList<Future<PluginGetFile>>();
 
-    private final ConcurrentMap<String, Pair<String, Integer>> inputFiles = new ConcurrentHashMap<String, Pair<String, Integer>>();
+    protected final ConcurrentMap<String, Pair<String, Integer>> inputFiles = new ConcurrentHashMap<String, Pair<String, Integer>>();
 
-    private final ConcurrentMap<String, PluginFile> pluginFiles = new ConcurrentHashMap<String, PluginFile>();
+    protected final ConcurrentMap<String, PluginFile> pluginFiles = new ConcurrentHashMap<String, PluginFile>();
     
     @Inject
     public AbstractPlugin(final P2PService p2p) throws IOException {
         super(p2p);
-        
-        //id provisório
         id = p2p.getConfig().getId();
-       //id=GetIpMac.getMac();
-//        id = UUID.randomUUID().toString();
-//        File infoFile = new File("plugininfo.json");
-//        if (infoFile.exists()) {
-//            try {
-//                ObjectMapper mapper = new ObjectMapper();
-//                myInfo = mapper.readValue(infoFile, PluginInfo.class);
-//                id = myInfo.getId();  //TODO plugininfo.json só serve para recuperar ID?
-////                myInfo.setId(id);  
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     public Map<String, Pair<String, Integer>> getInputFiles() {
@@ -109,7 +90,7 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
         return id;
     }
 
-    private Future<PluginInfo> getFutureInfo() {
+    protected Future<PluginInfo> getFutureInfo() {
         return futureInfo;
     }
 
@@ -529,4 +510,8 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
     @Override
     protected void recvJobCancelResp(Host origin, String jobId) {
     }
+    
+    public abstract File[] listFiles();
+    
+    public abstract void getFile(String file);
 }

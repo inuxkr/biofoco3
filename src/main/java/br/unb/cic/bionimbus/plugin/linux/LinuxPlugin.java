@@ -16,9 +16,12 @@ import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.plugin.PluginTaskRunner;
 import br.unb.cic.bionimbus.services.ZooKeeperService;
+import br.unb.cic.bionimbus.services.storage.StorageService;
+
+import java.io.File;
 import java.io.IOException;
 
-public class LinuxPlugin extends AbstractPlugin{
+public class LinuxPlugin extends AbstractPlugin {
 
     private final ExecutorService executorService = Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("LinuxPlugin-workers-%d").build());
 
@@ -55,6 +58,19 @@ public class LinuxPlugin extends AbstractPlugin{
         return executorService.submit(new PluginTaskRunner(this, task, service, getP2P().getConfig().getServerPath(),zk));
     }
 
- 
+	@Override
+	public File[] listFiles() {
+		File dataFolder = new File(StorageService.DATAFOLDER);
+		
+        if (!dataFolder.exists()) {
+        	dataFolder.mkdirs();
+        }
+		
+        return dataFolder.listFiles();
+	}
+
+	@Override
+	public void getFile(String file) {
+	}
 
 }

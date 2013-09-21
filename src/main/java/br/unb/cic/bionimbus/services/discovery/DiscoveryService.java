@@ -1,10 +1,13 @@
 package br.unb.cic.bionimbus.services.discovery;
 
 import br.unb.cic.bionimbus.p2p.P2PEvent;
+import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
+import br.unb.cic.bionimbus.plugin.AbstractPlugin;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.hadoop.HadoopPlugin;
 import br.unb.cic.bionimbus.plugin.linux.LinuxGetInfo;
 import br.unb.cic.bionimbus.plugin.linux.LinuxPlugin;
 import br.unb.cic.bionimbus.services.AbstractBioService;
@@ -18,6 +21,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,6 +48,7 @@ public class DiscoveryService extends AbstractBioService implements RemovalListe
 //    private static final String PREFIX_FILE = "file_";
 //    private String peerName;
     private ConcurrentMap<String, PluginInfo> map = Maps.newConcurrentMap();
+    private AbstractPlugin myPlugin;
 
     @Inject
     public DiscoveryService(final ZooKeeperService service) {
@@ -110,14 +115,12 @@ public class DiscoveryService extends AbstractBioService implements RemovalListe
             infopc.setId(p2p.getConfig().getId());
             
             if(start){
-                LinuxPlugin linuxPlugin = new LinuxPlugin(p2p);
-
                 infopc.setHost(p2p.getConfig().getHost());
                 infopc.setUptime(p2p.getPeerNode().uptime());
                 infopc.setPrivateCloud(p2p.getConfig().getPrivateCloud());
 
                 //definindo myInfo após a primeira leitura dos dados
-                linuxPlugin.setMyInfo(infopc);
+                myPlugin.setMyInfo(infopc);
             }else{
                 String data = zkService.getData(infopc.getPath_zk(), null);
                 if (data == null || data.trim().isEmpty()){
@@ -150,6 +153,7 @@ public class DiscoveryService extends AbstractBioService implements RemovalListe
             Preconditions.checkNotNull(p2p);
             this.p2p = p2p;
             
+            checkMyPlugin();
             setDatasPluginInfo(true);
             
             p2p.addListener(this);
@@ -236,5 +240,20 @@ public class DiscoveryService extends AbstractBioService implements RemovalListe
     @Override
     public void verifyPlugins() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    /**
+     * Verifica qual é o Plugin referente ao mesmo do recurso.
+     */
+    private void checkMyPlugin() {
+        List<P2PListener> listeners = p2p.getListener();
+        
+        for (P2PListener listener : listeners) {
+            if (listener instanceof LinuxPlugin) {
+                this.myPlugin = (LinuxPlugin) listener;
+            } else if (listener instanceof HadoopPlugin) {
+                this.myPlugin = (HadoopPlugin) listener;
+            }
+        }
     }
 }

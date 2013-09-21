@@ -19,6 +19,8 @@ import br.unb.cic.bionimbus.plugin.linux.LinuxGetFile;
 import br.unb.cic.bionimbus.plugin.linux.LinuxGetInfo;
 import br.unb.cic.bionimbus.plugin.linux.LinuxSaveFile;
 import br.unb.cic.bionimbus.services.ZooKeeperService;
+
+import java.io.File;
 import java.io.IOException;
 
 public class SGEPlugin extends AbstractPlugin {
@@ -59,5 +61,17 @@ public class SGEPlugin extends AbstractPlugin {
     public void start() {
         System.out.println("starting SGE plugin...");
     }
+
+	@Override
+	public File[] listFiles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void getFile(String file) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

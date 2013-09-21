@@ -5,9 +5,13 @@ import br.unb.cic.bionimbus.avro.gen.NodeInfo;
 import br.unb.cic.bionimbus.avro.rpc.AvroClient;
 import br.unb.cic.bionimbus.avro.rpc.RpcClient;
 import br.unb.cic.bionimbus.p2p.P2PEvent;
+import br.unb.cic.bionimbus.p2p.P2PListener;
 import br.unb.cic.bionimbus.p2p.P2PService;
+import br.unb.cic.bionimbus.plugin.AbstractPlugin;
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.hadoop.HadoopPlugin;
+import br.unb.cic.bionimbus.plugin.linux.LinuxPlugin;
 import br.unb.cic.bionimbus.services.AbstractBioService;
 import br.unb.cic.bionimbus.services.UpdatePeerData;
 import br.unb.cic.bionimbus.services.ZooKeeperService;
@@ -29,11 +33,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -58,12 +60,13 @@ public class StorageService extends AbstractBioService {
     private Map<String, PluginFile> savedFiles = new ConcurrentHashMap<String, PluginFile>();
 //    private Set<String> pendingSaveFiles = new HashSet<String>();
     private P2PService p2p = null;
-    private File dataFolder = new File("data-folder"); //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
-    public static String PATHDEST = "/home/ubuntu/workspace/zoonimbus/data-folder/";
     private Double MAXCAPACITY = 0.9;
     private int PORT = 8080;
     private int REPLICATIONFACTOR = 1;
-    private List<String> listFile = new ArrayList<String>();
+    //private List<String> listFile = new ArrayList<String>();
+    private AbstractPlugin myPlugin;
+    //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
+    public static String DATAFOLDER = "/home/ubuntu/workspace/zoonimbus/data-folder/"; 
 
     @Inject
     public StorageService(final ZooKeeperService service, MetricRegistry metricRegistry) {
@@ -109,8 +112,10 @@ public class StorageService extends AbstractBioService {
         }
 
         //NECESSARIO atualizar a lista de arquivo local , a lista do zookeeper com os arquivos locais.
+        checkMyPlugin();
         checkFiles();
         checkPeers();
+        
         try {
             if (getPeers().size() != 1) {
                 checkReplicationFiles();
@@ -134,6 +139,21 @@ public class StorageService extends AbstractBioService {
 
     @Override
     public void onEvent(P2PEvent event) {
+    }
+    
+    /**
+     * Verifica qual é o Plugin referente ao mesmo do recurso.
+     */
+    private void checkMyPlugin() {
+        List<P2PListener> listeners = p2p.getListener();
+        
+        for (P2PListener listener : listeners) {
+            if (listener instanceof LinuxPlugin) {
+                this.myPlugin = (LinuxPlugin) listener;
+            } else if (listener instanceof HadoopPlugin) {
+                this.myPlugin = (HadoopPlugin) listener;
+            }
+        }
     }
 
     /**
@@ -159,12 +179,8 @@ public class StorageService extends AbstractBioService {
      */
     public void checkFiles() {
         try {
-            if (!dataFolder.exists()) {
-//                System.out.println(" (CheckFiles) dataFolder " + dataFolder + " doesn't exists, creating...");
-                dataFolder.mkdirs();
-            }
             zkService.getChildren(zkService.getPath().FILES.getFullPath(p2p.getConfig().getId(), "", ""), new UpdatePeerData(zkService, this));
-            for (File file : dataFolder.listFiles()) {
+            for (File file : myPlugin.listFiles()) {
                 if (!savedFiles.containsKey(file.getName())) {
 
                     PluginFile pluginFile = new PluginFile();
@@ -375,9 +391,7 @@ public class StorageService extends AbstractBioService {
      */
     public boolean checkFilePeer(PluginFile file) {
         System.out.println("(checkFilePeer)vericando se o arquivo "+file.toString()+" existe no peer");
-        String pathHome = System.getProperty("user.dir");
-        String path =  (pathHome.substring(pathHome.length()).equals("/") ? pathHome+"data-folder/" : pathHome+"/data-folder/");
-        File localFile = new File(path + file.getName());
+        File localFile = new File(DATAFOLDER + file.getName());
        
         if (localFile.exists()) {
             zkService.createPersistentZNode(zkService.getPath().PREFIX_FILE.getFullPath(p2p.getConfig().getId(), file.getId(), ""), file.toString());
@@ -405,7 +419,8 @@ public class StorageService extends AbstractBioService {
     public synchronized void fileUploaded(PluginFile fileuploaded) throws KeeperException, InterruptedException, IOException {
         System.out.println("(fileUploaded) Checando se existe a requisição no pending saving"+fileuploaded.toString());
         if (zkService.getZNodeExist(zkService.getPath().PREFIX_PENDING_FILE.getFullPath("", fileuploaded.getId(), ""), false)) {
-        	Compactacao.descompactar(dataFolder+ "/"+fileuploaded.getName()+".cpt");
+        	//TODO Descompactação
+        	//Compactacao.descompactar(dataFolder+ "/"+fileuploaded.getName()+".cpt");
             String ipPluginFile;
             ipPluginFile = getIpContainsFile(fileuploaded.getPath()+fileuploaded.getName());
             FileInfo file = new FileInfo();
@@ -554,10 +569,7 @@ public class StorageService extends AbstractBioService {
         System.out.println("(replication) Replicando o arquivo de nome: "+filename+" do peer: "+address);
         List<NodeInfo> pluginList = new ArrayList<NodeInfo>();
         List<String> idsPluginsFile = new ArrayList<String>();
-        String pathHome = System.getProperty("user.dir");
-        String path =  (pathHome.substring(pathHome.length()).equals("/") ? pathHome+"data-folder/" : pathHome+"/data-folder/");
-        File file = new File(path+ filename);
-       
+        File file = new File(DATAFOLDER + filename);
 
         int filesreplicated = 1;
 
@@ -575,7 +587,7 @@ public class StorageService extends AbstractBioService {
              * PLuginList ira receber a lista dos Peers disponiveis na federação
              * e que possuem espaço em disco para receber o arquivo a ser replicado
              */
-            pluginFile.setPath("data-folder/"+info.getName());
+            pluginFile.setPath(DATAFOLDER+info.getName());
             NodeInfo no = null;
 
             /*
@@ -611,7 +623,7 @@ public class StorageService extends AbstractBioService {
                     /*
                      * Descoberto um peer disponivel, tenta enviar o arquivo
                      */
-                    Put conexao = new Put(node.getAddress(), dataFolder + "/" + info.getName());
+                    Put conexao = new Put(node.getAddress(), DATAFOLDER + info.getName());
                     if (conexao.startSession()) {
                         idsPluginsFile.add(node.getPeerId());
                        
@@ -833,5 +845,9 @@ public class StorageService extends AbstractBioService {
 			Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
 		}
         
+    }
+    
+    public void getFile(String file) {
+    	myPlugin.getFile(file);
     }
 }

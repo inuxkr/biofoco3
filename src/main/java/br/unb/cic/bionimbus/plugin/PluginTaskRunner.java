@@ -67,6 +67,7 @@ public class PluginTaskRunner implements Callable<PluginTask> {
             BufferedReader saidaErro = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String line;
             int j=0;
+            System.out.println("PluginTaskRunner call()");
             while ((line = saidaSucesso.readLine()) != null && j<6) {
                 System.out.println("Job "+task.getJobInfo().getId()+". Saída: "+line);
                 j++;
