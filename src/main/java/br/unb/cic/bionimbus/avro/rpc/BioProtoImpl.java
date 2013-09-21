@@ -136,9 +136,7 @@ public class BioProtoImpl implements BioProto {
         
         return  allJobs.toString().isEmpty() ? "Não existem jobs." : "Jobs :\n "+allJobs;
     }
-    
-    
-    
+
     /**
      * Retorna uma lista com o nome dos arquivos pertencentes a toda a federação.
      * @return lista com nome dos arquivos
@@ -146,6 +144,7 @@ public class BioProtoImpl implements BioProto {
      */
     @Override
     public List<String> listFilesName() throws AvroRemoteException {
+    	//System.out.println("listFileName()");
         ArrayList<String> listFile = new ArrayList<String>();
         try {
             for(Collection<String> collection : storageService.getFiles().values()){
@@ -199,7 +198,7 @@ public class BioProtoImpl implements BioProto {
         
         String destino="";    
         try {
-            destino =   storageService.getIpContainsFile(file);
+            destino = storageService.getIpContainsFile(file);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(BioProtoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -456,8 +455,6 @@ public class BioProtoImpl implements BioProto {
         fileS.setPluginId(dest);
         return storageService.checkFilePeer(fileS); 
     }
-
-
     
     @Override
     public void setWatcher(String idPlugin) {
@@ -465,13 +462,22 @@ public class BioProtoImpl implements BioProto {
     }
 
     /**
-     * Método RPC que extrai o arquivo enviado;
+     * Método RPC que extrair o arquivo enviado;
      * @param file Nome do arquivo
      */
     @Override
     public void extractFile(String file){
-        
-       storageService.extractFile(file);
-        
+        System.out.println("extractFile()");
+        storageService.extractFile(file);
+    }
+    
+    /**
+     * Método RPC para baixar o arquivo
+     * @throws AvroRemoteException 
+     */
+    @Override
+    public void getFile(String file) throws AvroRemoteException {
+    	System.out.println("getFile()");
+    	storageService.getFile(file);
     }
 }
