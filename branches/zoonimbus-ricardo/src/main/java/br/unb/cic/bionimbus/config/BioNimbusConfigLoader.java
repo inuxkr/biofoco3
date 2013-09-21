@@ -18,7 +18,7 @@ public final class BioNimbusConfigLoader {
         BioNimbusConfig config = mapper.readValue(new File(filename), BioNimbusConfig.class);
         
         if (config.getInfra() == null) {
-            config.setInfra("linux");
+            config.setInfra("hadoop");
         }
 
         config.setInfra(config.getInfra());
