@@ -56,7 +56,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
     private Map<String, Pair<PluginInfo, PluginTask>> waitingTask = new ConcurrentHashMap<String, Pair<PluginInfo, PluginTask>>();
     private Map<String, PluginFile> mapFilesPlugin;
     private final Map<String, JobInfo> jobsWithNoService = new ConcurrentHashMap<String, JobInfo>();
-//    private final Queue<PluginTask> runningJobs = new ConcurrentLinkedQueue<PluginTask>();
+    // private final Queue<PluginTask> runningJobs = new ConcurrentLinkedQueue<PluginTask>();
     private final Map<String, PluginInfo> cancelingJobs = new ConcurrentHashMap<String, PluginInfo>();
     private RpcClient rpcClient;
 
@@ -292,13 +292,9 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             
             try {
 	            //realiza uma chamada rpc para baixar o arquivo do hadoop
-	            rpcClient = new AvroClient(p2p.getConfig().getRpcProtocol(), myPlugin.getMyInfo().getHost().getAddress(), myPlugin.getMyInfo().getHost().getPort());
+	            rpcClient = new AvroClient(p2p.getConfig().getRpcProtocol(), ipContainsFile, myPlugin.getMyInfo().getHost().getPort());
             	rpcClient.getProxy().getFile(pair.first);
             	rpcClient.close();
-			} catch (AvroRemoteException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -558,7 +554,6 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
     }
 
     /**
@@ -646,14 +641,20 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      * @return
      */
     private boolean existFiles(List<Pair<String, Long>> listInputFiles) {
-
+    	
         for (Pair<String, Long> fileInput : listInputFiles) {
+        	//Verificar se o arquivo já foi baixado
+        	File file = new File(StorageService.DATAFOLDER+fileInput.first);
+    		if (file.exists())
+    			return true;
+    		/*
         	PluginFile pluginFile = mapFilesPlugin.get(fileInput.first);
         	if (pluginFile != null && pluginFile.getPluginId().contains(idPlugin)) {
-        		File file = new File(StorageService.DATAFOLDER+pluginFile.getName());
+        		file = new File(StorageService.DATAFOLDER+pluginFile.getName());
         		if (file.exists())
         			return true;
         	}
+        	*/
         }
 
         return false;
