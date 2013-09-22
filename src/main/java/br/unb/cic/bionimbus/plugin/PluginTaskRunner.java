@@ -1,14 +1,14 @@
 package br.unb.cic.bionimbus.plugin;
 
 import br.unb.cic.bionimbus.services.ZooKeeperService;
+import br.unb.cic.bionimbus.services.storage.StorageService;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import br.unb.cic.bionimbus.utils.Pair;
-import java.io.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class PluginTaskRunner implements Callable<PluginTask> {
     private final PluginService service;
     private final String path;
     private final ZooKeeperService zkService;
-    private final String PATHFILES="data-folder/";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginTaskRunner.class.getSimpleName());
 
 
@@ -43,18 +43,19 @@ public class PluginTaskRunner implements Callable<PluginTask> {
             String input = pair.first;
             //linha comentada pois arquivos de entrada não ficam mais no AbstractPlugin
 //            args = args.replaceFirst("%I" + i, path + File.pathSeparator + plugin.getInputFiles().get(input).first);
-            args = args.replaceFirst("%I" + i, path+PATHFILES + input+" ");
+            args = args.replaceFirst("%I" + i, StorageService.DATAFOLDER + input+" ");
             i++;
         }
 
         List<String> outputs = task.getJobInfo().getOutputs();
         i = 1;
         for (String output : outputs) {
-            args = args.replaceFirst("%O" + i, " "+path+PATHFILES + output);
+            args = args.replaceFirst("%O" + i, " "+StorageService.DATAFOLDER+output);
             i++;
         }
         Process p = null;
         try {
+        	System.out.println(service.getPath() + " " + args);
             p = Runtime.getRuntime().exec(service.getPath() + " " + args);
 //                        p = Runtime.getRuntime().exec(path+service.getPath().substring(1,service.getPath().length()) + " " + args);
 

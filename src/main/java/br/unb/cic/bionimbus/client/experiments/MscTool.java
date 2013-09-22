@@ -236,7 +236,6 @@ public class MscTool {
     }
 
     public void printResult() {
-
     }
 
     public static void main(String[] args) {
