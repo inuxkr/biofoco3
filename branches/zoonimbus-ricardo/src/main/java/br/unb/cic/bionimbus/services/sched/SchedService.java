@@ -621,11 +621,8 @@ public class SchedService extends AbstractBioService implements Service, P2PList
         //TODO otimiza chamada de checage dos arquivos
         checkFilesPlugin();
         //verifica se o arquivo existe no plugin se não cria a solicitação de transfêrencia do arquivo
-        System.out.println(existFilesCloud(task.getJobInfo().getInputs()));
+        //System.out.println(existFilesCloud(task.getJobInfo().getInputs()));
         if (!existFilesCloud(task.getJobInfo().getInputs())) {
-//            if (task.getState() == PluginTaskState.PENDING) {
-//                task.setState(PluginTaskState.WAITING);
-//            }
             task.setState(PluginTaskState.ERRO);
             return;
         }

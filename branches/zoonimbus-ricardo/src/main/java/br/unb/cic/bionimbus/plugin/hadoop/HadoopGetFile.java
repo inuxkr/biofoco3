@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginGetFile;
+import br.unb.cic.bionimbus.services.storage.StorageService;
 
 public class HadoopGetFile implements Callable<PluginGetFile> {
 
@@ -30,7 +31,8 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
         Process p = null;
         
         try {
-            p = Runtime.getRuntime().exec("hadoop fs -get " + getFile.getPluginFile().getPath() + " " + file.getName());
+        	System.out.println("/home/ubuntu/hadoop-1.0.3/bin/hadoop fs -get " + getFile.getPluginFile().getPath() + " " + file.getName());
+            p = Runtime.getRuntime().exec("/home/ubuntu/hadoop-1.0.3/bin/hadoop fs -get " + getFile.getPluginFile().getPath() + " " + StorageService.DATAFOLDER+file.getName());
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = br.readLine()) != null) {
