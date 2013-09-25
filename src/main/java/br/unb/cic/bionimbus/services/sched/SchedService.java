@@ -298,10 +298,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-            
-            for (int i = 0; i < 10000; i++) {
-			}
-            
+                        
             if (!p2p.getConfig().getAddress().equals(ipContainsFile)) {
 	            String path = Compactacao.nomeCompactado(pair.first);
 	            Get conexao = new Get();
