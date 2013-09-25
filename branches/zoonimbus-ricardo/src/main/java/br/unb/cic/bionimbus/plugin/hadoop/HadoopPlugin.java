@@ -94,13 +94,6 @@ public class HadoopPlugin extends AbstractPlugin {
 		pluginFile.setName(file);
 		pluginFile.setPath(file);
 		executorService.submit(new HadoopGetFile(pluginFile, null, null, StorageService.DATAFOLDER));
-		
-		String path = StorageService.DATAFOLDER + file;
-		try {
-			Compactacao.compactar(path);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

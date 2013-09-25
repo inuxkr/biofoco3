@@ -2,6 +2,7 @@ package br.unb.cic.bionimbus.plugin.hadoop;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 
@@ -9,6 +10,7 @@ import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginGetFile;
 import br.unb.cic.bionimbus.services.storage.StorageService;
+import br.unb.cic.bionimbus.utils.Compactacao;
 
 public class HadoopGetFile implements Callable<PluginGetFile> {
 
@@ -40,6 +42,13 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+		String path = StorageService.DATAFOLDER+file.getName();
+		try {
+			Compactacao.compactar(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
         return getFile;
     }
