@@ -20,6 +20,7 @@ import br.unb.cic.bionimbus.services.ZooKeeperService;
 import br.unb.cic.bionimbus.services.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.services.storage.Ping;
 import br.unb.cic.bionimbus.services.storage.StorageService;
+import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.utils.Get;
 import br.unb.cic.bionimbus.utils.Pair;
 import com.google.common.base.Preconditions;
@@ -34,7 +35,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 
-import org.apache.avro.AvroRemoteException;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -299,14 +299,21 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 				e.printStackTrace();
 			}
 
+            String path = Compactacao.nomeCompactado(pair.first);
             Get conexao = new Get();
             try {
-                conexao.startSession(pair.first, ipContainsFile);
+                conexao.startSession(path, ipContainsFile);
             } catch (JSchException ex) {
                 java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SftpException ex) {
                 java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            try {
+				Compactacao.descompactar(StorageService.DATAFOLDER+path);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
         }
         checkFilesPlugin();

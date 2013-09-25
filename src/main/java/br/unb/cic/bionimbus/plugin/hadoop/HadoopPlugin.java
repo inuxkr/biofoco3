@@ -14,6 +14,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import br.unb.cic.bionimbus.services.ZooKeeperService;
 import br.unb.cic.bionimbus.services.storage.StorageService;
+import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.p2p.Host;
 import br.unb.cic.bionimbus.p2p.P2PService;
 import br.unb.cic.bionimbus.plugin.AbstractPlugin;
@@ -93,6 +94,13 @@ public class HadoopPlugin extends AbstractPlugin {
 		pluginFile.setName(file);
 		pluginFile.setPath(file);
 		executorService.submit(new HadoopGetFile(pluginFile, null, null, StorageService.DATAFOLDER));
+		
+		String path = StorageService.DATAFOLDER + file;
+		try {
+			Compactacao.compactar(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -623,11 +623,24 @@ public class StorageService extends AbstractBioService {
                     /*
                      * Descoberto um peer disponivel, tenta enviar o arquivo
                      */
-                    Put conexao = new Put(node.getAddress(), DATAFOLDER + info.getName());
+                	//Compactar
+                	String path = DATAFOLDER + info.getName();
+                	path = Compactacao.compactar(path);
+                	
+                    Put conexao = new Put(node.getAddress(), path);
                     if (conexao.startSession()) {
                         idsPluginsFile.add(node.getPeerId());
                        
                         pluginFile.setPluginId(idsPluginsFile);
+                        
+                        //Descompactar o arquivo no destino
+                        try {
+	                        RpcClient rpcClient = new AvroClient("http", node.getAddress(), PORT);
+	                    	rpcClient.getProxy().extractFile(path);
+							rpcClient.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
                         /*
                          * Com o arquivo enviado, seta os seus dados no Zookeeper
                          */

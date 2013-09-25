@@ -13,7 +13,7 @@ public class Compactacao {
 
 	public static String compactar(String path) throws IOException {
 		
-		String compressed = path + ".cpt";
+		String compressed = nomeCompactado(path);
 		
 		FileOutputStream fos = new FileOutputStream(compressed);
         SnappyOutputStream sout = new SnappyOutputStream(fos);
@@ -41,8 +41,7 @@ public class Compactacao {
 	
 	public static String descompactar(String path) throws IOException {
 		
-		System.out.println("Descompactando....");
-		String decompressed = path.replaceAll(".cpt","");
+		String decompressed = nomeDescompactado(path);
 		
 		FileOutputStream fos = new FileOutputStream(decompressed);
 
@@ -61,6 +60,16 @@ public class Compactacao {
         
         return decompressed;
         
+	}
+	
+	public static String nomeCompactado(String path) {
+		String compressed = path + ".cpt";
+		return compressed;
+	}
+	
+	public static String nomeDescompactado(String path) {
+		String decompressed = path.replaceAll(".cpt","");
+		return decompressed;
 	}
 
 }

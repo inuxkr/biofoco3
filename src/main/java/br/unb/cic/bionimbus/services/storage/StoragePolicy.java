@@ -46,6 +46,7 @@ public class StoragePolicy {
         double uptime;
         double freesize;
         double costpergiga = 0;
+        double workload;
 
         /*
          * Calculando os custos de armazenamento dos peers
