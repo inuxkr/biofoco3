@@ -312,7 +312,9 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 	            }
 	            
 	            try {
-					Compactacao.descompactar(StorageService.DATAFOLDER+path);
+	            	File file = new File(StorageService.DATAFOLDER+path);
+	            	if (file.exists())
+	            		Compactacao.descompactar(StorageService.DATAFOLDER+path);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
