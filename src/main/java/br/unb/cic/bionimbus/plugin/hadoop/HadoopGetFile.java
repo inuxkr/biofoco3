@@ -40,7 +40,8 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
             }
             br.close();
             
-            for (int i = 0; i < 1000; i++){
+            for (int i = 0; i < 1000; ){
+            	i++;
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -35,6 +35,10 @@ public class Compactacao {
         fos.flush();
         fos.close();
         
+        for (int i = 0; i < 1000; ){
+        	i++;
+        }
+        
         return compressed;
 
 	}
@@ -58,8 +62,11 @@ public class Compactacao {
         fos.flush();
         fos.close();
         
-        return decompressed;
+        for (int i = 0; i < 1000; ){
+        	i++;
+        }
         
+        return decompressed;
 	}
 	
 	public static String nomeCompactado(String path) {
