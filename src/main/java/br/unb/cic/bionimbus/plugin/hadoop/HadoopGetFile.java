@@ -39,6 +39,9 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
                 System.out.println(line);
             }
             br.close();
+            
+            for (int i = 0; i < 1000; i++){
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
