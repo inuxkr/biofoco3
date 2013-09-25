@@ -303,6 +303,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 	            String path = Compactacao.nomeCompactado(pair.first);
 	            Get conexao = new Get();
 	            try {
+	            	System.out.println("Getting.. " + path + " to " + ipContainsFile);
 	                conexao.startSession(path, ipContainsFile);
 	            } catch (JSchException ex) {
 	                java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
