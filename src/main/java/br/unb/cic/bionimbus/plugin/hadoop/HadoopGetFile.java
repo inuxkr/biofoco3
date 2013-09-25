@@ -26,12 +26,10 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
     
     @Override
     public PluginGetFile call() throws Exception {
-    	System.out.println("PluginGetFile call()");
     	File file = new File(serverPath + File.separator + getFile.getPluginFile().getPath());
         Process p = null;
         
         try {
-        	System.out.println("/home/ubuntu/hadoop-1.0.3/bin/hadoop fs -get " + getFile.getPluginFile().getPath() + " " + file.getName());
             p = Runtime.getRuntime().exec("/home/ubuntu/hadoop-1.0.3/bin/hadoop fs -get " + getFile.getPluginFile().getPath() + " " + StorageService.DATAFOLDER+file.getName());
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
@@ -39,10 +37,6 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
                 System.out.println(line);
             }
             br.close();
-            
-            for (int i = 0; i < 1000; i++){
-            	System.out.println(i);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
