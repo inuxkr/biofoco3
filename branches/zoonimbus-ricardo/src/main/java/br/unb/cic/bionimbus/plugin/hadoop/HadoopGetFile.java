@@ -29,27 +29,30 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
     @Override
     public PluginGetFile call() throws Exception {
     	File file = new File(serverPath + File.separator + getFile.getPluginFile().getPath());
-        Process p = null;
-        
-        try {
-            p = Runtime.getRuntime().exec("/home/ubuntu/hadoop-1.0.3/bin/hadoop fs -get " + getFile.getPluginFile().getPath() + " " + StorageService.DATAFOLDER+file.getName());
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
 		String path = StorageService.DATAFOLDER+file.getName();
-		try {
-			Compactacao.compactar(path);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    	File file2 = new File(path);
+    	if (!file2.exists()) {
+	        Process p = null;
+	        
+	        try {
+	            p = Runtime.getRuntime().exec("/home/ubuntu/hadoop-1.0.3/bin/hadoop fs -get " + getFile.getPluginFile().getPath() + " " + StorageService.DATAFOLDER+file.getName());
+	            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	            String line;
+	            while ((line = br.readLine()) != null) {
+	                System.out.println(line);
+	            }
+	            br.close();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 
+			try {
+				Compactacao.compactar(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
         return getFile;
     }
 

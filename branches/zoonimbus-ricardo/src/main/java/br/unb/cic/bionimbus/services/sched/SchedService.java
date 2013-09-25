@@ -289,7 +289,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
     private void requestFile(List<Pair<String, Long>> listFiles) {
         for (Pair<String, Long> pair : listFiles) {
             String ipContainsFile = getFilesIP(pair.first);
-            
+
             try {
 	            //realiza uma chamada rpc para baixar o arquivo do hadoop
 	            rpcClient = new AvroClient(p2p.getConfig().getRpcProtocol(), ipContainsFile, myPlugin.getMyInfo().getHost().getPort());
@@ -298,7 +298,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-                        
+
             if (!p2p.getConfig().getAddress().equals(ipContainsFile)) {
 	            String path = Compactacao.nomeCompactado(pair.first);
 	            Get conexao = new Get();
@@ -315,6 +315,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 	            	File file = new File(StorageService.DATAFOLDER+path);
 	            	if (file.exists())
 	            		Compactacao.descompactar(StorageService.DATAFOLDER+path);
+	            	else {
+	            		for (int i = 0; i < 10000; i++) {
+						}
+	            	}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
