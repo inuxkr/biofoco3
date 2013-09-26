@@ -299,11 +299,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 				e.printStackTrace();
 			}
 
-            if (!p2p.getConfig().getAddress().equals(ipContainsFile)) {
+            if (!myPlugin.getMyInfo().getHost().getAddress().equals(ipContainsFile)) {
 	            String path = Compactacao.nomeCompactado(pair.first);
 	            Get conexao = new Get();
 	            try {
-	            	System.out.println("Getting.. " + path + " to " + ipContainsFile);
 	                conexao.startSession(path, ipContainsFile);
 	            } catch (JSchException ex) {
 	                java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
@@ -641,6 +640,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             requestFile(task.getJobInfo().getInputs());
         }
         if (existFiles(task.getJobInfo().getInputs())) {
+        	System.out.println("EXECUTETASK - "+ task.getJobInfo().getOutputs()+" - MileSegundos: " + new Date());
             myPlugin.startTask(task, zkService);
         } else {
             task.setState(PluginTaskState.WAITING);
@@ -715,6 +715,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             zkService.createEphemeralZNode(task.getPluginTaskPathZk(), task.toString());
 
             LOGGER.info("Tempo de execução job -"+ task.getJobInfo().getOutputs()+"- Segundos: " + task.getTimeExec() + " , Minutos: " + task.getTimeExec() / 60);
+            System.out.println("FINALIZETASK - "+ task.getJobInfo().getOutputs()+" - MileSegundos: " + new Date());
         } catch (KeeperException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
@@ -784,7 +785,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                                 ObjectMapper mapper = new ObjectMapper();
                                 datas = zkService.getData(eventType.getPath() + "/" + child, null);
                                 JobInfo job = mapper.readValue(datas, JobInfo.class);
-
+                                System.out.println("STARTJOB - "+ job.getOutputs()+" - MileSegundos: " + new Date());
                                 //rotina para criar bloqueio para que nenhuma outra máquina selecione o job para escalonar       ->>>comentado para verificar problema de concorrência
 //                                if (!zkService.getZNodeExist(zkService.getPath().LOCK_JOB.getFullPath("", "", job.getId()), true)) {
                                 if(job.getLocalId().equals(myPlugin.getMyInfo().getHost().getAddress())){
