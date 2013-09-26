@@ -35,7 +35,6 @@ public class BioProtoImpl implements BioProto {
     private final ZooKeeperService zkService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedService.class.getSimpleName());
-
     
     private Map<String, NodeInfo> nodes = new HashMap<String, NodeInfo>();
     private static HashSet<String> arquivoTransferencia = new HashSet<String>();
@@ -305,7 +304,6 @@ public class BioProtoImpl implements BioProto {
         for (br.unb.cic.bionimbus.avro.gen.JobInfo job: listJob){
             job.setTimestamp(System.currentTimeMillis());
             zkService.createPersistentZNode(zkService.getPath().PREFIX_JOB.getFullPath("", "", job.getId()) , job.toString());
-            LOGGER.info("Tempo de inicio do job -"+ job.getOutputs()+"- MileSegundos: " + job.getTimestamp());
             //tempo adicionado para latencia poder ser calculada
             try {
                 TimeUnit.SECONDS.sleep(10);
@@ -478,7 +476,6 @@ public class BioProtoImpl implements BioProto {
      */
     @Override
     public void getFile(String file) throws AvroRemoteException {
-    	System.out.println("getFile()");
     	if (!arquivoTransferencia.contains(file)) {
 	    	arquivoTransferencia.add(file);
 	    	storageService.getFile(file);
