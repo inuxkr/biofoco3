@@ -15,8 +15,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.zookeeper.KeeperException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -85,6 +88,10 @@ public class StoragePolicy {
                 Logger.getLogger(StoragePolicy.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
                 Logger.getLogger(StoragePolicy.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TimeoutException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
 
         }

@@ -35,6 +35,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -104,6 +105,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -148,9 +153,13 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        
+
         schedExecService.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
     }
 
@@ -158,7 +167,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      * Executa a rotina de escalonamento, após o zookeeper disparar um aviso que
      * um novo job foi criado para ser escalonado.
      */
-    private void scheduleJobs() throws InterruptedException, KeeperException {
+    private void scheduleJobs() throws InterruptedException, KeeperException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         HashMap<JobInfo, PluginInfo> schedMap = null;
 
         // Caso nao exista nenhum job pendente da a chance do escalonador
@@ -261,6 +270,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -332,7 +345,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      *
      * @param tasks lista das tarefas
      */
-    public void relocateTasks(Collection<PluginTask> tasks) throws KeeperException, InterruptedException {
+    public void relocateTasks(Collection<PluginTask> tasks) throws KeeperException, InterruptedException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         relocateTasks.addAll(tasks);
 
         //Adiciona os jobs cancelados a lista de jobs a serem escalonados no servidor zookeeper
@@ -401,6 +414,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -446,6 +463,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -458,7 +479,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      * @throws InterruptedException
      * @throws IOException
      */
-    private void checkWaitingTasks() throws KeeperException, InterruptedException, IOException {
+    private void checkWaitingTasks() throws KeeperException, InterruptedException, IOException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         List<PluginInfo> plgs = new ArrayList<PluginInfo>(getPeers().values());
         List<String> listTasks;
         Watcher watcher;
@@ -503,7 +524,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      * @throws InterruptedException
      * @throws IOException
      */
-    private PluginTask getNewTask(String taskPath) throws KeeperException, InterruptedException, IOException {
+    private PluginTask getNewTask(String taskPath) throws KeeperException, InterruptedException, IOException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         ObjectMapper mapper = new ObjectMapper();
         PluginTask pluginTask = null;
         List<String> tasksChildren = zkService.getChildren(taskPath, null);
@@ -720,6 +741,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
 
@@ -756,6 +781,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return null;
@@ -885,6 +914,10 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                 java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
                 java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TimeoutException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
 

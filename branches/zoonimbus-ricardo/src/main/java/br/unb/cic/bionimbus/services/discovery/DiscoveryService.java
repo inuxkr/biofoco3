@@ -22,12 +22,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 
@@ -70,8 +69,14 @@ public class DiscoveryService extends AbstractBioService implements RemovalListe
     }
 
     @Override
-    public void run() {    
-        setDatasPluginInfo(false);
+    public void run() {
+        try {
+            setDatasPluginInfo(false);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 //        Map<String, PluginInfo> listPlugin = getPeers();
 //        if(!listPlugin.isEmpty()){
 //            for (PluginInfo myInfo : listPlugin.values()) {
@@ -107,7 +112,7 @@ public class DiscoveryService extends AbstractBioService implements RemovalListe
      }
      */
      }
-    public void setDatasPluginInfo(boolean start) {
+    public void setDatasPluginInfo(boolean start) throws TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         try {
             LinuxGetInfo getinfo=new LinuxGetInfo();
             PluginInfo infopc= getinfo.call();
