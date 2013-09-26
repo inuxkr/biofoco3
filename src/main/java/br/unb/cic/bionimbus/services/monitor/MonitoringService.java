@@ -20,12 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -131,6 +130,10 @@ public void shutdown() {
                 java.util.logging.Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
                 java.util.logging.Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TimeoutException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         } 
     }
@@ -184,6 +187,10 @@ public void shutdown() {
             Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
     }
@@ -218,6 +225,10 @@ public void shutdown() {
             Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -259,8 +270,12 @@ public void shutdown() {
               Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex); 
             } catch (InterruptedException ex) {
               Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex); 
-            } 
-      
+            } catch (TimeoutException e) {
+              e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+          } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+              e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+          }
+
       }
      
     /**
@@ -295,7 +310,7 @@ public void shutdown() {
 
     }
 
-    private void deletePeer(String peerPath) throws InterruptedException, KeeperException {
+    private void deletePeer(String peerPath) throws InterruptedException, KeeperException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         if (!zkService.getZNodeExist(peerPath + STATUS, false) && zkService.getZNodeExist(peerPath + STATUSWAITING, false)) {
             zkService.delete(peerPath);
         }

@@ -36,12 +36,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.avro.AvroRemoteException;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.zookeeper.KeeperException;
@@ -109,6 +108,10 @@ public class StorageService extends AbstractBioService {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         //NECESSARIO atualizar a lista de arquivo local , a lista do zookeeper com os arquivos locais.
@@ -169,6 +172,10 @@ public class StorageService extends AbstractBioService {
                 Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
                 Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TimeoutException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
 
         }
@@ -290,6 +297,10 @@ public class StorageService extends AbstractBioService {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return mapFiles;
@@ -326,6 +337,10 @@ public class StorageService extends AbstractBioService {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return "";
@@ -354,6 +369,10 @@ public class StorageService extends AbstractBioService {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return 0;
     }
@@ -401,6 +420,10 @@ public class StorageService extends AbstractBioService {
                 Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
                 Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TimeoutException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
             return true;
         }
@@ -416,7 +439,7 @@ public class StorageService extends AbstractBioService {
      * @throws InterruptedException
      * @throws IOException
      */
-    public synchronized void fileUploaded(PluginFile fileuploaded) throws KeeperException, InterruptedException, IOException {
+    public synchronized void fileUploaded(PluginFile fileuploaded) throws KeeperException, InterruptedException, IOException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         System.out.println("(fileUploaded) Checando se existe a requisição no pending saving"+fileuploaded.toString());
         if (zkService.getZNodeExist(zkService.getPath().PREFIX_PENDING_FILE.getFullPath("", fileuploaded.getId(), ""), false)) {
         	//TODO Descompactação
@@ -539,6 +562,10 @@ public class StorageService extends AbstractBioService {
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (TimeoutException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
                 //verifica se exite replicação quando houver mais de um peer
                 if (getPeers().size() != 1)
@@ -550,8 +577,12 @@ public class StorageService extends AbstractBioService {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-       
+
     }
 
     /**
@@ -656,6 +687,10 @@ public class StorageService extends AbstractBioService {
                                 Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (InterruptedException ex) {
                                 Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (TimeoutException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                             }
                         }
                         filesreplicated++;
@@ -739,6 +774,10 @@ public class StorageService extends AbstractBioService {
             Logger.getLogger(DiscoveryService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return filesPeerSelected;
@@ -760,6 +799,10 @@ public class StorageService extends AbstractBioService {
                 java.util.logging.Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
                 java.util.logging.Logger.getLogger(MonitoringService.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (TimeoutException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
     }
@@ -840,6 +883,10 @@ public class StorageService extends AbstractBioService {
                             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (IOException ex) {
                             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (TimeoutException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                         }
                     }
                     break;

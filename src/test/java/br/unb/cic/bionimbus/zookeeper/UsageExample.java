@@ -3,6 +3,7 @@ package br.unb.cic.bionimbus.zookeeper;
 import br.unb.cic.bionimbus.services.ZooKeeperService;
 import br.unb.cic.bionimbus.utils.NetUtils;
 import br.unb.cic.bionimbus.services.storage.file.FileService;
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +29,7 @@ public class UsageExample {
     private static final String SEPARATOR = "/";
     private static final String PREFIX_PEER = "peer_";
 
-    public static void main(String[] args) throws IOException, InterruptedException, KeeperException {
+    public static void main(String[] args) throws IOException, InterruptedException, KeeperException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
 
         String peerID = UUID.randomUUID().toString();
 
@@ -99,7 +101,11 @@ public class UsageExample {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             } catch (IOException e) {
 				e.printStackTrace();
-			}
+			} catch (TimeoutException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
     }
 }

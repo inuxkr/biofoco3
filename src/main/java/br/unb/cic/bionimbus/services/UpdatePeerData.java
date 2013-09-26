@@ -5,8 +5,11 @@
 package br.unb.cic.bionimbus.services;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -55,6 +58,10 @@ public class UpdatePeerData implements Watcher  {
             Logger.getLogger(UpdatePeerData.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(UpdatePeerData.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     } 
         

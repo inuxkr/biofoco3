@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.zookeeper.KeeperException;
 
 @Singleton
@@ -41,17 +44,13 @@ public class ServiceManager {
         this.services.addAll(services);
     }
 
-    public void connectZK(String hosts) throws IOException, InterruptedException {
+    public void connectZK(String hosts) throws IOException, InterruptedException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         System.out.println("conectando ao ZooKeeperService...");
-        if (zkService.getStatus() != ZooKeeperService.Status.CONNECTED
-                && zkService.getStatus() != ZooKeeperService.Status.CONNECTING) {
-            zkService.connect(hosts);
-        }
+        zkService.connect(hosts);
     }
     
     public void createZnodeZK(String id) throws IOException, InterruptedException, KeeperException {
-        if (zkService.getStatus() == ZooKeeperService.Status.CONNECTED) {
-           
+
             zkService.createPersistentZNode(ROOT_PEER, "10");
             
            //criando zNode persistente para cada novo peer
@@ -59,8 +58,6 @@ public class ServiceManager {
           
            //criando status efemera para verificar se o servidor esta rodando
            zkService.createEphemeralZNode(PREFIX_PEERS+ id+SEPARATOR+STATUS, null);
-        
-        }
     }
 
     /**
@@ -70,7 +67,6 @@ public class ServiceManager {
         List<String> peers;
 //        boolean existPeer=false;
         try {
-            if((zkService.getStatus() == ZooKeeperService.Status.CONNECTED) && zkService.getZNodeExist(ROOT_PEER, false)){
                 peers = zkService.getChildren(ROOT_PEER, null);
                 if(!(peers==null) && !peers.isEmpty()){
                     for(String peer : peers){
@@ -84,13 +80,16 @@ public class ServiceManager {
 //                if(!existPeer){
 //                    //apaga os znodes que haviam no servidor
 //                }
-            }
         } catch (KeeperException ex) {
             Logger.getLogger(ServiceManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(ServiceManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(ServiceManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
     
