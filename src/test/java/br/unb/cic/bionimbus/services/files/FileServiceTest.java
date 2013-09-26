@@ -21,9 +21,9 @@ public class FileServiceTest extends TestCase {
         assertNotSame(space, 0L);
     }
 
-    @Test
+/*    @Test
     public void testFileTransfer() throws IOException {
         FileService fs = new FileService();
         fs.copyFrom("localhost", new File("/home/edward/Anagrams.scala"));
-    }
+    }*/
 }
