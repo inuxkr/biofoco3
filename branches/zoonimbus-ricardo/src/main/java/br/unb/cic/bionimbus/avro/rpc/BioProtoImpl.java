@@ -38,6 +38,7 @@ public class BioProtoImpl implements BioProto {
 
     
     private Map<String, NodeInfo> nodes = new HashMap<String, NodeInfo>();
+    private static HashSet<String> arquivoTransferencia = new HashSet<String>();
 
     @Inject
     public BioProtoImpl(DiscoveryService discoveryService, StorageService storageService, SchedService schedService, ZooKeeperService zkservice) {
@@ -478,6 +479,10 @@ public class BioProtoImpl implements BioProto {
     @Override
     public void getFile(String file) throws AvroRemoteException {
     	System.out.println("getFile()");
-    	storageService.getFile(file);
+    	if (!arquivoTransferencia.contains(file)) {
+	    	arquivoTransferencia.add(file);
+	    	storageService.getFile(file);
+	    	arquivoTransferencia.remove(file);
+    	}
     }
 }
