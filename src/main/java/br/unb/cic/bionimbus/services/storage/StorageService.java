@@ -65,7 +65,7 @@ public class StorageService extends AbstractBioService {
     //private List<String> listFile = new ArrayList<String>();
     private AbstractPlugin myPlugin;
     //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
-    public static String DATAFOLDER = "/home/ubuntu/workspace/zoonimbus/data-folder/"; 
+    public static String DATAFOLDER = "/home/ubuntu/workspace/"; 
 
     @Inject
     public StorageService(final ZooKeeperService service, MetricRegistry metricRegistry) {
