@@ -679,20 +679,17 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      */
     private boolean existFiles(List<Pair<String, Long>> listInputFiles) {
     	
+    	int tamanho = 0;
+    	
         for (Pair<String, Long> fileInput : listInputFiles) {
         	//Verificar se o arquivo já foi baixado
         	File file = new File(StorageService.DATAFOLDER+fileInput.first);
     		if (file.exists())
-    			return true;
-    		/*
-        	PluginFile pluginFile = mapFilesPlugin.get(fileInput.first);
-        	if (pluginFile != null && pluginFile.getPluginId().contains(idPlugin)) {
-        		file = new File(StorageService.DATAFOLDER+pluginFile.getName());
-        		if (file.exists())
-        			return true;
-        	}
-        	*/
+    			tamanho++;
         }
+        
+        if (tamanho == listInputFiles.size())
+        	return true;
 
         return false;
     }
