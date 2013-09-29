@@ -663,6 +663,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
         if (existFiles(task.getJobInfo().getInputs())) {
         	System.out.println("EXECUTETASK - "+ task.getJobInfo().getOutputs()+" - MileSegundos: " + new Date());
             myPlugin.startTask(task, zkService);
+            task.setState(PluginTaskState.RUNNING);
         } else {
             task.setState(PluginTaskState.WAITING);
         }
