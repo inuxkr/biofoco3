@@ -40,8 +40,10 @@ public class Get {
             sftpChannel.exit();
             session.disconnect();
         } catch (JSchException e) {
+        	e.printStackTrace();
             return false;  
         } catch (SftpException e) {
+        	e.printStackTrace();
             return false;
         }
         return true;
