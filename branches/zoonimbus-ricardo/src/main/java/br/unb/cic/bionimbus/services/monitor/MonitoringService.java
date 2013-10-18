@@ -142,7 +142,8 @@ public void shutdown() {
      * Verifica se os jobs que estava aguardando escalonamento e as tarefas que
      * já foram escalonadas ainda estão com o mesmo status da última leitura.
      */
-    private void checkJobsTasks() {
+    @SuppressWarnings("static-access")
+	private void checkJobsTasks() {
         try {
 
             for (String job : zkService.getChildren(zkService.getPath().JOBS.toString(), null)) {

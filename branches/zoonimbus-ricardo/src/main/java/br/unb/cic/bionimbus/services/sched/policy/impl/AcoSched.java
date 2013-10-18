@@ -12,6 +12,7 @@ import br.unb.cic.bionimbus.services.ZooKeeperService;
 import br.unb.cic.bionimbus.services.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
@@ -85,18 +86,15 @@ public class AcoSched extends SchedPolicy {
         //inicia o ACO para encontrar melhor PC dentro das nuvens escolhidas para o job
         AlgorithmAco(listPlugin);
 
-        PluginInfo plugin = new PluginInfo();
-        plugin.setRanking(Double.MIN_VALUE);
+        PluginInfo plugin = null;
 
         for (PluginInfo plg : listPlugin) {
-            if (plg.getRanking() > plugin.getRanking()) {
+            if (plugin == null || plg.getRanking() > plugin.getRanking()) {
                 plugin = plg;
             }
         }
-        plugin = listPlugin.get(0);
         //armazena as informações utilizadas e atualizadas para o escalonamento no servidor zookeeper
         setMapAcoDatasZooKeeper(listPlugin);
-
 
         return plugin.getId() == null ? null : plugin;
     }
@@ -472,8 +470,8 @@ public class AcoSched extends SchedPolicy {
     
     public double pow(double a, double b) {
     	double result = Math.pow(a, a);
-    	
-    	if (!Double.isInfinite(result))
+
+    	if (!Double.isNaN(result) && !Double.isInfinite(result))
     		return result;
     	else
     		return 0.00000001d;

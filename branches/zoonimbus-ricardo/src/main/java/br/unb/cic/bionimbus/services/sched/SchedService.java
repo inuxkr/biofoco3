@@ -314,6 +314,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 
             if (!myPlugin.getMyInfo().getHost().getAddress().equals(ipContainsFile)) {
 	            String path = Compactacao.nomeCompactado(pair.first);
+            	//String path = pair.first;
 	            Get conexao = new Get();
 	            try {
 	                conexao.startSession(path, ipContainsFile);
@@ -334,6 +335,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
             }
 
         }

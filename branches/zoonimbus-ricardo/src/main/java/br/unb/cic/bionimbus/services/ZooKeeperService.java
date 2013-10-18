@@ -8,6 +8,7 @@ import com.twitter.common.quantity.Time;
 import com.twitter.common.zookeeper.ZooKeeperClient;
 import com.twitter.common.zookeeper.ZooKeeperUtils;
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -266,8 +267,13 @@ public class ZooKeeperService {
      */
     public List<String> getChildren(String path, Watcher watcher) throws KeeperException, InterruptedException, IOException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
 
-        List<String> retorno = zk().getChildren(path, watcher, null);
-        return retorno;
+    	try {
+    		List<String> retorno = zk().getChildren(path, watcher, null);
+    		return retorno;
+    	} catch (NoNodeException ex) {
+    	}
+    	
+        return null;
 
     }
 
@@ -279,8 +285,13 @@ public class ZooKeeperService {
      * @throws InterruptedException
      */
     public String getData(String path, Watcher watcher) throws KeeperException, InterruptedException, TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
-        byte[] data = zk().getData(path, watcher, null);
-        return new String(data);
+    	try {
+    		byte[] data = zk().getData(path, watcher, null);
+        	return new String(data);
+    	} catch (NullPointerException ex) {
+    	}
+        
+    	return "";
     }
 
     /**
