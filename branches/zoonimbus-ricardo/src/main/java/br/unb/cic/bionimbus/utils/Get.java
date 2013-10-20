@@ -4,6 +4,8 @@
  */
 package br.unb.cic.bionimbus.utils;
 
+import java.util.Vector;
+
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -31,12 +33,18 @@ public class Get {
             session.setConfig("StrictHostKeyChecking", "no");
             session.setPassword(PASSW);
             session.connect();
-         
+
             com.jcraft.jsch.Channel channel = session.openChannel("sftp");
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
-            System.out.println("\n\n Downloading file.....");
-            sftpChannel.get(path+file,path);
+            Vector v = sftpChannel.ls(path+file);
+            if (v.size() > 0) {
+                System.out.println("Downloading file " + file + " inicio download " + Utilities.getDateString());
+                sftpChannel.get(path+file,path);
+                System.out.println("Downloading file " + file + " termino download " + Utilities.getDateString());
+            } else {
+                System.out.println("Downloading file " + file + " - Arquivo não disponível " + Utilities.getDateString());
+            }
             sftpChannel.exit();
             session.disconnect();
         } catch (JSchException e) {
