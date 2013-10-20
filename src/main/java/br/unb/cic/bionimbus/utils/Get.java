@@ -37,14 +37,18 @@ public class Get {
             com.jcraft.jsch.Channel channel = session.openChannel("sftp");
             channel.connect();
             ChannelSftp sftpChannel = (ChannelSftp) channel;
-            Vector v = sftpChannel.ls(path+file);
-            if (v.size() > 0) {
-                System.out.println("Downloading file " + file + " inicio download " + Utilities.getDateString());
-                sftpChannel.get(path+file,path);
-                System.out.println("Downloading file " + file + " termino download " + Utilities.getDateString());
-            } else {
-                System.out.println("Downloading file " + file + " - Arquivo não disponível " + Utilities.getDateString());
+            
+            //Verificar se o arquivo existe antes de fazer o download
+            try {
+            	sftpChannel.ls(path+file);	
+            } catch (Exception ex) {
+            	System.out.println("Downloading file " + file + " - Arquivo não disponível " + Utilities.getDateString());
+            	return false;
             }
+
+            System.out.println("Downloading file " + file + " inicio download " + Utilities.getDateString());
+            sftpChannel.get(path+file,path);
+            System.out.println("Downloading file " + file + " termino download " + Utilities.getDateString());
             sftpChannel.exit();
             session.disconnect();
         } catch (JSchException e) {
