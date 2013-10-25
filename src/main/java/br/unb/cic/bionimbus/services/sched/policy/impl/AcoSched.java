@@ -12,7 +12,6 @@ import br.unb.cic.bionimbus.services.ZooKeeperService;
 import br.unb.cic.bionimbus.services.sched.policy.SchedPolicy;
 import br.unb.cic.bionimbus.utils.Pair;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
@@ -438,6 +437,8 @@ public class AcoSched extends SchedPolicy {
         }
 
         pb = (sum == 0d ? 0d : multiplicationDatasPlugin(plg) / sum);
+
+        /* TODO Verificação do ranking atribuido ao plugin*/
         plg.setRanking(pb);
 
         return pb;
@@ -465,11 +466,12 @@ public class AcoSched extends SchedPolicy {
         LOGGER.info("\nValores do multiplication: pheromone = " + pheromone + " capacityComputing= " + capacityComputing + " loadBalacing= " + loadBalacing
                 + " capacityMemory= " + capacityMemory + "\n");
 
+        System.out.println(plugin.getHost() + " > pheromone: " + pheromone + " capacityComputing: " + capacityComputing + " loadBalacing: " + loadBalacing + " capacityMemory: " + capacityMemory);
         return pheromone * capacityComputing * loadBalacing * capacityMemory;
     }
     
     public double pow(double a, double b) {
-    	double result = Math.pow(a, a);
+    	double result = Math.pow(a, b);
 
     	if (!Double.isNaN(result) && !Double.isInfinite(result))
     		return result;
@@ -497,7 +499,7 @@ public class AcoSched extends SchedPolicy {
      */
     private Double capacityPlugin(PluginInfo plugin) {
         DecimalFormat decimal = new DecimalFormat("0.0000000000");
-
+        
         if (!(plugin.getNumCores() - plugin.getNumOccupied() == 0d)) {
             Double result = new Double(decimal.format((plugin.getNumCores() - plugin.getNumOccupied()) * plugin.getFrequencyCore() - mapPluginLatency.get(plugin.getId())).replace(",", "."));
             if (!(result == 0d)) {
