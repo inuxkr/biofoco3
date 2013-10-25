@@ -24,9 +24,9 @@ public class Get {
     private com.jcraft.jsch.Channel channel;
     
     public boolean startSession(String file, String host) throws JSchException, SftpException {
-        //String pathHome = System.getProperty("user.dir");
-        //String path =  (pathHome.substring(pathHome.length()).equals("/") ? pathHome+"data-folder/" : pathHome+"/data-folder/");
-    	String path = "data-folder/";
+        String pathHome = System.getProperty("user.dir");
+        String path =  (pathHome.substring(pathHome.length()).equals("/") ? pathHome+"data-folder/" : pathHome+"/data-folder/");
+    	//String path = "data-folder/";
             try {
             session = jsch.getSession(USER, host, PORT);
             session.setConfig("StrictHostKeyChecking", "no");
@@ -41,7 +41,7 @@ public class Get {
             try {
             	sftpChannel.ls(path+file);	
             } catch (Exception ex) {
-            	System.out.println("Downloading file " + file + " - Arquivo não disponível " + Utilities.getDateString());
+            	System.out.println("Downloading file " + file + " - Arquivo nao disponivel " + Utilities.getDateString());
             	return false;
             }
 
