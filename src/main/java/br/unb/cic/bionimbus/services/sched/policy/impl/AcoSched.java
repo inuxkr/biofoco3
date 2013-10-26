@@ -88,12 +88,13 @@ public class AcoSched extends SchedPolicy {
         PluginInfo plugin = null;
 
         for (PluginInfo plg : listPlugin) {
+        	System.out.println(plg.getHost() + " > " + plg.getRanking());
             if (plugin == null || plg.getRanking() > plugin.getRanking()) {
                 plugin = plg;
             }
         }
         //armazena as informações utilizadas e atualizadas para o escalonamento no servidor zookeeper
-        setMapAcoDatasZooKeeper(listPlugin);
+        //setMapAcoDatasZooKeeper(listPlugin);
 
         return plugin.getId() == null ? null : plugin;
     }
