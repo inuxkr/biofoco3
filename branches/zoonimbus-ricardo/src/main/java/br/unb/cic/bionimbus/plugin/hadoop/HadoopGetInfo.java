@@ -27,6 +27,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 	private static final String nodes = "<a href=\"machines.jsp?type=active\">";
 	private static final String tasks = "http://localhost:50030/jobtasks.jsp?jobid=%s&type=map&pagenum=1";
 	private static final String serviceDir = "services";
+    private final PluginInfo pluginInfo = new PluginInfo();
 
 	public static void getTaskInfo(PluginTask task) throws Exception {
 		
@@ -75,7 +76,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		conn.disconnect();
 	}
 	
-	private void getNameNodeInfo(PluginInfo info) throws Exception {
+	private void getNameNodeInfo() throws Exception {
 		
 		URL url = new URL(nameNode);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -107,7 +108,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 							value *= (1024*1024);
 						else if (unit.equals("MB"))
 							value *= 1024;
-						info.setFsSize(value);
+						pluginInfo.setFsSize(value);
 					} else if (i == 31) {
 						value = Float.parseFloat(split[1]);
 						unit = split[2];
@@ -120,7 +121,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 							value *= (1024*1024);
 						else if (unit.equals("MB"))
 							value *= 1024;
-						info.setFsFreeSize(value);
+						pluginInfo.setFsFreeSize(value);
 					}
 					i++;
 					if (i > 31)
@@ -133,7 +134,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		conn.disconnect();
 	}
 
-	private void getJobTrackerInfo(PluginInfo info) throws Exception {
+	private void getJobTrackerInfo() throws Exception {
 		URL url = new URL(jobTracker);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
@@ -148,9 +149,9 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 			if ((index = s.indexOf(nodes)) > 0) {
 				index += nodes.length();
 				String[] tokens = s.substring(index).split("<");
-				info.setNumNodes(Integer.parseInt(tokens[0]));
-				info.setNumCores(Integer.parseInt(tokens[11].substring(tokens[11].indexOf('>') + 1)));
-				info.setNumOccupied(Integer.parseInt(tokens[3].substring(tokens[3].indexOf('>') + 1)));
+				pluginInfo.setNumNodes(Integer.parseInt(tokens[0]));
+				pluginInfo.setNumCores(Integer.parseInt(tokens[11].substring(tokens[11].indexOf('>') + 1)));
+				pluginInfo.setNumOccupied(Integer.parseInt(tokens[3].substring(tokens[3].indexOf('>') + 1)));
 			}
 		}
 
@@ -158,7 +159,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		conn.disconnect();
 	}
 	
-	private void loadServices(PluginInfo info) throws Exception {
+	private void loadServices() throws Exception {
 		List<PluginService> list = new CopyOnWriteArrayList<PluginService>();
 		//System.out.println("serviceDir = " + serviceDir);
 		File dir = new File(serviceDir);
@@ -172,17 +173,20 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 				}
 			}
 		}
-		info.setServices(list);
+		pluginInfo.setServices(list);
 	}
 
 	@Override
-	public PluginInfo call() throws Exception {
+	public PluginInfo call() {
 		System.out.println("Informações do HadoopGetInfo");
-		PluginInfo info = new PluginInfo();
-		getNameNodeInfo(info);
-		getJobTrackerInfo(info);
-		loadServices(info);
-		return info;
+		try {
+			getNameNodeInfo();
+			getJobTrackerInfo();
+			loadServices();
+		}catch(Exception ex){
+            System.out.print(ex);
+        }
+		return pluginInfo;	
 	}
 
 }
