@@ -94,7 +94,7 @@ public class AcoSched extends SchedPolicy {
             }
         }
         //armazena as informações utilizadas e atualizadas para o escalonamento no servidor zookeeper
-        //setMapAcoDatasZooKeeper(listPlugin);
+        setMapAcoDatasZooKeeper(listPlugin);
 
         return plugin.getId() == null ? null : plugin;
     }
