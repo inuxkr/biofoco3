@@ -467,7 +467,7 @@ public class AcoSched extends SchedPolicy {
         LOGGER.info("\nValores do multiplication: pheromone = " + pheromone + " capacityComputing= " + capacityComputing + " loadBalacing= " + loadBalacing
                 + " capacityMemory= " + capacityMemory + "\n");
 
-        System.out.println(plugin.getHost() + " > pheromone: " + pheromone + " capacityComputing: " + capacityComputing + " loadBalacing: " + loadBalacing + " capacityMemory: " + capacityMemory);
+        //System.out.println(plugin.getHost() + " > pheromone: " + pheromone + " capacityComputing: " + capacityComputing + " loadBalacing: " + loadBalacing + " capacityMemory: " + capacityMemory);
         return pheromone * capacityComputing * loadBalacing * capacityMemory;
     }
     

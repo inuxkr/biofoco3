@@ -25,8 +25,8 @@ public class Get {
     
     public boolean startSession(String file, String host) throws JSchException, SftpException {
         String pathHome = System.getProperty("user.dir");
-        //String path =  (pathHome.substring(pathHome.length()).equals("/") ? pathHome+"data-folder/" : pathHome+"/data-folder/");
-    	String path = "data-folder/";
+        String path =  (pathHome.substring(pathHome.length()).equals("/") ? pathHome+"data-folder/" : pathHome+"/data-folder/");
+    	//String path = "data-folder/";
             try {
             session = jsch.getSession(USER, host, PORT);
             session.setConfig("StrictHostKeyChecking", "no");
