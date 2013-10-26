@@ -17,17 +17,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class LinuxGetInfo implements Callable<PluginInfo> {
 
     private static final String SERVICE_DIR = "services";
-
     public static final String PATH = "files";
-
     public static final String CORES = "dstat -cf";
-
     public static final String CPUMHz = "grep -m 1 MHz /proc/cpuinfo";
-
     public static final String MemTotal = "grep -m 1 MemTotal /proc/meminfo";
-
     public static final String MemFree = "grep -m 1 MemFree /proc/meminfo";
-
 
     private final PluginInfo pluginInfo = new PluginInfo();
 

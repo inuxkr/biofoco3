@@ -7,6 +7,7 @@ import br.unb.cic.bionimbus.p2p.PeerNode;
 import br.unb.cic.bionimbus.p2p.messages.InfoRespMessage;
 import br.unb.cic.bionimbus.plugin.AbstractPlugin;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
+import br.unb.cic.bionimbus.plugin.hadoop.HadoopGetInfo;
 import br.unb.cic.bionimbus.plugin.hadoop.HadoopPlugin;
 import br.unb.cic.bionimbus.plugin.linux.LinuxGetInfo;
 import br.unb.cic.bionimbus.plugin.linux.LinuxPlugin;
@@ -114,8 +115,14 @@ public class DiscoveryService extends AbstractBioService implements RemovalListe
      }
     public void setDatasPluginInfo(boolean start) throws TimeoutException, ZooKeeperClient.ZooKeeperConnectionException {
         try {
-            LinuxGetInfo getinfo=new LinuxGetInfo();
-            PluginInfo infopc= getinfo.call();
+        	PluginInfo infopc = null;
+        	if (this.myPlugin instanceof LinuxPlugin) {
+        		LinuxGetInfo getinfo=new LinuxGetInfo();
+                infopc = getinfo.call();
+            } else if (this.myPlugin instanceof HadoopPlugin) {
+            	HadoopGetInfo getinfo=new HadoopGetInfo();
+                infopc = getinfo.call();
+            }
             
             infopc.setId(p2p.getConfig().getId());
             
