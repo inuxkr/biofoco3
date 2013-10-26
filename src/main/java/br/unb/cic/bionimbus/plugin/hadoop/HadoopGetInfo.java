@@ -2,6 +2,7 @@ package br.unb.cic.bionimbus.plugin.hadoop;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +21,7 @@ import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.plugin.PluginService;
 import br.unb.cic.bionimbus.plugin.PluginTask;
 import br.unb.cic.bionimbus.plugin.PluginTaskState;
+import br.unb.cic.bionimbus.plugin.linux.LinuxGetInfo;
 
 public class HadoopGetInfo implements Callable<PluginInfo> {
 
@@ -27,6 +31,9 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 	private static final String nodes = "<a href=\"machines.jsp?type=active\">";
 	private static final String tasks = "http://localhost:50030/jobtasks.jsp?jobid=%s&type=map&pagenum=1";
 	private static final String serviceDir = "services";
+	
+	public static final String CPUMHz = "grep -m 1 MHz /proc/cpuinfo";
+	
     private final PluginInfo pluginInfo = new PluginInfo();
 
 	public static void getTaskInfo(PluginTask task) throws Exception {
@@ -152,6 +159,8 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 				pluginInfo.setNumNodes(Integer.parseInt(tokens[0]));
 				pluginInfo.setNumCores(Integer.parseInt(tokens[11].substring(tokens[11].indexOf('>') + 1)));
 				pluginInfo.setNumOccupied(Integer.parseInt(tokens[3].substring(tokens[3].indexOf('>') + 1)));
+		        String cpuInfo = execCommand(CPUMHz);
+		        pluginInfo.setFrequencyCore((new Double(cpuInfo.substring(cpuInfo.indexOf(":") + 1, cpuInfo.length()).trim())) / 100000);
 			}
 		}
 
@@ -159,6 +168,29 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		conn.disconnect();
 	}
 	
+    /**
+     * Retorna os valores da execução do comando informado pelo parâmetro
+     *
+     * @param Command comando a ser executado
+     * @return string resultado da execução
+     */
+    private String execCommand(String Command) {
+        String line = null;
+        InputStreamReader read;
+        try {
+
+            read = new InputStreamReader(Runtime.getRuntime().exec(Command).getInputStream());
+            BufferedReader buffer = new BufferedReader(read);
+
+            line = buffer.readLine();
+
+        } catch (IOException ex) {
+            Logger.getLogger(LinuxGetInfo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return line;
+    }
+
 	private void loadServices() throws Exception {
 		List<PluginService> list = new CopyOnWriteArrayList<PluginService>();
 		//System.out.println("serviceDir = " + serviceDir);
