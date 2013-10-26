@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Date;
 import java.util.concurrent.Callable;
 
 import br.unb.cic.bionimbus.p2p.Host;
