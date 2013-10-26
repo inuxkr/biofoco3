@@ -33,6 +33,8 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 	private static final String serviceDir = "services";
 	
 	public static final String CPUMHz = "grep -m 1 MHz /proc/cpuinfo";
+    public static final String MemTotal = "grep -m 1 MemTotal /proc/meminfo";
+    public static final String MemFree = "grep -m 1 MemFree /proc/meminfo";
 	
     private final PluginInfo pluginInfo = new PluginInfo();
 
@@ -207,6 +209,17 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 		}
 		pluginInfo.setServices(list);
 	}
+	
+    /**
+     * Obtem as informações da memória RAM do recurso e realiza o setter dessa informações na classe pluginInfo.
+     * Memória total e memória livre em GigaBytes(Retorno da eexcução em KB / 1024²).
+     */
+    private void getMemoryInfo() {
+        String mem = execCommand(MemTotal);
+        pluginInfo.setMemoryTotal((new Double(mem.substring(mem.indexOf(":") + 1, mem.length() - 2).trim()) / 1048576));
+        mem = execCommand(MemFree);
+        pluginInfo.setMemoryFree((new Double(mem.substring(mem.indexOf(":") + 1, mem.length() - 2).trim()) / 1048576));
+    }
 
 	@Override
 	public PluginInfo call() {
@@ -214,6 +227,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 			getNameNodeInfo();
 			getJobTrackerInfo();
 			loadServices();
+			getMemoryInfo();
 		}catch(Exception ex){
             System.out.print(ex);
         }
