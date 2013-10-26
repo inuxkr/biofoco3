@@ -27,7 +27,6 @@ public class LinuxGetInfo implements Callable<PluginInfo> {
 
     @Override
     public PluginInfo call() {
-        System.out.println("Informações do LinuxGetInfo");
         try {
 	        getCpuInfo();
 	        getMemoryInfo();
