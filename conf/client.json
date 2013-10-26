@@ -1,1 +1,1 @@
-{"id":"2043430392832afb", "host":{"address": "localhost", "port": 9999}, "client": true, "seeds": [{"address":"localhost","port":9999}], "serverPath": "","zookeeper_hosts":"localhost:2181"}
+{"id":"2043430392832afb", "host":{"address": "localhost", "port": 9999}, "client": true, "seeds": [{"address":"localhost","port":9999}], "serverPath": "","zookeeper_hosts":"54.218.66.208:2181"}

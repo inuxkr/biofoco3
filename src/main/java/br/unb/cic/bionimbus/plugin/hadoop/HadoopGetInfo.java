@@ -177,6 +177,7 @@ public class HadoopGetInfo implements Callable<PluginInfo> {
 
 	@Override
 	public PluginInfo call() throws Exception {
+		System.out.println("Informações do HadoopGetInfo");
 		PluginInfo info = new PluginInfo();
 		getNameNodeInfo(info);
 		getJobTrackerInfo(info);
