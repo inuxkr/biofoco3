@@ -59,6 +59,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
     private final Map<String, JobInfo> jobsWithNoService = new ConcurrentHashMap<String, JobInfo>();
     // private final Queue<PluginTask> runningJobs = new ConcurrentLinkedQueue<PluginTask>();
     private final Map<String, PluginInfo> cancelingJobs = new ConcurrentHashMap<String, PluginInfo>();
+    private List<String> filesInTransfer = new ArrayList<String>();
     private RpcClient rpcClient;
 
     private final Integer policy = 0;
@@ -301,9 +302,16 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      */
     private void requestFile(List<Pair<String, Long>> listFiles) {
         for (Pair<String, Long> pair : listFiles) {
+        	
+        	//Se o arquivo já existir localmente ou esta em transferência não solicita novamente
+        	if (filesInTransfer.contains(pair.first) || existeArquivoLocal(pair.first))
+        		continue;
+        	
             String ipContainsFile = getFilesIP(pair.first);
 
             try {
+            	//Adiciona o arquivo na lista de transferência
+            	filesInTransfer.add(pair.first);
 	            //realiza uma chamada rpc para baixar o arquivo do hadoop
 	            rpcClient = new AvroClient(p2p.getConfig().getRpcProtocol(), ipContainsFile, myPlugin.getMyInfo().getHost().getPort());
             	rpcClient.getProxy().getFile(pair.first);
@@ -335,6 +343,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+	            filesInTransfer.remove(pair.first);
 				
             }
 
@@ -686,8 +695,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
     	
         for (Pair<String, Long> fileInput : listInputFiles) {
         	//Verificar se o arquivo já foi baixado
-        	File file = new File(StorageService.DATAFOLDER+fileInput.first);
-    		if (file.exists())
+    		if (existeArquivoLocal(fileInput.first))
     			tamanho++;
         }
         
@@ -768,7 +776,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                 for (String checkfile : listFiles) {
 
                     //atualizar
-
+                	//TODO Verificar a melhor nuvem para download do arquivo
                     String idfile = checkfile.substring(5, checkfile.length());
                     if (file.equals(idfile)) {
                         return plugin.getHost().getAddress();
@@ -935,6 +943,14 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 
         return object;
 
+    }
+    
+    public boolean existeArquivoLocal(String file) {
+    	File f = new File(StorageService.DATAFOLDER+file);
+		if (f.exists())
+			return true;
+		else
+			return false;
     }
 
     public synchronized Map<String, JobInfo> getPendingJobs() {

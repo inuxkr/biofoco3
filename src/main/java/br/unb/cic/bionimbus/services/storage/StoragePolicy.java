@@ -49,7 +49,14 @@ public class StoragePolicy {
         double uptime;
         double freesize;
         double costpergiga = 0;
-        double workload;
+        //double workload;
+        //TODO Atualizar política
+        /*
+        Latência
+        Custo de armazenamento
+        Núcleos de Processadores
+        Carga de trabalho
+         */
 
         /*
          * Calculando os custos de armazenamento dos peers
