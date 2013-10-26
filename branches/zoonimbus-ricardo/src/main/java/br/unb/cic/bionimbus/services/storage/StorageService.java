@@ -257,7 +257,7 @@ public class StorageService extends AbstractBioService {
      */
     private boolean existReplication(String fileName) throws IOException {
         int cont = 0;
-//        System.out.println("(existReplication)Verificando se o arquivo: "+fileName+" está replicado!");
+
         for (Collection<String> collection : getFiles().values()) {
             for (Iterator<String> it = collection.iterator(); it.hasNext();) {
                 String fileNamePlugin = it.next();
@@ -267,7 +267,7 @@ public class StorageService extends AbstractBioService {
                
             }
         }
-//        System.out.println("(existReplication) Arquivo: "+fileName+" contém: "+ cont+" replicas!");
+        
         if (cont < REPLICATIONFACTOR) {
             return false;
         }
@@ -647,6 +647,8 @@ public class StorageService extends AbstractBioService {
             }
             pluginList = new ArrayList<NodeInfo>(bestNode(pluginList));
             pluginList.remove(no);
+            
+            //TODO Criar método para buscar o plugin para replicação, considerando a localização
             Iterator<NodeInfo> bt = pluginList.iterator();
             while (bt.hasNext() && filesreplicated != REPLICATIONFACTOR) {
                 NodeInfo node = (NodeInfo) bt.next();
@@ -910,4 +912,5 @@ public class StorageService extends AbstractBioService {
     public void getFile(String file) {
     	myPlugin.getFile(file);
     }
+    
 }

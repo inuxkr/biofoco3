@@ -88,7 +88,7 @@ public class AcoSched extends SchedPolicy {
         PluginInfo plugin = null;
 
         for (PluginInfo plg : listPlugin) {
-        	System.out.println(plg.getHost() + " > " + plg.getRanking());
+        	System.out.println(jobInfo.getOutputs() + "  > " + plg.getHost() + plg.getRanking());
             if (plugin == null || plg.getRanking() > plugin.getRanking()) {
                 plugin = plg;
             }
