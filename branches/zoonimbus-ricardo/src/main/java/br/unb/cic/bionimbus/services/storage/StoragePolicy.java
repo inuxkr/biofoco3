@@ -21,8 +21,6 @@ import java.util.logging.Logger;
 
 import com.twitter.common.zookeeper.ZooKeeperClient;
 import org.apache.zookeeper.KeeperException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -32,9 +30,11 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class StoragePolicy {
 
+
     private double peso_latency = 0.5;
-    private double peso_space = 0.2;
-    private double peso_uptime = 0.3;
+    private double peso_cores = 0.3;
+    private double peso_workload = 0.15;
+
     private List<NodeInfo> nodes = new ArrayList<NodeInfo>();
     Collection<PluginInfo> best = new ArrayList<PluginInfo>();
 
@@ -43,26 +43,26 @@ public class StoragePolicy {
      *
      * @param pluginList
      */
-    public List<NodeInfo> calcBestCost(ZooKeeperService zkService, Collection<PluginInfo> pluginList) {
+    public List<NodeInfo> calcBestCost(ZooKeeperService zkService, Collection<PluginInfo> pluginList, String operacao) {
+
+    	double max_latency = 0;
+    	double max_cores = 0;
 
         double cost;
-        double uptime;
-        double freesize;
         double costpergiga = 0;
-        //double workload;
-        //TODO Atualizar política
-        /*
-        Latência
-        Custo de armazenamento
-        Núcleos de Processadores
-        Carga de trabalho
-         */
+        
+        //Percorre os plugins para padronizar o valor
+        for (PluginInfo plugin : pluginList) {
+        	if (plugin.getLatency() > max_latency)
+        		max_latency = plugin.getLatency();
+        	
+        	if (plugin.getNumCores() > max_cores) 
+        		max_cores = plugin.getNumCores();
+        }
 
         /*
          * Calculando os custos de armazenamento dos peers
-         * Custo = (Espaço livre + Uptime) * Latencia
          */
-
         for (PluginInfo plugin : pluginList) {
             try {
                 String datastring = zkService.getData(zkService.getPath().PREFIX_PEER.getFullPath(plugin.getId(), "", ""), null);
@@ -72,16 +72,11 @@ public class StoragePolicy {
                 } catch (IOException ex) {
                     Logger.getLogger(StoragePolicy.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
+                cost = ((plugin.getLatency() / max_latency) * peso_latency) +
+                	   ((plugin.getNumCores() / max_cores) * peso_cores) +
+                	   costpergiga;
 
-                uptime = plugin.getUptime() / 1000;
-                freesize = (plugin.getFsFreeSize() / 1024 / 1024 / 1024);
-                cost = (((freesize * peso_space)
-                        + (uptime * peso_uptime))
-                        * (plugin.getLatency() * peso_latency));
-                cost = cost + costpergiga;
-                /*
-                 * Seta o custo de armazenamento no peer
-                 */
                 plugin.setStorageCost(cost);
                 try {
                     zkService.setData(plugin.getPath_zk(), plugin.toString());
@@ -164,4 +159,5 @@ public class StoragePolicy {
         }
         return plugin;
     }
+
 }

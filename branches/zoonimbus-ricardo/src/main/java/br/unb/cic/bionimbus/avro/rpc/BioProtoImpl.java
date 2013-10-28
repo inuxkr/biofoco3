@@ -384,7 +384,7 @@ public class BioProtoImpl implements BioProto {
     @Override
     public List<NodeInfo> callStorage(List<NodeInfo> list) throws AvroRemoteException {
         
-        List<NodeInfo> bestnodes = storageService.bestNode(list);
+        List<NodeInfo> bestnodes = storageService.bestNode(list, StorageService.UPLOAD);
         return bestnodes;
     } 
     

@@ -1,5 +1,6 @@
 package br.unb.cic.bionimbus.services.sched;
 
+import br.unb.cic.bionimbus.avro.gen.NodeInfo;
 import br.unb.cic.bionimbus.avro.rpc.AvroClient;
 import br.unb.cic.bionimbus.avro.rpc.RpcClient;
 import br.unb.cic.bionimbus.client.JobInfo;
@@ -22,6 +23,7 @@ import br.unb.cic.bionimbus.services.storage.Ping;
 import br.unb.cic.bionimbus.services.storage.StorageService;
 import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.utils.Get;
+import br.unb.cic.bionimbus.utils.Nmap;
 import br.unb.cic.bionimbus.utils.Pair;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -67,6 +69,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
     private String idPlugin;
     private AbstractPlugin myPlugin;
     private SchedPolicy schedPolicy;
+    private StorageService storageService;
     private static final String STATUS = "/STATUS";
     private static final String STATUSWAITING = "/STATUSWAITING";
     private static final String ROOT_PEER = "/peers";
@@ -145,6 +148,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 
 
             checkMyPlugin();
+            checkStorageService();
             checkWaitingTasks();
             checkPeers();
 
@@ -442,6 +446,18 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                 this.myPlugin = (LinuxPlugin) listener;
             } else if (listener instanceof HadoopPlugin) {
                 this.myPlugin = (HadoopPlugin) listener;
+            }
+        }
+    }
+    
+    /**
+     * Verifica o serviço de storage
+     */
+    private void checkStorageService() {
+        List<P2PListener> listeners = p2p.getListener();
+        for (P2PListener listener : listeners) {
+            if (listener instanceof StorageService) {
+                this.storageService = (StorageService) listener;
             }
         }
     }
@@ -755,7 +771,6 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-
     }
 
     /**
@@ -768,6 +783,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      */
     public String getFilesIP(String file) {
         List<String> listFiles;
+        List<NodeInfo> pluginList = new ArrayList<NodeInfo>();
         // Map<String,List<String>> mapFiles = new HashMap<String, List<String>>();
         try {
             for (Iterator<PluginInfo> it = getPeers().values().iterator(); it.hasNext();) {
@@ -775,14 +791,29 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                 listFiles = zkService.getChildren(plugin.getPath_zk() + zkService.getPath().FILES.toString(), null);
                 for (String checkfile : listFiles) {
 
-                    //atualizar
-                	//TODO Verificar a melhor nuvem para download do arquivo
+                	//Verificar a melhor nuvem para download do arquivo
                     String idfile = checkfile.substring(5, checkfile.length());
                     if (file.equals(idfile)) {
-                        return plugin.getHost().getAddress();
+                    	NodeInfo node = new NodeInfo();
+                    	node.setLatency(Ping.calculo(plugin.getHost().getAddress()));
+                        if(node.getLatency().equals(Double.MAX_VALUE))
+                            node.setLatency(Nmap.nmap(plugin.getHost().getAddress()));
+                        node.setAddress(plugin.getHost().getAddress());
+                        node.setFreesize(plugin.getFsFreeSize());
+                        node.setPeerId(plugin.getId());
+                        pluginList.add(node);
                     }
                 }
             }
+
+            pluginList = new ArrayList<NodeInfo>(storageService.bestNode(pluginList, StorageService.DOWNLOAD));
+
+            Iterator<NodeInfo> it = pluginList.iterator();
+            while (it.hasNext()) {
+            	NodeInfo ni = it.next();
+            	return ni.getAddress();
+            }
+            
         } catch (KeeperException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
@@ -790,9 +821,9 @@ public class SchedService extends AbstractBioService implements Service, P2PList
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TimeoutException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         return null;
