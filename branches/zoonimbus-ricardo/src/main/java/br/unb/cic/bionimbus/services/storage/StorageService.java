@@ -321,6 +321,7 @@ public class StorageService extends AbstractBioService {
     public String getIpContainsFile(String file) throws IOException {
     	System.out.println("getIpContainsFile(file)");
         List<String> listFiles;
+        List<NodeInfo> pluginList = new ArrayList<NodeInfo>();
         //NECESSARIO atualizar a lista de arquivo local , a lista do zookeeper com os arquivos locais. Não é feito em nenhum momento
         //caso não seja chamado a checkFiles();
         checkFiles();
@@ -332,10 +333,29 @@ public class StorageService extends AbstractBioService {
 
                     String idfile = checkfile.substring(checkfile.indexOf(zkService.getPath().UNDERSCORE.toString()) + 1);
                     if (file.equals(idfile)) {
+                    	NodeInfo node = new NodeInfo();
+                    	node.setLatency(Ping.calculo(plugin.getHost().getAddress()));
+                        if(node.getLatency().equals(Double.MAX_VALUE))
+                            node.setLatency(Nmap.nmap(plugin.getHost().getAddress()));
+                        node.setAddress(plugin.getHost().getAddress());
+                        node.setFreesize(plugin.getFsFreeSize());
+                        node.setPeerId(plugin.getId());
+                        pluginList.add(node);
+                        
                         return plugin.getHost().getAddress();
                     }
                 }
             }
+            
+            pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, StorageService.DOWNLOAD));
+
+            Iterator<NodeInfo> it = pluginList.iterator();
+            while (it.hasNext()) {
+            	NodeInfo ni = it.next();
+            	System.out.println("IP: "+ni.getAddress());
+            	return ni.getAddress();
+            }
+
             return "";
         } catch (KeeperException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
