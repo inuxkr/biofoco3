@@ -8,6 +8,8 @@ import br.unb.cic.bionimbus.avro.gen.NodeInfo;
 import br.unb.cic.bionimbus.avro.rpc.BioProtoImpl;
 import br.unb.cic.bionimbus.plugin.PluginInfo;
 import br.unb.cic.bionimbus.services.ZooKeeperService;
+import br.unb.cic.bionimbus.utils.Propriedades;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -30,7 +32,6 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class StoragePolicy {
 
-
     private double peso_latency = 0.5;
     private double peso_cores = 0.3;
     private double peso_workload = 0.15;
@@ -38,6 +39,18 @@ public class StoragePolicy {
     private List<NodeInfo> nodes = new ArrayList<NodeInfo>();
     Collection<PluginInfo> best = new ArrayList<PluginInfo>();
 
+    public StoragePolicy() {
+    	try {
+			peso_latency = new Double(Propriedades.getProp("storage.peso_latency"));
+			peso_cores = new Double(Propriedades.getProp("storage.peso_cores"));
+			peso_workload = new Double(Propriedades.getProp("storage.peso_workload"));
+		} catch (NumberFormatException ex) {
+			Logger.getLogger(StoragePolicy.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(StoragePolicy.class.getName()).log(Level.SEVERE, null, ex);
+		}
+    }
+    
     /**
      * Calcular o custo de armazenamento de uma nuvem //ta passando so 1 plugin
      *
