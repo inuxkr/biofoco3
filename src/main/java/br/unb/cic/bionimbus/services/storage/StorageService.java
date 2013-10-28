@@ -330,7 +330,6 @@ public class StorageService extends AbstractBioService {
                 PluginInfo plugin = it.next();
                 listFiles = zkService.getChildren(plugin.getPath_zk() + zkService.getPath().FILES.toString(), null);
                 for (String checkfile : listFiles) {
-
                     String idfile = checkfile.substring(checkfile.indexOf(zkService.getPath().UNDERSCORE.toString()) + 1);
                     if (file.equals(idfile)) {
                     	NodeInfo node = new NodeInfo();
@@ -340,11 +339,11 @@ public class StorageService extends AbstractBioService {
                         node.setAddress(plugin.getHost().getAddress());
                         node.setFreesize(plugin.getFsFreeSize());
                         node.setPeerId(plugin.getId());
+                        System.out.println(plugin.getHost().getAddress());
                         pluginList.add(node);
                     }
                 }
             }
-            System.out.println(pluginList.size());
             pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, StorageService.DOWNLOAD));
 
             Iterator<NodeInfo> it = pluginList.iterator();
@@ -354,18 +353,17 @@ public class StorageService extends AbstractBioService {
             	return ni.getAddress();
             }
 
-            return "";
         } catch (KeeperException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TimeoutException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
-        return "";
+        return null;
 
     }
 
