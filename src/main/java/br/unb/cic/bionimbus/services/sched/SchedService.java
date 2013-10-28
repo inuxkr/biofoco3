@@ -38,6 +38,8 @@ import java.util.concurrent.*;
 import java.util.logging.Level;
 
 import com.twitter.common.zookeeper.ZooKeeperClient;
+
+import org.apache.avro.AvroRemoteException;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -783,6 +785,18 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      */
     public String getFilesIP(String file) {
     	System.out.println("Buscando IP do arquivo");
+    	try {
+			return rpcClient.getProxy().getIpFile(file);
+		} catch (AvroRemoteException ex) {
+			java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
+		}
+    	
+        System.out.println("IP não localizado");
+        return null;
+
+    	/*
         List<String> listFiles;
         List<NodeInfo> pluginList = new ArrayList<NodeInfo>();
         // Map<String,List<String>> mapFiles = new HashMap<String, List<String>>();
@@ -828,10 +842,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
         } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
             e.printStackTrace();
         }
-
-        System.out.println("IP não localizado");
-        return null;
-
+		*/
     }
 
     /**
