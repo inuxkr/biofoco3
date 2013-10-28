@@ -420,7 +420,7 @@ public class StorageService extends AbstractBioService {
          * Antes de calculador fazer as filtragens (em caso de armazenamento)
          */
         Map<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
-                
+        System.out.println(cloudMap.size());     
         plugins = policy.calcBestCost(zkService, cloudMap.values(), operacao);
 
         return plugins;
