@@ -49,7 +49,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 @Singleton
 public class StorageService extends AbstractBioService {
-
+	
     @Inject
     private MetricRegistry metricRegistry;
     private final ScheduledExecutorService executorService = Executors
@@ -67,6 +67,9 @@ public class StorageService extends AbstractBioService {
     //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
     public static String DATAFOLDER = "/home/ubuntu/data-folder/"; 
 
+	public static final String DOWNLOAD = "D";
+	public static final String UPLOAD = "U";
+	
     @Inject
     public StorageService(final ZooKeeperService service, MetricRegistry metricRegistry) {
 
@@ -385,7 +388,7 @@ public class StorageService extends AbstractBioService {
      * @return - Lista com todos os plugins com seus custos de armazenamento
      * inseridos
      */
-    public List<NodeInfo> bestNode(List<NodeInfo> list) {
+    public List<NodeInfo> bestNode(List<NodeInfo> list, String operacao) {
 
         List<NodeInfo> plugins;
         cloudMap = getPeers();
@@ -396,8 +399,11 @@ public class StorageService extends AbstractBioService {
         StoragePolicy policy = new StoragePolicy();
         /*
          * Dentro da Storage Policy é feito o ordenamento da list de acordo com o custo de armazenamento
+         * Antes de calculador fazer as filtragens (em caso de armazenamento)
          */
-        plugins = policy.calcBestCost(zkService, cloudMap.values());
+        Map<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
+                
+        plugins = policy.calcBestCost(zkService, cloudMap.values(), operacao);
 
         return plugins;
     }
@@ -635,7 +641,7 @@ public class StorageService extends AbstractBioService {
             if(no!=null){
                 pluginList.remove(no);
                 idsPluginsFile.add(p2p.getConfig().getId());
-                pluginList = new ArrayList<NodeInfo>(bestNode(pluginList));
+                pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, UPLOAD));
                 for (NodeInfo curr : pluginList){
                     if (no.getAddress().equals(curr.getAddress())){
                         no = curr;
@@ -645,7 +651,7 @@ public class StorageService extends AbstractBioService {
                
                 pluginList.remove(no);
             }
-            pluginList = new ArrayList<NodeInfo>(bestNode(pluginList));
+            pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, UPLOAD));
             pluginList.remove(no);
             
             //TODO Criar método para buscar o plugin para replicação, considerando a localização
@@ -912,5 +918,5 @@ public class StorageService extends AbstractBioService {
     public void getFile(String file) {
     	myPlugin.getFile(file);
     }
-    
+
 }
