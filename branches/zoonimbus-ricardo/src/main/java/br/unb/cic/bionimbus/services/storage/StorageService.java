@@ -344,7 +344,7 @@ public class StorageService extends AbstractBioService {
                     }
                 }
             }
-            
+            System.out.println(pluginList.size());
             pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, StorageService.DOWNLOAD));
 
             Iterator<NodeInfo> it = pluginList.iterator();
