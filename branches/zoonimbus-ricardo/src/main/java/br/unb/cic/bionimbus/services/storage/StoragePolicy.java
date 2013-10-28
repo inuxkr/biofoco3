@@ -77,6 +77,7 @@ public class StoragePolicy {
                 	   ((plugin.getNumCores() / max_cores) * peso_cores) +
                 	   costpergiga;
 
+                System.out.println("Custo: " + plugin.getHost() + " > " + cost);
                 plugin.setStorageCost(cost);
                 try {
                     zkService.setData(plugin.getPath_zk(), plugin.toString());

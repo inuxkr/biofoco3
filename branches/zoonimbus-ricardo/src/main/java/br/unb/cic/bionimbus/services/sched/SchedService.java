@@ -806,7 +806,8 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                     }
                 }
             }
-
+            System.out.println("Plugins: " + pluginList.size());
+            System.out.println("Plugins: " + pluginList);
             pluginList = new ArrayList<NodeInfo>(storageService.bestNode(pluginList, StorageService.DOWNLOAD));
 
             Iterator<NodeInfo> it = pluginList.iterator();
@@ -828,6 +829,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             e.printStackTrace();
         }
 
+        System.out.println("IP não localizado");
         return null;
 
     }
