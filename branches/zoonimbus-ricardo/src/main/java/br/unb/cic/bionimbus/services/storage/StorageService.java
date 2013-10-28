@@ -408,20 +408,21 @@ public class StorageService extends AbstractBioService {
      */
     public List<NodeInfo> bestNode(List<NodeInfo> list, String operacao) {
 
-        List<NodeInfo> plugins;
+        Map<String, PluginInfo> peers = new ConcurrentHashMap<String, PluginInfo>();
         cloudMap = getPeers();
         for (NodeInfo node : list) {
             cloudMap.get(node.getPeerId()).setLatency(node.getLatency());
             cloudMap.get(node.getPeerId()).setFsFreeSize(node.getFreesize());
+            peers.put(node.getPeerId(), cloudMap.get(node.getPeerId()));
         }
-        StoragePolicy policy = new StoragePolicy();
+
         /*
          * Dentro da Storage Policy é feito o ordenamento da list de acordo com o custo de armazenamento
          * Antes de calculador fazer as filtragens (em caso de armazenamento)
-         */
-        //Map<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
-        System.out.println(cloudMap.size());     
-        plugins = policy.calcBestCost(zkService, cloudMap.values(), operacao);
+        */
+        StoragePolicy policy = new StoragePolicy();
+        System.out.println(peers.size());
+        List<NodeInfo> plugins = policy.calcBestCost(zkService, peers.values(), operacao);
 
         return plugins;
     }
