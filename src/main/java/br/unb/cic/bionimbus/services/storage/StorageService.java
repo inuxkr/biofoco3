@@ -344,8 +344,9 @@ public class StorageService extends AbstractBioService {
                     }
                 }
             }
+            System.out.println(pluginList.size());
             pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, StorageService.DOWNLOAD));
-
+            System.out.println(pluginList.size());
             Iterator<NodeInfo> it = pluginList.iterator();
             while (it.hasNext()) {
             	NodeInfo ni = it.next();
@@ -363,7 +364,7 @@ public class StorageService extends AbstractBioService {
             e.printStackTrace();
         }
 
-        return null;
+        return "";
 
     }
 
