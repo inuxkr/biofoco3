@@ -341,8 +341,6 @@ public class StorageService extends AbstractBioService {
                         node.setFreesize(plugin.getFsFreeSize());
                         node.setPeerId(plugin.getId());
                         pluginList.add(node);
-                        
-                        return plugin.getHost().getAddress();
                     }
                 }
             }
