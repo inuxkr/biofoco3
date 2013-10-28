@@ -339,18 +339,15 @@ public class StorageService extends AbstractBioService {
                         node.setAddress(plugin.getHost().getAddress());
                         node.setFreesize(plugin.getFsFreeSize());
                         node.setPeerId(plugin.getId());
-                        System.out.println(plugin.getHost().getAddress());
                         pluginList.add(node);
                     }
                 }
             }
-            System.out.println(pluginList.size());
+
             pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, StorageService.DOWNLOAD));
-            System.out.println(pluginList.size());
             Iterator<NodeInfo> it = pluginList.iterator();
             while (it.hasNext()) {
             	NodeInfo ni = it.next();
-            	System.out.println("IP: "+ni.getAddress());
             	return ni.getAddress();
             }
 
@@ -421,7 +418,6 @@ public class StorageService extends AbstractBioService {
          * Antes de calculador fazer as filtragens (em caso de armazenamento)
         */
         StoragePolicy policy = new StoragePolicy();
-        System.out.println(peers.size());
         List<NodeInfo> plugins = policy.calcBestCost(zkService, peers.values(), operacao);
 
         return plugins;
