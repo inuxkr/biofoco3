@@ -2,6 +2,7 @@ package br.unb.cic.bionimbus.utils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,13 +26,10 @@ public class Compactacao {
         byte[] tmp = new byte[1024];
         for (int readBytes = 0; (readBytes = input.read(tmp)) != -1;) {
             sout.write(tmp, 0, readBytes);
-            orig.write(tmp, 0, readBytes);
         }
         input.close();
         sout.flush();
         sout.close();
-        orig.flush();
-        orig.close();
         fos.flush();
         fos.close();
         
@@ -61,7 +59,7 @@ public class Compactacao {
         siut.close();
         fos.flush();
         fos.close();
-        
+
         for (int i = 0; i < 1000; ){
         	i++;
         }

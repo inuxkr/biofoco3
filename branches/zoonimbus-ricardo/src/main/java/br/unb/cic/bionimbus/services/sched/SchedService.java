@@ -784,7 +784,6 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      * @return
      */
     public String getFilesIP(String file) {
-    	System.out.println("Buscando IP do arquivo");
     	try {
 			return rpcClient.getProxy().getIpFile(file);
 		} catch (AvroRemoteException ex) {
@@ -793,56 +792,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 			java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
 		}
     	
-        System.out.println("IP não localizado");
         return null;
-
-    	/*
-        List<String> listFiles;
-        List<NodeInfo> pluginList = new ArrayList<NodeInfo>();
-        // Map<String,List<String>> mapFiles = new HashMap<String, List<String>>();
-        try {
-            for (Iterator<PluginInfo> it = getPeers().values().iterator(); it.hasNext();) {
-                PluginInfo plugin = it.next();
-                listFiles = zkService.getChildren(plugin.getPath_zk() + zkService.getPath().FILES.toString(), null);
-                for (String checkfile : listFiles) {
-
-                	//Verificar a melhor nuvem para download do arquivo
-                    String idfile = checkfile.substring(5, checkfile.length());
-                    if (file.equals(idfile)) {
-                    	NodeInfo node = new NodeInfo();
-                    	node.setLatency(Ping.calculo(plugin.getHost().getAddress()));
-                        if(node.getLatency().equals(Double.MAX_VALUE))
-                            node.setLatency(Nmap.nmap(plugin.getHost().getAddress()));
-                        node.setAddress(plugin.getHost().getAddress());
-                        node.setFreesize(plugin.getFsFreeSize());
-                        node.setPeerId(plugin.getId());
-                        pluginList.add(node);
-                    }
-                }
-            }
-            System.out.println("Plugins: " + pluginList.size());
-            System.out.println("Plugins: " + pluginList);
-            pluginList = new ArrayList<NodeInfo>(storageService.bestNode(pluginList, StorageService.DOWNLOAD));
-
-            Iterator<NodeInfo> it = pluginList.iterator();
-            while (it.hasNext()) {
-            	NodeInfo ni = it.next();
-            	System.out.println("IP: "+ni.getAddress());
-            	return ni.getAddress();
-            }
-            
-        } catch (KeeperException ex) {
-            java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(SchedService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
-            e.printStackTrace();
-        }
-		*/
     }
 
     /**
