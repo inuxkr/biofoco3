@@ -782,6 +782,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      * @return
      */
     public String getFilesIP(String file) {
+    	System.out.println("Buscando IP do arquivo");
         List<String> listFiles;
         List<NodeInfo> pluginList = new ArrayList<NodeInfo>();
         // Map<String,List<String>> mapFiles = new HashMap<String, List<String>>();
@@ -811,6 +812,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             Iterator<NodeInfo> it = pluginList.iterator();
             while (it.hasNext()) {
             	NodeInfo ni = it.next();
+            	System.out.println("IP: "+ni.getAddress());
             	return ni.getAddress();
             }
             
