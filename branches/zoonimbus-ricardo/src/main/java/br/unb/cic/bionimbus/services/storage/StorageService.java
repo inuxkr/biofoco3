@@ -419,7 +419,7 @@ public class StorageService extends AbstractBioService {
          * Dentro da Storage Policy é feito o ordenamento da list de acordo com o custo de armazenamento
          * Antes de calculador fazer as filtragens (em caso de armazenamento)
          */
-        Map<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
+        //Map<String, PluginInfo> cloudMap = new ConcurrentHashMap<String, PluginInfo>();
         System.out.println(cloudMap.size());     
         plugins = policy.calcBestCost(zkService, cloudMap.values(), operacao);
 
