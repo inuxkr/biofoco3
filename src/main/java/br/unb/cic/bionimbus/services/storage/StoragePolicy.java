@@ -92,9 +92,9 @@ public class StoragePolicy {
             } catch (InterruptedException ex) {
                 Logger.getLogger(StoragePolicy.class.getName()).log(Level.SEVERE, null, ex);
             } catch (TimeoutException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
 
         }
