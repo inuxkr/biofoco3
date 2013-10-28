@@ -319,6 +319,7 @@ public class StorageService extends AbstractBioService {
      * @return Ip que possui o arquivo ou null
      */
     public String getIpContainsFile(String file) throws IOException {
+    	System.out.println("getIpContainsFile(file)");
         List<String> listFiles;
         //NECESSARIO atualizar a lista de arquivo local , a lista do zookeeper com os arquivos locais. Não é feito em nenhum momento
         //caso não seja chamado a checkFiles();
