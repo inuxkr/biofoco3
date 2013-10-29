@@ -53,7 +53,6 @@ public class AcoSched extends SchedPolicy {
         biggerJob.setTimestamp(System.currentTimeMillis());
         // escalonador irá receber um zookeeperService como parâmetro
 
-
         jobCloud.put(biggerJob, scheduleJob(biggerJob));
 
         return jobCloud;
@@ -332,8 +331,6 @@ public class AcoSched extends SchedPolicy {
                     //Atualiza o feromonio local daquela VM visitada
                     updateLocalPheromone(plugins.get(number));
                 }
-
-
             }
             //chamada para método que atualiza o valor do feromônio de cada plugin de acordo com o melhor escolhido
             updateGlobalPheromone(plugins, biggestProbability);
@@ -470,14 +467,17 @@ public class AcoSched extends SchedPolicy {
         //System.out.println(plugin.getHost() + " > pheromone: " + pheromone + " capacityComputing: " + capacityComputing + " loadBalacing: " + loadBalacing + " capacityMemory: " + capacityMemory);
         return pheromone * capacityComputing * loadBalacing * capacityMemory;
     }
-    
+
     public double pow(double a, double b) {
     	double result = Math.pow(a, b);
 
-    	if (!Double.isNaN(result) && !Double.isInfinite(result))
-    		return result;
-    	else
-    		return 0.00000001d;
+    	if (!Double.isNaN(result) && !Double.isInfinite(result)) {
+    		if (!(result == 0d)) {
+    			return result;
+    		}
+    	}
+
+    	return 0.00000001d;
     }
 
     /*
@@ -500,7 +500,9 @@ public class AcoSched extends SchedPolicy {
      */
     private Double capacityPlugin(PluginInfo plugin) {
         DecimalFormat decimal = new DecimalFormat("0.0000000000");
-        
+
+        System.out.println("capacityPlugin > Cores: " + (plugin.getNumCores() - plugin.getFrequencyCore()) + " getFrequencyCore() " + plugin.getFrequencyCore() + " mapPluginLatency " + mapPluginLatency.get(plugin.getId()));
+
         if (!(plugin.getNumCores() - plugin.getNumOccupied() == 0d)) {
             Double result = new Double(decimal.format((plugin.getNumCores() - plugin.getNumOccupied()) * plugin.getFrequencyCore() - mapPluginLatency.get(plugin.getId())).replace(",", "."));
             if (!(result == 0d)) {
@@ -595,8 +597,6 @@ public class AcoSched extends SchedPolicy {
         }
 
         timeAverage = timeAverage / cont;
-
-
 
         return (timeMax - timeMin) / timeAverage;
 
