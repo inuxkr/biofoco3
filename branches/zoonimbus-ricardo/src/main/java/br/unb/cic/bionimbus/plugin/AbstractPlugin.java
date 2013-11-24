@@ -514,4 +514,6 @@ public abstract class AbstractPlugin extends P2PAbstractListener implements Plug
     public abstract File[] listFiles();
     
     public abstract void getFile(String file);
+    
+    public abstract void registerFile(String file);
 }

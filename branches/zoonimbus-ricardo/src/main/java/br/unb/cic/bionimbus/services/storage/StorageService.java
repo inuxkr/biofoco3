@@ -61,7 +61,7 @@ public class StorageService extends AbstractBioService {
     private P2PService p2p = null;
     private Double MAXCAPACITY = 0.9;
     private int PORT = 8080;
-    private int REPLICATIONFACTOR = 1;
+    private int REPLICATIONFACTOR = 2;
     //private List<String> listFile = new ArrayList<String>();
     private AbstractPlugin myPlugin;
     //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
@@ -923,6 +923,11 @@ public class StorageService extends AbstractBioService {
        
         try {
 			Compactacao.descompactar(file);
+			
+			//Só registrar se for Hadoop
+        	if (myPlugin instanceof HadoopPlugin)
+        		myPlugin.registerFile(file);
+        	
 		} catch (IOException ex) {
 			Logger.getLogger(StorageService.class.getName()).log(Level.SEVERE, null, ex);
 		}

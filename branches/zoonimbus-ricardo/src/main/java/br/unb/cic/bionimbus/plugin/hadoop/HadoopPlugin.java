@@ -95,4 +95,9 @@ public class HadoopPlugin extends AbstractPlugin {
 		executorService.submit(new HadoopGetFile(pluginFile, null, null, StorageService.DATAFOLDER));
 	}
 
+	@Override
+	public void registerFile(String filename) {
+		executorService.submit(new HadoopSaveFile(filename));
+	}
+
 }

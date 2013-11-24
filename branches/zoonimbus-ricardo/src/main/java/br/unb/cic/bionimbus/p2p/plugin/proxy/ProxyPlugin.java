@@ -62,4 +62,10 @@ public class ProxyPlugin extends AbstractPlugin {
 		
 	}
 
+	@Override
+	public void registerFile(String file) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
