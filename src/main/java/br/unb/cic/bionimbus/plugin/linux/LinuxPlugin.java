@@ -73,4 +73,10 @@ public class LinuxPlugin extends AbstractPlugin {
 	public void getFile(String file) {
 	}
 
+	@Override
+	public void registerFile(String file) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

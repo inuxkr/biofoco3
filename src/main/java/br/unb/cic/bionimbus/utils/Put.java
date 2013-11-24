@@ -60,8 +60,9 @@ public class Put {
              * Por questões de segurança, talvez isso deva ser repensado futuramente.
              */
             //sftpChannel.chmod(777, path);
-            System.out.println("\n Uploading file.....\n\n\n");
+            System.out.println("Uploading file " + path + " inicio upload " + Utilities.getDateString());
             sftpChannel.put(path, StorageService.DATAFOLDER);
+            System.out.println("Uploading file " + path + " termino upload " + Utilities.getDateString());
             sftpChannel.exit();
             session.disconnect();
 

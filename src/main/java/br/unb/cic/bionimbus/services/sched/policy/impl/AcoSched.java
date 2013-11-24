@@ -87,7 +87,7 @@ public class AcoSched extends SchedPolicy {
         PluginInfo plugin = null;
 
         for (PluginInfo plg : listPlugin) {
-        	System.out.println(jobInfo.getOutputs() + "  > " + plg.getHost() + plg.getRanking());
+        	//System.out.println(jobInfo.getOutputs() + "  > " + plg.getHost() + plg.getRanking());
             if (plugin == null || plg.getRanking() > plugin.getRanking()) {
                 plugin = plg;
             }
@@ -453,13 +453,13 @@ public class AcoSched extends SchedPolicy {
      */
     private Double multiplicationDatasPlugin(PluginInfo plugin) {
         ArrayList<Double> datas = mapAcoDatas.get(plugin.getId());
-        DecimalFormat decimal = new DecimalFormat("0.0000000000");
+        DecimalFormat decimal = new DecimalFormat("0.000000000000000");
 
         //feronomio elevado a potencia alfa(valor da variavel de controle)
         Double pheromone = new Double(decimal.format(pow(datas.get(0), datas.get(3))).replace(",", "."));
-        Double capacityComputing = new Double(decimal.format((pow(capacityPlugin(plugin), datas.get(4)))).replace(",", "."));
+        Double capacityComputing = new Double(decimal.format(pow(capacityPlugin(plugin), datas.get(4))).replace(",", "."));
         Double loadBalacing = new Double(decimal.format(pow(loadBalancingPlugin(plugin), datas.get(5))).replace(",", "."));
-        Double capacityMemory = new Double(decimal.format((pow(((plugin.getMemoryFree()) / 1024), datas.get(6)))).replace(",", "."));
+        Double capacityMemory = new Double(decimal.format(pow(plugin.getMemoryFree() / 1024, datas.get(6))).replace(",", "."));
 
         LOGGER.info("\nValores do multiplication: pheromone = " + pheromone + " capacityComputing= " + capacityComputing + " loadBalacing= " + loadBalacing
                 + " capacityMemory= " + capacityMemory + "\n");
@@ -470,6 +470,7 @@ public class AcoSched extends SchedPolicy {
 
     public double pow(double a, double b) {
     	double result = Math.pow(a, b);
+    	//System.out.println("A: " + a + " B: " + b + " Result: " + result);
 
     	if (!Double.isNaN(result) && !Double.isInfinite(result)) {
     		if (!(result == 0d)) {
@@ -499,9 +500,8 @@ public class AcoSched extends SchedPolicy {
      * @return
      */
     private Double capacityPlugin(PluginInfo plugin) {
-        DecimalFormat decimal = new DecimalFormat("0.0000000000");
-
-        System.out.println("capacityPlugin > Cores: " + (plugin.getNumCores() - plugin.getFrequencyCore()) + " getFrequencyCore() " + plugin.getFrequencyCore() + " mapPluginLatency " + mapPluginLatency.get(plugin.getId()));
+        DecimalFormat decimal = new DecimalFormat("0.000000000000000");
+        //System.out.println(plugin.getHost() + " > capacityPlugin > Cores: " + (plugin.getNumCores() - plugin.getFrequencyCore()) + " getFrequencyCore() " + plugin.getFrequencyCore() + " mapPluginLatency " + mapPluginLatency.get(plugin.getId()) + " memoryFree " + plugin.getMemoryFree());
 
         if (!(plugin.getNumCores() - plugin.getNumOccupied() == 0d)) {
             Double result = new Double(decimal.format((plugin.getNumCores() - plugin.getNumOccupied()) * plugin.getFrequencyCore() - mapPluginLatency.get(plugin.getId())).replace(",", "."));
