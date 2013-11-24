@@ -623,6 +623,9 @@ public class StorageService extends AbstractBioService {
         File file = new File(DATAFOLDER + filename);
 
         int filesreplicated = 1;
+        
+        if (!file.exists())
+        	getFile(filename);
 
         /*
          * Verifica se o arquivo existe no peer
@@ -937,5 +940,13 @@ public class StorageService extends AbstractBioService {
     public void getFile(String file) {
     	myPlugin.getFile(file);
     }
-
+    
+    
+    public boolean existeArquivoLocal(String file) {
+    	File f = new File(StorageService.DATAFOLDER+file);
+		if (f.exists())
+			return true;
+		else
+			return false;
+    }
 }
