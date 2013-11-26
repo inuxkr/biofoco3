@@ -1,6 +1,5 @@
 package br.unb.cic.bionimbus.services.sched;
 
-import br.unb.cic.bionimbus.avro.gen.NodeInfo;
 import br.unb.cic.bionimbus.avro.rpc.AvroClient;
 import br.unb.cic.bionimbus.avro.rpc.RpcClient;
 import br.unb.cic.bionimbus.client.JobInfo;
@@ -23,7 +22,6 @@ import br.unb.cic.bionimbus.services.storage.Ping;
 import br.unb.cic.bionimbus.services.storage.StorageService;
 import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.utils.Get;
-import br.unb.cic.bionimbus.utils.Nmap;
 import br.unb.cic.bionimbus.utils.Pair;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -165,7 +163,6 @@ public class SchedService extends AbstractBioService implements Service, P2PList
         } catch (ZooKeeperClient.ZooKeeperConnectionException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
 
         schedExecService.scheduleAtFixedRate(this, 0, 5, TimeUnit.SECONDS);
     }
@@ -340,9 +337,12 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 	            
 	            try {
 	            	File file = new File(StorageService.DATAFOLDER+path);
-	            	if (file.exists())
+	            	if (file.exists()) {
 	            		Compactacao.descompactar(StorageService.DATAFOLDER+path);
-	            	else {
+	            		//TODO: melhorar forma de armazenamento
+	            		if (myPlugin instanceof HadoopPlugin)
+	            			myPlugin.registerFile(pair.first);
+	            	} else {
 	            		for (int i = 0; i < 10000; i++) {
 						}
 	            	}
@@ -657,7 +657,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                 }
             }
             if(pendingJobs!=null &&  !pendingJobs.isEmpty()){
-                System.out.println("(checkTasks)>>Tamanho da lista de JOBS para execução :  "+getPendingJobs().size());
+                //System.out.println("(checkTasks)>>Tamanho da lista de JOBS para execução :  "+getPendingJobs().size());
                 for(JobInfo job : pendingJobs.values()){
                     if(!zkService.getZNodeExist(JOBS+PREFIX_JOB+job.getId()+LATENCY, true)){
                         setLatencyPlugins(job);
@@ -678,6 +678,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      */
     private void executeTasks(PluginTask task) throws Exception {
         System.out.println("Recebimento do pedido de execução da tarefa!");
+        System.out.println("STARTJOB - "+ task.getJobInfo().getOutputs()+" - MileSegundos: " + new Date());
         //TODO otimiza chamada de checage dos arquivos
         checkFilesPlugin();
         //verifica se o arquivo existe no plugin se não cria a solicitação de transfêrencia do arquivo
@@ -810,7 +811,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                     String datas;
                     //reconhece um alerta de um novo job
                     if (eventType.getPath().contains(JOBS)) {
-                        System.out.println(">>>>>>Recebimento de um alerta para um job, NodeChildrenChanged<<<<<");
+                        //System.out.println(">>>>>>Recebimento de um alerta para um job, NodeChildrenChanged<<<<<");
                         List<String> children;
                         children = zkService.getChildren(eventType.getPath(), null);
                         if (!children.isEmpty()) {
@@ -818,7 +819,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                                 ObjectMapper mapper = new ObjectMapper();
                                 datas = zkService.getData(eventType.getPath() + "/" + child, null);
                                 JobInfo job = mapper.readValue(datas, JobInfo.class);
-                                System.out.println("STARTJOB - "+ job.getOutputs()+" - MileSegundos: " + new Date());
+                                //System.out.println("STARTJOB - "+ job.getOutputs()+" - MileSegundos: " + new Date());
                                 //rotina para criar bloqueio para que nenhuma outra máquina selecione o job para escalonar       ->>>comentado para verificar problema de concorrência
 //                                if (!zkService.getZNodeExist(zkService.getPath().LOCK_JOB.getFullPath("", "", job.getId()), true)) {
                                 if(job.getLocalId().equals(myPlugin.getMyInfo().getHost().getAddress())){
@@ -827,7 +828,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 //                                    if (result != null) {
                                         if (!getPendingJobs().containsKey(job.getId())) {
                                             getPendingJobs().put(job.getId(), job);
-                                            System.out.println("(NodeChildrenChanged)>>Tamanho da lista de JOBS para execução :  "+getPendingJobs().size());
+                                            //System.out.println("(NodeChildrenChanged)>>Tamanho da lista de JOBS para execução :  "+getPendingJobs().size());
                                         }
 //                                    }
                                 }
@@ -839,7 +840,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
                         }
 
                     } else if (eventType.getPath().contains(SCHED + TASKS)) {
-                            System.out.println(">>>>>>Recebimento de um alerta para uma TAREFA, NodeChildrenChanged<<<<<");
+                        //System.out.println(">>>>>>Recebimento de um alerta para uma TAREFA, NodeChildrenChanged<<<<<");
 
                         
                         //verifica qual foi o job colocado para ser executado 
@@ -875,7 +876,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 
                         //retirar depois testes, exibi a tarefa que está em execução
                         if (pluginTask.getState() == PluginTaskState.RUNNING) {
-                            System.out.println("Task está rodando: " + pluginTask.getPluginTaskPathZk());
+                            //System.out.println("Task está rodando: " + pluginTask.getPluginTaskPathZk());
                         }
                         if (pluginTask.getState() == PluginTaskState.DONE) {
                             finalizeTask(pluginTask);

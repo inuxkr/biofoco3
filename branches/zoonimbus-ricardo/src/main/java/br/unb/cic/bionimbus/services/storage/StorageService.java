@@ -20,6 +20,7 @@ import br.unb.cic.bionimbus.services.monitor.MonitoringService;
 import br.unb.cic.bionimbus.services.sched.SchedService;
 import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.utils.Nmap;
+import br.unb.cic.bionimbus.utils.Propriedades;
 import br.unb.cic.bionimbus.utils.Put;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
@@ -61,7 +62,7 @@ public class StorageService extends AbstractBioService {
     private P2PService p2p = null;
     private Double MAXCAPACITY = 0.9;
     private int PORT = 8080;
-    private int REPLICATIONFACTOR = 2;
+    private int REPLICATIONFACTOR = 1;
     //private List<String> listFile = new ArrayList<String>();
     private AbstractPlugin myPlugin;
     //TODO: remover hard-coded e colocar em node.yaml e injetar em StorageService
@@ -80,6 +81,14 @@ public class StorageService extends AbstractBioService {
         // teste
         Counter c = metricRegistry.counter("teste");
         c.inc();
+        
+        try {
+			REPLICATIONFACTOR = new Integer(Propriedades.getProp("replication.factor"));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     @Override
@@ -407,6 +416,7 @@ public class StorageService extends AbstractBioService {
         Map<String, PluginInfo> peers = new ConcurrentHashMap<String, PluginInfo>();
         cloudMap = getPeers();
         for (NodeInfo node : list) {
+        	System.out.println(node.getAddress());
             cloudMap.get(node.getPeerId()).setLatency(node.getLatency());
             cloudMap.get(node.getPeerId()).setFsFreeSize(node.getFreesize());
             peers.put(node.getPeerId(), cloudMap.get(node.getPeerId()));
@@ -655,11 +665,13 @@ public class StorageService extends AbstractBioService {
                     break;
                 }
             }
+            //TODO: Verificação dos plugins
             if(no!=null){
                 pluginList.remove(no);
                 idsPluginsFile.add(p2p.getConfig().getId());
                 pluginList = new ArrayList<NodeInfo>(bestNode(pluginList, UPLOAD));
                 for (NodeInfo curr : pluginList){
+                	
                     if (no.getAddress().equals(curr.getAddress())){
                         no = curr;
                         break;
@@ -686,7 +698,6 @@ public class StorageService extends AbstractBioService {
                     Put conexao = new Put(node.getAddress(), path);
                     if (conexao.startSession()) {
                         idsPluginsFile.add(node.getPeerId());
-                       
                         pluginFile.setPluginId(idsPluginsFile);
                         
                         //Descompactar o arquivo no destino

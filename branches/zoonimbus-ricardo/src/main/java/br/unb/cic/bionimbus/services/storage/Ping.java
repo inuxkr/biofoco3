@@ -56,7 +56,7 @@ public class Ping {
                         found = true;
                     }
                     if (!found) {
-                        System.out.println("I didn't found the text");
+                        //System.out.println("I didn't found the text");
                     }
                 } else {
                     float taxadetransferencia = 0;
@@ -68,7 +68,7 @@ public class Ping {
                         found = true;
                     }
                     if (!found) {
-                        System.out.println("I didn't found the text");
+                        //System.out.println("I didn't found the text");
                     }
                 }
                 times += 1;
