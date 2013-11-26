@@ -485,7 +485,7 @@ public class BioProtoImpl implements BioProto {
      */
     @Override
     public void extractFile(String file){
-        System.out.println("extractFile()");
+        //System.out.println("extractFile()");
         storageService.extractFile(file);
     }
     

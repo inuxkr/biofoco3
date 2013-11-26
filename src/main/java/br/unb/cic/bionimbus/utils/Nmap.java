@@ -50,7 +50,7 @@ public class Nmap {
                         return sizerequest;
                     }
                     if (!found) {
-                        System.out.println("I didn't found the text");
+                        //System.out.println("I didn't found the text");
                     }
                 }
                 times+=1;
