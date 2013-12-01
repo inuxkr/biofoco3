@@ -11,6 +11,7 @@ import br.unb.cic.bionimbus.plugin.PluginFile;
 import br.unb.cic.bionimbus.plugin.PluginGetFile;
 import br.unb.cic.bionimbus.services.storage.StorageService;
 import br.unb.cic.bionimbus.utils.Compactacao;
+import br.unb.cic.bionimbus.utils.Propriedades;
 import br.unb.cic.bionimbus.utils.Utilities;
 
 public class HadoopGetFile implements Callable<PluginGetFile> {
@@ -49,13 +50,15 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
 	            e.printStackTrace();
 	        }
 
-			try {
-				System.out.println("Arquivo " + file.getName() + " inicio compactação " + Utilities.getDateString());
-				Compactacao.compactar(path);
-				System.out.println("Arquivo " + file.getName() + " termino compactação " + Utilities.getDateString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	        if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+				try {
+					System.out.println("Arquivo " + file.getName() + " inicio compactação " + Utilities.getDateString());
+					Compactacao.compactar(path);
+					System.out.println("Arquivo " + file.getName() + " termino compactação " + Utilities.getDateString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        }
     	}
     	
         return getFile;

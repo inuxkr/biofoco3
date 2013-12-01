@@ -23,6 +23,8 @@ import br.unb.cic.bionimbus.services.storage.StorageService;
 import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.utils.Get;
 import br.unb.cic.bionimbus.utils.Pair;
+import br.unb.cic.bionimbus.utils.Propriedades;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -324,8 +326,16 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 			}
 
             if (!myPlugin.getMyInfo().getHost().getAddress().equals(ipContainsFile)) {
-	            String path = Compactacao.nomeCompactado(pair.first);
-            	//String path = pair.first;
+            	String path = null;
+            	try {
+	            	if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+	            		path = Compactacao.nomeCompactado(pair.first);
+	            	} else {
+	            		path = pair.first;
+	            	}
+            	} catch (Exception ex) {
+            		ex.printStackTrace();
+            	}
 	            Get conexao = new Get();
 	            try {
 	                conexao.startSession(path, ipContainsFile);
@@ -336,15 +346,17 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 	            }
 	            
 	            try {
-	            	File file = new File(StorageService.DATAFOLDER+path);
-	            	if (file.exists()) {
-	            		Compactacao.descompactar(StorageService.DATAFOLDER+path);
-	            		//TODO: melhorar forma de armazenamento
-	            		if (myPlugin instanceof HadoopPlugin)
-	            			myPlugin.registerFile(pair.first);
-	            	} else {
-	            		for (int i = 0; i < 10000; i++) {
-						}
+	            	if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+		            	File file = new File(StorageService.DATAFOLDER+path);
+		            	if (file.exists()) {
+		            		Compactacao.descompactar(StorageService.DATAFOLDER+path);
+		            		//TODO: melhorar forma de armazenamento
+		            		if (myPlugin instanceof HadoopPlugin)
+		            			myPlugin.registerFile(pair.first);
+		            	} else {
+		            		for (int i = 0; i < 10000; i++) {
+							}
+		            	}
 	            	}
 				} catch (IOException e) {
 					e.printStackTrace();
