@@ -50,7 +50,7 @@ public class HadoopGetFile implements Callable<PluginGetFile> {
 	            e.printStackTrace();
 	        }
 
-	        if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+	        if (new Boolean(Propriedades.getProp("storage.compact")))  {
 				try {
 					System.out.println("Arquivo " + file.getName() + " inicio compactação " + Utilities.getDateString());
 					Compactacao.compactar(path);
