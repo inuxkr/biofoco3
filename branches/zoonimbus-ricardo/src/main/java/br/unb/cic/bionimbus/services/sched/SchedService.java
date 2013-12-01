@@ -328,7 +328,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
             if (!myPlugin.getMyInfo().getHost().getAddress().equals(ipContainsFile)) {
             	String path = null;
             	try {
-	            	if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+	            	if (new Boolean(Propriedades.getProp("storage.compact")))  {
 	            		path = Compactacao.nomeCompactado(pair.first);
 	            	} else {
 	            		path = pair.first;
@@ -346,7 +346,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
 	            }
 	            
 	            try {
-	            	if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+	            	if (new Boolean(Propriedades.getProp("storage.compact")))  {
 		            	File file = new File(StorageService.DATAFOLDER+path);
 		            	if (file.exists()) {
 		            		Compactacao.descompactar(StorageService.DATAFOLDER+path);

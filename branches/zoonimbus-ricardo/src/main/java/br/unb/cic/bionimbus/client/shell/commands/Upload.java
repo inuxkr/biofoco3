@@ -91,7 +91,7 @@ public class Upload implements Command {
                     
                     //Metadata.criarMetadata(path, node.getAddress(), "user", 1);
                     // Compactação
-                    if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+                    if (new Boolean(Propriedades.getProp("storage.compact")))  {
                     	path = Compactacao.compactar(path);
                     }
                     

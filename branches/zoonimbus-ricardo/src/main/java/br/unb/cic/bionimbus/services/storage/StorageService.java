@@ -426,7 +426,7 @@ public class StorageService extends AbstractBioService {
          * Antes de calculador fazer as filtragens (em caso de armazenamento)
         */
         try {
-			if (Propriedades.getProp("storage.policy").equals("ẗrue"))  {
+			if (new Boolean(Propriedades.getProp("storage.policy")))  {
 				StoragePolicy policy = new StoragePolicy();
 				List<NodeInfo> plugins = policy.calcBestCost(zkService, peers.values(), operacao);
 				return plugins;
@@ -702,7 +702,7 @@ public class StorageService extends AbstractBioService {
                      */
                 	//Compactar
                 	String path = DATAFOLDER + info.getName();
-                	if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+                	if (new Boolean(Propriedades.getProp("storage.compact")))  {
                 		path = Compactacao.compactar(path);
                 	}
                 	
@@ -712,7 +712,7 @@ public class StorageService extends AbstractBioService {
                         pluginFile.setPluginId(idsPluginsFile);
                         
                         //Descompactar o arquivo no destino
-                        if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+                        if (new Boolean(Propriedades.getProp("storage.compact")))  {
 	                        try {
 		                        RpcClient rpcClient = new AvroClient("http", node.getAddress(), PORT);
 		                    	rpcClient.getProxy().extractFile(path);
