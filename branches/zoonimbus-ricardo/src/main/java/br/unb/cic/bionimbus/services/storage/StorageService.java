@@ -416,7 +416,6 @@ public class StorageService extends AbstractBioService {
         Map<String, PluginInfo> peers = new ConcurrentHashMap<String, PluginInfo>();
         cloudMap = getPeers();
         for (NodeInfo node : list) {
-        	System.out.println(node.getAddress());
             cloudMap.get(node.getPeerId()).setLatency(node.getLatency());
             cloudMap.get(node.getPeerId()).setFsFreeSize(node.getFreesize());
             peers.put(node.getPeerId(), cloudMap.get(node.getPeerId()));
@@ -426,10 +425,20 @@ public class StorageService extends AbstractBioService {
          * Dentro da Storage Policy é feito o ordenamento da list de acordo com o custo de armazenamento
          * Antes de calculador fazer as filtragens (em caso de armazenamento)
         */
-        StoragePolicy policy = new StoragePolicy();
-        List<NodeInfo> plugins = policy.calcBestCost(zkService, peers.values(), operacao);
-
-        return plugins;
+        try {
+			if (Propriedades.getProp("storage.policy").equals("ẗrue"))  {
+				StoragePolicy policy = new StoragePolicy();
+				List<NodeInfo> plugins = policy.calcBestCost(zkService, peers.values(), operacao);
+				return plugins;
+			} else {
+				return list;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return list;
+        
     }
 
     /**
@@ -693,7 +702,9 @@ public class StorageService extends AbstractBioService {
                      */
                 	//Compactar
                 	String path = DATAFOLDER + info.getName();
-                	path = Compactacao.compactar(path);
+                	if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+                		path = Compactacao.compactar(path);
+                	}
                 	
                     Put conexao = new Put(node.getAddress(), path);
                     if (conexao.startSession()) {
@@ -701,13 +712,15 @@ public class StorageService extends AbstractBioService {
                         pluginFile.setPluginId(idsPluginsFile);
                         
                         //Descompactar o arquivo no destino
-                        try {
-	                        RpcClient rpcClient = new AvroClient("http", node.getAddress(), PORT);
-	                    	rpcClient.getProxy().extractFile(path);
-							rpcClient.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+                        if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+	                        try {
+		                        RpcClient rpcClient = new AvroClient("http", node.getAddress(), PORT);
+		                    	rpcClient.getProxy().extractFile(path);
+								rpcClient.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+                        }
                         /*
                          * Com o arquivo enviado, seta os seus dados no Zookeeper
                          */

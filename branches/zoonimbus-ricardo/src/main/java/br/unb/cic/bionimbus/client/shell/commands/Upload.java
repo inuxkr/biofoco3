@@ -13,6 +13,7 @@ import br.unb.cic.bionimbus.services.storage.Ping;
 import br.unb.cic.bionimbus.utils.Compactacao;
 import br.unb.cic.bionimbus.utils.Metadata;
 import br.unb.cic.bionimbus.utils.Nmap;
+import br.unb.cic.bionimbus.utils.Propriedades;
 import br.unb.cic.bionimbus.utils.Put;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -90,7 +91,9 @@ public class Upload implements Command {
                     
                     //Metadata.criarMetadata(path, node.getAddress(), "user", 1);
                     // Compactação
-                    path = Compactacao.compactar(path);
+                    if (Propriedades.getProp("storage.compact").equals("ẗrue"))  {
+                    	path = Compactacao.compactar(path);
+                    }
                     
                     Put conexao = new Put(node.getAddress(), path);
                     if (conexao.startSession()) {
