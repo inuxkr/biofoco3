@@ -66,7 +66,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
     private List<String> filesInTransfer = new ArrayList<String>();
     private RpcClient rpcClient;
 
-    private final Integer policy = 0;
+    private final Integer policy = 2;
     private P2PService p2p = null;
     private String idPlugin;
     private AbstractPlugin myPlugin;
