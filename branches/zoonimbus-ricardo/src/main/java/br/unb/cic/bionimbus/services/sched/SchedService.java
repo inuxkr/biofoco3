@@ -64,6 +64,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
     // private final Queue<PluginTask> runningJobs = new ConcurrentLinkedQueue<PluginTask>();
     private final Map<String, PluginInfo> cancelingJobs = new ConcurrentHashMap<String, PluginInfo>();
     private List<String> filesInTransfer = new ArrayList<String>();
+    private List<String> jobsWaiting = new ArrayList<String>();
     private RpcClient rpcClient;
 
     private final Integer policy = 2;
@@ -312,6 +313,7 @@ public class SchedService extends AbstractBioService implements Service, P2PList
         	if (filesInTransfer.contains(pair.first) || existeArquivoLocal(pair.first))
         		continue;
         	
+        	System.out.println("passou");
             String ipContainsFile = getFilesIP(pair.first);
 
             try {
@@ -689,12 +691,15 @@ public class SchedService extends AbstractBioService implements Service, P2PList
      * @param task
      */
     private void executeTasks(PluginTask task) throws Exception {
-        System.out.println("Recebimento do pedido de execução da tarefa!");
-        System.out.println("STARTJOB - "+ task.getJobInfo().getOutputs()+" - MileSegundos: " + new Date());
+    	
+    	if (!jobsWaiting.contains(task.getJobInfo().getOutputs().get(0))) {
+    		System.out.println("STARTJOB - "+ task.getJobInfo().getOutputs()+" - MileSegundos: " + new Date());
+        	jobsWaiting.add(task.getJobInfo().getOutputs().get(0));
+    	}
+    	
         //TODO otimiza chamada de checage dos arquivos
         checkFilesPlugin();
         //verifica se o arquivo existe no plugin se não cria a solicitação de transfêrencia do arquivo
-        //System.out.println(existFilesCloud(task.getJobInfo().getInputs()));
         if (!existFilesCloud(task.getJobInfo().getInputs())) {
             task.setState(PluginTaskState.ERRO);
             return;
